@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Murder Mystery Detective Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="detective-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h2>Loading Case Files...</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Section -->
+    <section id="login-section" class="login-section">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="case-file-header">
+                    <i class="fas fa-file-alt"></i>
+                    <h1>Detective Case File</h1>
+                    <p>Enter your credentials to access the investigation</p>
+                </div>
+                
+                <form class="login-form" id="loginForm" onsubmit="return false;" novalidate>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Detective Name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Badge Number" required>
+                    </div>
+                    
+                    <button type="button" id="loginSubmit" class="login-btn">
+                        <span>Enter Investigation</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                
+                <div class="case-info">
+                    <p><strong>Case:</strong> The Mysterious Murder at Blackwood Manor</p>
+                    <p><strong>Status:</strong> Under Investigation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Game Interface -->
+    <section id="game-section" class="game-section hidden">
+        <!-- Navigation -->
+        <nav class="game-nav">
+            <div class="nav-container">
+                <div class="detective-info">
+                    <i class="fas fa-user-detective"></i>
+                    <span id="detective-name">Detective</span>
+                </div>
+                <div class="case-progress">
+                    <span>Case Progress: <span id="progress-percentage">0%</span></span>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Case Overview -->
+            <section class="case-overview">
+                <div class="case-header">
+                    <h2 id="caseTitle" class="clickable">The Blackwood Manor Murder</h2>
+                    <div class="case-brief">
+                        <p><strong>Date:</strong> Dec 15, 2024 • <strong>Time:</strong> 10:00–11:30 PM • <strong>Place:</strong> Blackwood Manor, Study</p>
+                        <button id="knowMoreBtn" class="view-evidence-btn" style="margin-top:0.5rem;">
+                            <i class="fas fa-book-open"></i> Know more
+                        </button>
+                    </div>
+                    <div class="case-status">
+                        <span class="status-badge active">Active</span>
+                        <span class="case-date">December 15, 2024</span>
+                    </div>
+                </div>
+                
+                <div class="case-summary">
+                    <div class="summary-card">
+                        <i class="fas fa-skull-crossbones"></i>
+                        <h3>Victim</h3>
+                        <p>Lord Reginald Blackwood, 67, found dead in his study</p>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Time of Death</h3>
+                        <p>Between 10:00 PM - 11:30 PM</p>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Location</h3>
+                        <p>Blackwood Manor, Study Room</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Story Section (Backend-driven) -->
+            <section class="story-section" id="storySection">
+                <h2>Story</h2>
+                <div class="story-card">
+                    <div id="storyContent" class="story-content">Loading story...</div>
+                    <div id="storyOptions" class="story-options"></div>
+                </div>
+            </section>
+
+            <!-- Inventory Panel -->
+            <section class="inventory-section" id="inventorySection">
+                <h2>Clue Inventory</h2>
+                <div class="inventory-card">
+                    <ul id="inventoryList" class="inventory-list"></ul>
+                </div>
+            </section>
+
+            <!-- Evidence Section -->
+            <section class="evidence-section">
+                <h2>Evidence Database</h2>
+                <div class="evidence-grid">
+                    <div class="evidence-card" data-evidence="witnesses">
+                        <div class="evidence-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Witnesses</h3>
+                        <p>Interview statements from household staff and guests</p>
+                        <button class="view-evidence-btn" data-target="witnesses">View Details</button>
+                    </div>
+                    
+                    <div class="evidence-card" data-evidence="suspects">
+                        <div class="evidence-icon">
+                            <i class="fas fa-user-times"></i>
+                        </div>
+                        <h3>Suspects</h3>
+                        <p>List of potential suspects with motives and alibis</p>
+                        <button class="view-evidence-btn" data-target="suspects">View Details</button>
+                    </div>
+                    
+                    <div class="evidence-card" data-evidence="forensics">
+                        <div class="evidence-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                        <h3>Forensics</h3>
+                        <p>DNA evidence, fingerprints, and physical clues</p>
+                        <button class="view-evidence-btn" data-target="forensics">View Details</button>
+                    </div>
+                    
+                    <div class="evidence-card" data-evidence="timeline">
+                        <div class="evidence-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Timeline</h3>
+                        <p>Chronological sequence of events leading to the murder</p>
+                        <button class="view-evidence-btn" data-target="timeline">View Details</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clues and Progress -->
+            <section class="clues-section">
+                <h2>Discovered Clues</h2>
+                <div class="clues-container" id="cluesContainer">
+                    <div class="clue-item">
+                        <div class="clue-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div class="clue-content">
+                            <h4>Initial Investigation</h4>
+                            <p>Lord Blackwood was found with a mysterious key in his hand</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Suspect Analysis -->
+            <section class="suspect-analysis">
+                <h2>Suspect Analysis</h2>
+                <div class="suspects-grid" id="suspectsGrid">
+                    <!-- Suspects will be populated dynamically -->
+                </div>
+            </section>
+
+            <!-- SQL Query Interface -->
+            <section class="query-section">
+                <div class="query-header">
+                    <h2>Database Investigation</h2>
+                    <p>Use SQL queries to uncover clues and solve the mystery</p>
+                    <div class="query-level-bar">
+                        <div class="level-info">
+                            <span class="level-badge">Level <span id="currentLevel">1</span> of <span id="totalLevels">5</span></span>
+                            <span id="levelStatus" class="level-status">In progress</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="query-interface">
+                    <div class="query-input-area">
+                        <div class="query-toolbar">
+                            <button class="tool-btn" data-action="format">
+                                <i class="fas fa-magic"></i> Format
+                            </button>
+                            <button class="tool-btn" data-action="clear">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                            <button class="tool-btn" data-action="hint">
+                                <i class="fas fa-lightbulb"></i> Hint
+                            </button>
+                        </div>
+                        
+                        <textarea id="sqlQuery" placeholder="Enter your SQL query here...&#10;&#10;Example:&#10;SELECT * FROM witnesses WHERE alibi_verified = 'false';" spellcheck="false"></textarea>
+                        
+                        <button class="execute-btn" id="executeQuery">
+                            <i class="fas fa-play"></i>
+                            <span>Execute Query</span>
+                        </button>
+
+                        <div class="level-objective">
+                            <h4>Stage Brief</h4>
+                            <p id="objectiveText">Identify all witnesses with unverified alibis and rank suspects by suspicion.</p>
+                        </div>
+                        <div class="suggested-queries">
+                            <h4 id="hintsHeader">Hints</h4>
+                            <ul id="suggestedQueries" class="collapsed">
+                                <li>Filter witnesses by alibi status.</li>
+                                <li>Sort suspects by suspicion level descending.</li>
+                                <li>Think about who benefits the most.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="query-results">
+                        <div class="results-header">
+                            <h3>Query Results</h3>
+                            <div class="results-info">
+                                <span id="result-count">0 rows returned</span>
+                                <span id="execution-time">0ms</span>
+                            </div>
+                        </div>
+                        
+                        <div class="results-container" id="resultsContainer">
+                            <div class="no-results">
+                                <i class="fas fa-database"></i>
+                                <p>Execute a query to see results</p>
+                            </div>
+                        </div>
+                        <div class="level-summary" id="levelSummary">
+                            <h4>Collected Details</h4>
+                            <div id="stageDescription" class="stage-description">Early-stage triage of alibis and suspicion.</div>
+                            <table class="summary-table">
+                                <tbody id="summaryBody"></tbody>
+                            </table>
+                            <div class="level-nav">
+                                <button id="prevStageBtn" class="prev-stage-btn" disabled>
+                                    <i class="fas fa-arrow-left"></i>
+                                    <span>Prev</span>
+                                </button>
+                                <button id="nextStageBtn" class="next-stage-btn" disabled>
+                                    <span>Next</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+        </main>
+    </section>
+
+    <!-- Evidence Modal -->
+    <div id="evidenceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Evidence Details</h3>
+                <button class="close-btn" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Evidence content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Congrats Modal -->
+    <div id="congratsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Stage Complete</h3>
+                <button class="close-btn" id="closeCongratsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="hint-content">
+                    <i class="fas fa-trophy"></i>
+                    <p id="congratsText">Great work! Proceed to the next stage.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hint Modal -->
+    <div id="hintModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Investigation Hint</h3>
+                <button class="close-btn" id="closeHintModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="hint-content">
+                    <i class="fas fa-lightbulb"></i>
+                    <p id="hintText">Start by examining the witnesses table to understand who was present during the murder.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backstory Modal -->
+    <div id="backstoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Case Backstory</h3>
+                <button class="close-btn" id="closeBackstoryModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="backstory">
+                    <p><strong>Date:</strong> December 15, 2024</p>
+                    <p><strong>Time Window of Crime:</strong> 10:00 PM – 11:30 PM</p>
+                    <p><strong>Location:</strong> Blackwood Manor, Study Room</p>
+                    <p><strong>Summary:</strong> Lord Reginald Blackwood, a wealthy aristocrat, was found dead in his locked study. A blood-stained letter opener lay nearby. Family and staff gave conflicting statements. A mysterious key was found in the victim’s hand. Forensics suggest critical DNA and fingerprint leads. Investigate data tables, validate alibis, follow the timeline, and identify the culprit.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
