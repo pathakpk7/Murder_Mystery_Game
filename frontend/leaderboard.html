@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vritra - Leaderboard</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .leaderboard-tabs {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-2xl);
+            flex-wrap: wrap;
+        }
+
+        .leaderboard-tab {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .leaderboard-tab:hover,
+        .leaderboard-tab.active {
+            background: var(--color-crimson);
+            border-color: var(--color-crimson);
+            color: var(--color-text-primary);
+        }
+
+        .leaderboard-content {
+            display: none;
+        }
+
+        .leaderboard-content.active {
+            display: block;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: var(--spacing-lg);
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .leaderboard-table th {
+            background: var(--color-dark-gray);
+            color: var(--color-gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .leaderboard-table tr:hover {
+            background: var(--color-bg-primary);
+        }
+
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: var(--color-deep-black);
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+            color: var(--color-deep-black);
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #cd7f32, #daa06d);
+            color: var(--color-text-primary);
+        }
+
+        .rank-other {
+            background: var(--color-bg-primary);
+            color: var(--color-text-muted);
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .player-stat {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .stat-highlight {
+            color: var(--color-gold);
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            color: var(--color-text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--color-border);
+            margin-bottom: var(--spacing-lg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <!-- Hero Section -->
+    <section class="section section-dark">
+        <div class="container text-center">
+            <h1 class="section-title">Leaderboard</h1>
+            <p class="section-subtitle">The world's finest detectives</p>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="section">
+        <div class="container">
+            <div class="leaderboard-tabs">
+                <button class="leaderboard-tab active" data-tab="top-detectives">Top Detectives</button>
+                <button class="leaderboard-tab" data-tab="fastest-solvers">Fastest Solvers</button>
+                <button class="leaderboard-tab" data-tab="most-accurate">Most Accurate</button>
+                <button class="leaderboard-tab" data-tab="highest-scores">Highest Scores</button>
+                <button class="leaderboard-tab" data-tab="case-completion">Case Completion</button>
+            </div>
+
+            <!-- Top Detectives -->
+            <div class="leaderboard-content active" id="top-detectives">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Detective</th>
+                            <th>Total Score</th>
+                            <th>Cases Solved</th>
+                            <th>Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge rank-1">1</span></td>
+                            <td class="player-name">Detective_Sherlock</td>
+                            <td class="stat-highlight">24,580</td>
+                            <td class="player-stat">18/18</td>
+                            <td class="player-stat">98.5%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-2">2</span></td>
+                            <td class="player-name">SQL_Master</td>
+                            <td class="stat-highlight">23,420</td>
+                            <td class="player-stat">18/18</td>
+                            <td class="player-stat">95.2%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-3">3</span></td>
+                            <td class="player-name">Data_Detective</td>
+                            <td class="stat-highlight">22,890</td>
+                            <td class="player-stat">17/18</td>
+                            <td class="player-stat">96.8%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">4</span></td>
+                            <td class="player-name">Query_Expert</td>
+                            <td class="player-stat">21,340</td>
+                            <td class="player-stat">17/18</td>
+                            <td class="player-stat">94.1%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">5</span></td>
+                            <td class="player-name">Code_Breaker</td>
+                            <td class="player-stat">20,890</td>
+                            <td class="player-stat">16/18</td>
+                            <td class="player-stat">92.7%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Fastest Solvers -->
+            <div class="leaderboard-content" id="fastest-solvers">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Detective</th>
+                            <th>Total Time</th>
+                            <th>Avg Time/Case</th>
+                            <th>Cases Solved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge rank-1">1</span></td>
+                            <td class="player-name">Speed_Demon</td>
+                            <td class="stat-highlight">12h 34m</td>
+                            <td class="player-stat">42m</td>
+                            <td class="player-stat">18/18</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-2">2</span></td>
+                            <td class="player-name">Quick_Query</td>
+                            <td class="stat-highlight">14h 12m</td>
+                            <td class="player-stat">47m</td>
+                            <td class="player-stat">18/18</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-3">3</span></td>
+                            <td class="player-name">Rapid_Results</td>
+                            <td class="stat-highlight">15h 45m</td>
+                            <td class="player-stat">52m</td>
+                            <td class="player-stat">18/18</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">4</span></td>
+                            <td class="player-name">Fast_Tracker</td>
+                            <td class="player-stat">16h 20m</td>
+                            <td class="player-stat">54m</td>
+                            <td class="player-stat">18/18</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">5</span></td>
+                            <td class="player-name">Swift_Solver</td>
+                            <td class="player-stat">17h 05m</td>
+                            <td class="player-stat">57m</td>
+                            <td class="player-stat">18/18</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Most Accurate -->
+            <div class="leaderboard-content" id="most-accurate">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Detective</th>
+                            <th>Accuracy</th>
+                            <th>Queries Run</th>
+                            <th>Success Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge rank-1">1</span></td>
+                            <td class="player-name">Precision_Pro</td>
+                            <td class="stat-highlight">99.8%</td>
+                            <td class="player-stat">142</td>
+                            <td class="player-stat">98.6%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-2">2</span></td>
+                            <td class="player-name">Perfect_Query</td>
+                            <td class="stat-highlight">99.2%</td>
+                            <td class="player-stat">156</td>
+                            <td class="player-stat">97.4%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-3">3</span></td>
+                            <td class="player-name">Exact_Match</td>
+                            <td class="stat-highlight">98.9%</td>
+                            <td class="player-stat">134</td>
+                            <td class="player-stat">96.8%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">4</span></td>
+                            <td class="player-name">Target_Lock</td>
+                            <td class="player-stat">98.5%</td>
+                            <td class="player-stat">148</td>
+                            <td class="player-stat">95.9%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">5</span></td>
+                            <td class="player-name">Sharp_Eye</td>
+                            <td class="player-stat">98.1%</td>
+                            <td class="player-stat">161</td>
+                            <td class="player-stat">95.2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Highest Scores -->
+            <div class="leaderboard-content" id="highest-scores">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Detective</th>
+                            <th>Score</th>
+                            <th>Perfect Cases</th>
+                            <th>Hint Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge rank-1">1</span></td>
+                            <td class="player-name">Detective_Sherlock</td>
+                            <td class="stat-highlight">24,580</td>
+                            <td class="player-stat">15</td>
+                            <td class="player-stat">2</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-2">2</span></td>
+                            <td class="player-name">SQL_Master</td>
+                            <td class="stat-highlight">23,420</td>
+                            <td class="player-stat">14</td>
+                            <td class="player-stat">3</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-3">3</span></td>
+                            <td class="player-name">Data_Detective</td>
+                            <td class="stat-highlight">22,890</td>
+                            <td class="player-stat">13</td>
+                            <td class="player-stat">4</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">4</span></td>
+                            <td class="player-name">Query_Expert</td>
+                            <td class="player-stat">21,340</td>
+                            <td class="player-stat">12</td>
+                            <td class="player-stat">5</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">5</span></td>
+                            <td class="player-name">Code_Breaker</td>
+                            <td class="player-stat">20,890</td>
+                            <td class="player-stat">11</td>
+                            <td class="player-stat">6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Case Completion -->
+            <div class="leaderboard-content" id="case-completion">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Detective</th>
+                            <th>Cases Completed</th>
+                            <th>Current Act</th>
+                            <th>Last Solved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge rank-1">1</span></td>
+                            <td class="player-name">Detective_Sherlock</td>
+                            <td class="stat-highlight">18/18</td>
+                            <td class="player-stat">Act IV Complete</td>
+                            <td class="player-stat">Case 018</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-2">2</span></td>
+                            <td class="player-name">SQL_Master</td>
+                            <td class="stat-highlight">18/18</td>
+                            <td class="player-stat">Act IV Complete</td>
+                            <td class="player-stat">Case 018</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-3">3</span></td>
+                            <td class="player-name">Data_Detective</td>
+                            <td class="stat-highlight">17/18</td>
+                            <td class="player-stat">Act IV</td>
+                            <td class="player-stat">Case 017</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">4</span></td>
+                            <td class="player-name">Query_Expert</td>
+                            <td class="player-stat">17/18</td>
+                            <td class="player-stat">Act IV</td>
+                            <td class="player-stat">Case 016</td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">5</span></td>
+                            <td class="player-name">Code_Breaker</td>
+                            <td class="player-stat">16/18</td>
+                            <td class="player-stat">Act III</td>
+                            <td class="player-stat">Case 015</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section-dark">
+        <div class="container text-center">
+            <h2 class="section-title">Join the Leaderboard</h2>
+            <p class="section-subtitle">Start solving cases and climb the ranks</p>
+            <a href="cases.html" class="btn btn-primary btn-large">START INVESTIGATION</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>PROJECT VRITRA</span>
+                </div>
+                <p class="footer-tagline">A Detective Thriller</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Project Vritra. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.leaderboard-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.leaderboard-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vritra - Case Files</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Case Cards Styles */
+        .case-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+        }
+
+        .case-card.locked {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .case-card.locked::before {
+            background: var(--color-text-muted);
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .case-number {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .case-locked-icon {
+            font-size: 1.5rem;
+            color: var(--color-text-muted);
+        }
+
+        .case-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text-primary);
+        }
+
+        .case-teaser {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.6;
+        }
+
+        .case-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .case-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .case-meta-item i {
+            color: var(--color-gold);
+        }
+
+        .case-progress {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--color-slate);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Filter Styles */
+        .filter-bar {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-2xl);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-slate);
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--color-crimson);
+            border-color: var(--color-crimson);
+            color: var(--color-text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .filter-bar {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <!-- Cases Section -->
+    <section class="section">
+        <div class="container">
+            <h1 class="section-title">Case Files</h1>
+            <p class="section-subtitle">18 mysteries. One conspiracy. The truth awaits.</p>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All Cases</button>
+                <button class="filter-btn" data-filter="act-i">Act I</button>
+                <button class="filter-btn" data-filter="act-ii">Act II</button>
+                <button class="filter-btn" data-filter="act-iii">Act III</button>
+                <button class="filter-btn" data-filter="act-iv">Act IV</button>
+                <button class="filter-btn" data-filter="easy">Easy</button>
+                <button class="filter-btn" data-filter="medium">Medium</button>
+                <button class="filter-btn" data-filter="hard">Hard</button>
+            </div>
+
+            <!-- Cases Grid -->
+            <div id="casesContainer" class="grid-3">
+                <div class="loading">Loading case files...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>PROJECT VRITRA</span>
+                </div>
+                <p class="footer-tagline">A Detective Thriller</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Project Vritra. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:5433/api';
+
+        // Mock case data for demonstration (will be replaced with API data)
+        const mockCases = [
+            {
+                id: 1,
+                number: 'CASE 001',
+                title: 'The Blackwood Manor Mystery',
+                teaser: 'Industrialist Rajveer Rathore is found dead inside his locked study at Blackwood Manor. What initially appears to be suicide soon reveals signs of murder.',
+                act: 'I',
+                difficulty: 'Easy',
+                estimatedTime: '20 min',
+                storyArc: 'The Pattern',
+                progress: 0,
+                locked: false
+            },
+            {
+                id: 2,
+                number: 'CASE 002',
+                title: 'The Poisoned Soma',
+                teaser: 'Scholar and Ayurvedic researcher Acharya Devendra Mishra collapses during a private symposium after consuming a ceremonial Soma preparation.',
+                act: 'I',
+                difficulty: 'Easy',
+                estimatedTime: '25 min',
+                storyArc: 'The Pattern',
+                progress: 0,
+                locked: false
+            },
+            {
+                id: 3,
+                number: 'CASE 003',
+                title: 'The Temple Cipher',
+                teaser: 'A temple archivist is murdered after uncovering an encrypted Sanskrit message hidden within ancient records.',
+                act: 'I',
+                difficulty: 'Easy',
+                estimatedTime: '30 min',
+                storyArc: 'The Pattern',
+                progress: 0,
+                locked: false
+            },
+            {
+                id: 4,
+                number: 'CASE 004',
+                title: 'The Silent Devotee',
+                teaser: 'A monk who had not spoken for eight years is found murdered at Rudra Peeth Monastery. Before his death, he leaves behind a cryptic message linked to the serpent symbol.',
+                act: 'I',
+                difficulty: 'Easy',
+                estimatedTime: '30 min',
+                storyArc: 'The Pattern',
+                progress: 0,
+                locked: false
+            },
+            {
+                id: 5,
+                number: 'CASE 005',
+                title: 'The Ashes of Dharma',
+                teaser: 'Politician Devendra Pratap Singh dies in a suspicious fire hours before exposing a powerful organization known as Project Vritra.',
+                act: 'I',
+                difficulty: 'Easy',
+                estimatedTime: '35 min',
+                storyArc: 'The Pattern',
+                progress: 0,
+                locked: false
+            },
+            {
+                id: 6,
+                number: 'CASE 006',
+                title: 'The Twin Illusion',
+                teaser: 'A man officially declared dead five years ago suddenly appears in financial records under a different identity.',
+                act: 'II',
+                difficulty: 'Medium',
+                estimatedTime: '40 min',
+                storyArc: 'The Conspiracy',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 7,
+                number: 'CASE 007',
+                title: 'The Wheel of Time',
+                teaser: 'A government analyst is murdered after discovering impossible discrepancies in national event records.',
+                act: 'II',
+                difficulty: 'Medium',
+                estimatedTime: '45 min',
+                storyArc: 'The Conspiracy',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 8,
+                number: 'CASE 008',
+                title: 'The Forgotten Monk',
+                teaser: 'A monk with no official identity appears in classified Project Vritra records. Investigating his past uncovers decades of memory manipulation experiments.',
+                act: 'II',
+                difficulty: 'Medium',
+                estimatedTime: '45 min',
+                storyArc: 'The Conspiracy',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 9,
+                number: 'CASE 009',
+                title: 'The Serpent Ledger',
+                teaser: 'An accountant linked to multiple shell organizations is murdered after discovering a hidden financial network funding Project Vritra.',
+                act: 'II',
+                difficulty: 'Medium',
+                estimatedTime: '50 min',
+                storyArc: 'The Conspiracy',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 10,
+                number: 'CASE 010',
+                title: 'The Vanishing Disciple',
+                teaser: 'A key witness connected to the Inner Circle disappears and all official records begin vanishing with him.',
+                act: 'II',
+                difficulty: 'Medium',
+                estimatedTime: '55 min',
+                storyArc: 'The Conspiracy',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 11,
+                number: 'CASE 011',
+                title: 'The Seven Shadows',
+                teaser: 'A retired intelligence officer is murdered after attempting to expose the secret leadership behind Project Vritra.',
+                act: 'III',
+                difficulty: 'Hard',
+                estimatedTime: '60 min',
+                storyArc: 'The System',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 12,
+                number: 'CASE 012',
+                title: 'The Maya Protocol',
+                teaser: 'A forensic analyst is murdered after discovering a classified system capable of manufacturing evidence and manipulating reality itself.',
+                act: 'III',
+                difficulty: 'Hard',
+                estimatedTime: '65 min',
+                storyArc: 'The System',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 13,
+                number: 'CASE 013',
+                title: 'The Crimson Yagna',
+                teaser: 'A sociologist is murdered after discovering that decades of disasters, murders and political crises were intentionally engineered as part of a social experiment.',
+                act: 'III',
+                difficulty: 'Hard',
+                estimatedTime: '70 min',
+                storyArc: 'The System',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 14,
+                number: 'CASE 014',
+                title: 'The Oracle Network',
+                teaser: 'A senior Oracle architect is murdered after attempting to expose the predictive system controlling Project Vritra.',
+                act: 'III',
+                difficulty: 'Hard',
+                estimatedTime: '75 min',
+                storyArc: 'The System',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 15,
+                number: 'CASE 015',
+                title: 'The Hidden Manuscript',
+                teaser: 'A historian is murdered while decoding a manuscript that predates Project Vritra and reveals the origins of its ideology.',
+                act: 'III',
+                difficulty: 'Hard',
+                estimatedTime: '80 min',
+                storyArc: 'The System',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 16,
+                number: 'CASE 016',
+                title: 'The Vritra Cycle',
+                teaser: 'A former Ninth Mandala archivist is murdered after revealing a master archive connecting every Project Vritra operation.',
+                act: 'IV',
+                difficulty: 'Hard',
+                estimatedTime: '90 min',
+                storyArc: 'The Architect',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 17,
+                number: 'CASE 017',
+                title: 'The Ninth Realm',
+                teaser: 'Prasoon infiltrates the hidden command structure of the Ninth Mandala and discovers evidence of a systematic internal collapse.',
+                act: 'IV',
+                difficulty: 'Hard',
+                estimatedTime: '95 min',
+                storyArc: 'The Architect',
+                progress: 0,
+                locked: true
+            },
+            {
+                id: 18,
+                number: 'CASE 018',
+                title: 'The Last Witness',
+                teaser: 'The final surviving founder of Project Vritra is murdered before testifying. His testimony reveals the true purpose behind the entire conspiracy.',
+                act: 'IV',
+                difficulty: 'Hard',
+                estimatedTime: '120 min',
+                storyArc: 'The Architect',
+                progress: 0,
+                locked: true
+            }
+        ];
+
+        // Fetch cases from backend
+        async function fetchCases() {
+            try {
+                const response = await fetch(`${API_BASE}/cases`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cases');
+                }
+                
+                const data = await response.json();
+                displayCases(data.cases);
+            } catch (error) {
+                console.error('Error fetching cases:', error);
+                // Use mock data if API fails
+                displayCases(mockCases);
+            }
+        }
+
+        // Display cases as cards
+        function displayCases(cases) {
+            const container = document.getElementById('casesContainer');
+            container.innerHTML = '';
+
+            if (!cases || cases.length === 0) {
+                container.innerHTML = '<div class="error">No cases available.</div>';
+                return;
+            }
+
+            cases.forEach(caseItem => {
+                const card = document.createElement('div');
+                card.className = `card card-premium case-card ${caseItem.locked ? 'locked' : ''}`;
+                card.dataset.act = `act-${caseItem.act.toLowerCase()}`;
+                card.dataset.difficulty = caseItem.difficulty.toLowerCase();
+                
+                card.innerHTML = `
+                    <div class="case-header">
+                        <span class="case-number">${caseItem.number}</span>
+                        ${caseItem.locked ? '<i class="fas fa-lock case-locked-icon"></i>' : ''}
+                    </div>
+                    <h3 class="case-title">${caseItem.title}</h3>
+                    <p class="case-teaser">${caseItem.teaser}</p>
+                    <div class="case-meta">
+                        <div class="case-meta-item">
+                            <i class="fas fa-theater-masks"></i>
+                            <span>Act ${caseItem.act}</span>
+                        </div>
+                        <div class="case-meta-item">
+                            <i class="fas fa-signal"></i>
+                            <span>${caseItem.difficulty}</span>
+                        </div>
+                        <div class="case-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>${caseItem.estimatedTime}</span>
+                        </div>
+                    </div>
+                    <div class="case-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${caseItem.progress}%"></div>
+                        </div>
+                        <div class="progress-text">${caseItem.progress}% Complete</div>
+                    </div>
+                    ${!caseItem.locked ? `
+                        <button class="btn btn-primary btn-full" onclick="startCase(${caseItem.id})">
+                            ${caseItem.progress > 0 ? 'Continue Investigation' : 'Start Case'}
+                        </button>
+                    ` : `
+                        <button class="btn btn-secondary btn-full" disabled>
+                            <i class="fas fa-lock"></i> Locked
+                        </button>
+                    `}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Start a case - store case_id and redirect
+        function startCase(caseId) {
+            // Store case_id in localStorage
+            localStorage.setItem('selected_case_id', caseId);
+            
+            // Redirect to case-briefing.html
+            window.location.href = 'case-briefing.html';
+        }
+
+        // Filter functionality
+        function setupFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const caseCards = document.querySelectorAll('.case-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+
+                    caseCards.forEach(card => {
+                        if (filter === 'all') {
+                            card.style.display = 'block';
+                        } else if (filter.startsWith('act-')) {
+                            if (card.dataset.act === filter) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        } else {
+                            if (card.dataset.difficulty === filter) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
+        // Load cases when page loads
+        fetchCases().then(() => {
+            setupFilters();
+        });
+    </script>
+</body>
+</html>

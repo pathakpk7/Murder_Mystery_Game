@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Force Dossier - Project Vritra</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Dossier Styles */
+        .dossier-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 100%);
+            position: relative;
+        }
+
+        .dossier-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.05) 0%, transparent 70%);
+        }
+
+        .dossier-header {
+            background: var(--color-bg-secondary);
+            border-bottom: 2px solid var(--color-crimson);
+            padding: var(--spacing-2xl) 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dossier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-crimson) 0%, var(--color-gold) 100%);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .dossier-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .dossier-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .dossier-content {
+            padding: var(--spacing-2xl) 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .agent-profile {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-profile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .agent-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--color-crimson) 0%, var(--color-gold) 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--color-text-primary);
+            flex-shrink: 0;
+        }
+
+        .agent-info h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .agent-id {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--color-gold);
+            letter-spacing: 0.1em;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .agent-rank {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-gold);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--color-gold);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .progress-section {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .xp-bar-container {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .xp-bar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .xp-bar-header span {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .xp-bar {
+            height: 12px;
+            background: var(--color-slate);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+
+        .rank-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .rank-steps {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .rank-step {
+            flex: 1;
+            height: 4px;
+            background: var(--color-slate);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .rank-step.completed {
+            background: var(--color-gold);
+        }
+
+        .rank-step.current {
+            background: var(--color-crimson);
+        }
+
+        .notifications-section {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            border-color: var(--color-gold);
+        }
+
+        .notification-item.unread {
+            border-left: 3px solid var(--color-crimson);
+        }
+
+        .notification-icon {
+            font-size: 1.25rem;
+            color: var(--color-gold);
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .notification-message {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .team-messages-section {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+        }
+
+        .message-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--color-crimson) 0%, var(--color-gold) 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--color-text-primary);
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-sender {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .message-text {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-2xl);
+        }
+
+        @media (max-width: 768px) {
+            .agent-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <div class="dossier-container">
+        <!-- Dossier Header -->
+        <div class="dossier-header">
+            <div class="container">
+                <div class="dossier-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>PROJECT VRITRA INVESTIGATION DIVISION</span>
+                </div>
+                <h1 class="dossier-title">TASK FORCE DOSSIER</h1>
+                <p class="dossier-subtitle">Classified Agent Profile</p>
+            </div>
+        </div>
+
+        <!-- Dossier Content -->
+        <div class="dossier-content">
+            <div class="container">
+                <!-- Agent Profile -->
+                <div class="agent-profile">
+                    <div class="agent-header">
+                        <div class="agent-avatar">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h2 id="agentName">Agent Name</h2>
+                            <div class="agent-id" id="agentId">AGENT ID: LOADING...</div>
+                            <div class="agent-rank">
+                                <i class="fas fa-star"></i>
+                                <span id="currentRank">Investigation Intern</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                            <div class="stat-value" id="agentLevel">1</div>
+                            <div class="stat-label">Level</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                            <div class="stat-value" id="agentXP">0</div>
+                            <div class="stat-label">Total XP</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-star"></i></div>
+                            <div class="stat-value" id="totalStars">0</div>
+                            <div class="stat-label">Total Stars</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-value" id="casesSolved">0</div>
+                            <div class="stat-label">Cases Solved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="progress-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fas fa-chart-line"></i>
+                            Progression
+                        </h3>
+                    </div>
+
+                    <!-- XP Bar -->
+                    <div class="xp-bar-container">
+                        <div class="xp-bar-header">
+                            <span>Level <span id="currentLevelDisplay">1</span></span>
+                            <span><span id="currentXP">0</span> / <span id="nextLevelXP">1000</span> XP</span>
+                        </div>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Rank Progress -->
+                    <div class="rank-progress">
+                        <span class="stat-label">Rank Progress:</span>
+                        <div class="rank-steps">
+                            <div class="rank-step completed" title="Investigation Intern"></div>
+                            <div class="rank-step" title="Junior Analyst"></div>
+                            <div class="rank-step" title="Investigation Officer"></div>
+                            <div class="rank-step" title="Crime Analyst"></div>
+                            <div class="rank-step" title="Senior Investigator"></div>
+                            <div class="rank-step" title="Lead Investigator"></div>
+                            <div class="rank-step" title="Special Operations Lead"></div>
+                            <div class="rank-step" title="Vritra Task Force Commander"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="notifications-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fas fa-bell"></i>
+                            Recent Notifications
+                        </h3>
+                        <button class="btn btn-secondary btn-sm" onclick="markAllRead()">Mark All Read</button>
+                    </div>
+
+                    <div class="notification-list" id="notificationList">
+                        <div class="notification-item unread">
+                            <div class="notification-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="notification-content">
+                                <div class="notification-title">Welcome to the Investigation Division</div>
+                                <div class="notification-message">Complete Detective Academy to begin your first assignment.</div>
+                                <div class="notification-time">Just now</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Messages Section -->
+                <div class="team-messages-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fas fa-comments"></i>
+                            Team Communications
+                        </h3>
+                    </div>
+
+                    <div id="teamMessages">
+                        <div class="message-item">
+                            <div class="message-avatar">
+                                <i class="fas fa-user-secret"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-sender">Prasoon Pathak</div>
+                                <div class="message-text">Welcome to the Investigation Division, recruit. Complete your training at Detective Academy to receive your first case assignment.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary btn-large" onclick="goToCases()">
+                        <i class="fas fa-folder-open"></i>
+                        View Available Cases
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="goToAcademy()">
+                        <i class="fas fa-graduation-cap"></i>
+                        Detective Academy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load agent data from localStorage or API
+        function loadAgentData() {
+            const username = localStorage.getItem('username') || 'Agent';
+            const userId = localStorage.getItem('user_id');
+            
+            // Set agent name
+            document.getElementById('agentName').textContent = username;
+            
+            // Generate agent ID
+            if (userId) {
+                const shortId = userId.substring(0, 8).toUpperCase();
+                document.getElementById('agentId').textContent = `AGENT ID: PV-${shortId}`;
+            }
+            
+            // Load progression data (mock for now, will come from API)
+            const level = localStorage.getItem('level') || 1;
+            const xp = localStorage.getItem('xp') || 0;
+            const stars = localStorage.getItem('total_stars') || 0;
+            const casesSolved = localStorage.getItem('cases_completed') || 0;
+            const rank = localStorage.getItem('rank') || 'Investigation Intern';
+            
+            document.getElementById('agentLevel').textContent = level;
+            document.getElementById('agentXP').textContent = xp;
+            document.getElementById('totalStars').textContent = stars;
+            document.getElementById('casesSolved').textContent = casesSolved;
+            document.getElementById('currentRank').textContent = rank;
+            
+            // Update XP bar
+            updateXPBar(level, xp);
+            
+            // Update rank progress
+            updateRankProgress(casesSolved);
+        }
+        
+        function updateXPBar(level, xp) {
+            const xpPerLevel = 1000;
+            const currentLevelXP = xp % xpPerLevel;
+            const percentage = (currentLevelXP / xpPerLevel) * 100;
+            
+            document.getElementById('currentLevelDisplay').textContent = level;
+            document.getElementById('currentXP').textContent = currentLevelXP;
+            document.getElementById('nextLevelXP').textContent = xpPerLevel;
+            document.getElementById('xpFill').style.width = percentage + '%';
+        }
+        
+        function updateRankProgress(casesSolved) {
+            const steps = document.querySelectorAll('.rank-step');
+            const rankThresholds = [0, 2, 5, 8, 11, 14, 17, 18];
+            
+            steps.forEach((step, index) => {
+                step.classList.remove('completed', 'current');
+                if (casesSolved >= rankThresholds[index]) {
+                    step.classList.add('completed');
+                }
+                if (casesSolved >= rankThresholds[index] && casesSolved < rankThresholds[index + 1]) {
+                    step.classList.add('current');
+                }
+            });
+        }
+        
+        function markAllRead() {
+            const notifications = document.querySelectorAll('.notification-item');
+            notifications.forEach(notif => {
+                notif.classList.remove('unread');
+            });
+        }
+        
+        function goToCases() {
+            window.location.href = 'cases.html';
+        }
+        
+        function goToAcademy() {
+            window.location.href = 'detective-academy.html';
+        }
+        
+        // Initialize
+        loadAgentData();
+    </script>
+</body>
+</html>

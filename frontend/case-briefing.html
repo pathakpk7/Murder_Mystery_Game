@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vritra - Case Briefing</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Case Briefing Styles */
+        .case-cover {
+            position: relative;
+            height: 300px;
+            background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .case-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.2) 0%, transparent 70%);
+        }
+
+        .case-cover-content {
+            text-align: center;
+            z-index: 1;
+            padding: var(--spacing-2xl);
+        }
+
+        .case-number-large {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .case-title-large {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .case-subtitle {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+        }
+
+        .briefing-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-2xl);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .briefing-main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .briefing-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .info-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+        }
+
+        .info-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            color: var(--color-text-primary);
+            font-weight: 500;
+        }
+
+        .story-section {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+        }
+
+        .story-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+
+        .story-section p {
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .facts-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .facts-list li {
+            padding: var(--spacing-sm) 0;
+            padding-left: var(--spacing-lg);
+            position: relative;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .facts-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--color-gold);
+            font-weight: 700;
+        }
+
+        .objectives-preview {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .objective-item:last-child {
+            border-bottom: none;
+        }
+
+        .objective-number {
+            background: var(--color-crimson);
+            color: var(--color-text-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .objective-text {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .rewards-section {
+            background: linear-gradient(135deg, var(--color-dark-gray) 0%, var(--color-slate) 100%);
+            border: 1px solid var(--color-gold);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+        }
+
+        .reward-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
+            color: var(--color-text-primary);
+        }
+
+        .reward-item i {
+            color: var(--color-gold);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-2xl);
+        }
+
+        @media (max-width: 768px) {
+            .briefing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .case-title-large {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <!-- Case Cover -->
+    <div class="case-cover">
+        <div class="case-cover-content">
+            <div class="case-number-large" id="caseNumber">CASE 001</div>
+            <h1 class="case-title-large" id="caseTitle">The First Symbol</h1>
+            <p class="case-subtitle" id="caseSubtitle">Act I - The Pattern</p>
+        </div>
+    </div>
+
+    <!-- Briefing Section -->
+    <section class="section">
+        <div class="container">
+            <div class="briefing-grid">
+                <!-- Main Content -->
+                <div class="briefing-main">
+                    <!-- Background Story -->
+                    <div class="story-section">
+                        <h3><i class="fas fa-book-open"></i> Background Story</h3>
+                        <p id="backgroundStory">
+                            A body was discovered in an abandoned warehouse on the outskirts of the city. The victim, identified as Marcus Webb, a former financial analyst, was found with a cryptic symbol carved into his chest. The symbol matches no known gang markings or religious symbols. Local police are baffled, but they've noticed this isn't the first such incident.
+                        </p>
+                        <p>
+                            Your investigation begins here. The database contains witness statements, forensic reports, financial records, and surveillance data. Your task is to query the evidence, find connections, and uncover the truth behind this mysterious symbol.
+                        </p>
+                    </div>
+
+                    <!-- Known Facts -->
+                    <div class="story-section">
+                        <h3><i class="fas fa-clipboard-list"></i> Known Facts</h3>
+                        <ul class="facts-list" id="knownFacts">
+                            <li>Victim found at 3:47 AM in abandoned warehouse</li>
+                            <li>Cryptic symbol carved into chest - unknown origin</li>
+                            <li>No forced entry - killer had access or was let in</li>
+                            <li>Victim was working on sensitive financial analysis</li>
+                            <li>Similar symbols found at two other recent crime scenes</li>
+                        </ul>
+                    </div>
+
+                    <!-- Objectives Preview -->
+                    <div class="objectives-preview">
+                        <h3><i class="fas fa-tasks"></i> Investigation Objectives</h3>
+                        <div class="objective-item">
+                            <div class="objective-number">1</div>
+                            <div class="objective-text">Query the witnesses table to identify all individuals who saw the victim in the 24 hours before death</div>
+                        </div>
+                        <div class="objective-item">
+                            <div class="objective-number">2</div>
+                            <div class="objective-text">Analyze financial records to find unusual transactions linked to the victim</div>
+                        </div>
+                        <div class="objective-item">
+                            <div class="objective-number">3</div>
+                            <div class="objective-text">Cross-reference surveillance data with witness statements</div>
+                        </div>
+                        <div class="objective-item">
+                            <div class="objective-number">4</div>
+                            <div class="objective-text">Identify the meaning and origin of the cryptic symbol</div>
+                        </div>
+                        <div class="objective-item">
+                            <div class="objective-number">5</div>
+                            <div class="objective-text">Determine the killer and their motive</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="briefing-sidebar">
+                    <!-- Case Info -->
+                    <div class="info-card">
+                        <h3>Case Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Location</span>
+                            <span class="info-value" id="caseLocation">Abandoned Warehouse</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Victim</span>
+                            <span class="info-value" id="caseVictim">Marcus Webb</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Difficulty</span>
+                            <span class="info-value" id="caseDifficulty">Easy</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Est. Time</span>
+                            <span class="info-value" id="caseTime">30-45 min</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Act</span>
+                            <span class="info-value" id="caseAct">I</span>
+                        </div>
+                    </div>
+
+                    <!-- Rewards -->
+                    <div class="rewards-section">
+                        <h3><i class="fas fa-trophy"></i> Mission Rewards</h3>
+                        <div class="reward-item">
+                            <i class="fas fa-bolt"></i>
+                            <span id="xpReward">+500 XP</span>
+                        </div>
+                        <div class="reward-item">
+                            <i class="fas fa-star"></i>
+                            <span id="starReward">Up to 3 Stars</span>
+                        </div>
+                        <div class="reward-item">
+                            <i class="fas fa-unlock"></i>
+                            <span id="unlockReward">Unlock Next Case</span>
+                        </div>
+                        <div class="reward-item">
+                            <i class="fas fa-comments"></i>
+                            <span>Team Communication</span>
+                        </div>
+                        <div class="reward-item">
+                            <i class="fas fa-fingerprint"></i>
+                            <span>Evidence Locker Access</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-full" onclick="startInvestigation()">
+                            <i class="fas fa-play"></i> Start Investigation
+                        </button>
+                        <button class="btn btn-secondary btn-full" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i> Back to Cases
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>PROJECT VRITRA</span>
+                </div>
+                <p class="footer-tagline">A Detective Thriller</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Project Vritra. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'http://localhost:5433/api';
+
+        // Get case ID from localStorage
+        const caseId = localStorage.getItem('selected_case_id');
+
+        // Mock case data for demonstration
+        const mockCaseData = {
+            id: 1,
+            number: 'CASE 001',
+            title: 'The First Symbol',
+            subtitle: 'Act I - The Pattern',
+            location: 'Abandoned Warehouse',
+            victim: 'Marcus Webb',
+            difficulty: 'Easy',
+            estimatedTime: '30-45 min',
+            act: 'I',
+            backgroundStory: 'A body was discovered in an abandoned warehouse on the outskirts of the city. The victim, identified as Marcus Webb, a former financial analyst, was found with a cryptic symbol carved into his chest. The symbol matches no known gang markings or religious symbols. Local police are baffled, but they\'ve noticed this isn\'t the first such incident.',
+            knownFacts: [
+                'Victim found at 3:47 AM in abandoned warehouse',
+                'Cryptic symbol carved into chest - unknown origin',
+                'No forced entry - killer had access or was let in',
+                'Victim was working on sensitive financial analysis',
+                'Similar symbols found at two other recent crime scenes'
+            ]
+        };
+
+        // Fetch case data from backend
+        async function fetchCaseData() {
+            try {
+                const response = await fetch(`${API_BASE}/cases/${caseId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch case data');
+                }
+                
+                const data = await response.json();
+                updateCaseUI(data);
+            } catch (error) {
+                console.error('Error fetching case data:', error);
+                // Use mock data if API fails
+                updateCaseUI(mockCaseData);
+            }
+        }
+
+        // Update UI with case data
+        function updateCaseUI(caseData) {
+            document.getElementById('caseNumber').textContent = caseData.number;
+            document.getElementById('caseTitle').textContent = caseData.title;
+            document.getElementById('caseSubtitle').textContent = caseData.subtitle;
+            document.getElementById('caseLocation').textContent = caseData.location;
+            document.getElementById('caseVictim').textContent = caseData.victim;
+            document.getElementById('caseDifficulty').textContent = caseData.difficulty;
+            document.getElementById('caseTime').textContent = caseData.estimatedTime;
+            document.getElementById('caseAct').textContent = caseData.act;
+            document.getElementById('backgroundStory').textContent = caseData.backgroundStory;
+
+            // Update known facts
+            const factsList = document.getElementById('knownFacts');
+            factsList.innerHTML = '';
+            caseData.knownFacts.forEach(fact => {
+                const li = document.createElement('li');
+                li.textContent = fact;
+                factsList.appendChild(li);
+            });
+        }
+
+        // Start investigation
+        function startInvestigation() {
+            window.location.href = 'game-pro.html';
+        }
+
+        // Go back to cases
+        function goBack() {
+            window.location.href = 'cases.html';
+        }
+
+        // Load case data when page loads
+        if (caseId) {
+            fetchCaseData();
+        } else {
+            // No case selected, redirect to cases
+            window.location.href = 'cases.html';
+        }
+    </script>
+</body>
+</html>

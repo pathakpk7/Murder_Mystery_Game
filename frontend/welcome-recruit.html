@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Recruit - Project Vritra Investigation Division</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Welcome Recruit Styles */
+        .welcome-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 100%);
+            overflow: hidden;
+        }
+
+        .welcome-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.1) 0%, transparent 70%);
+        }
+
+        .welcome-content {
+            text-align: center;
+            z-index: 1;
+            padding: var(--spacing-3xl);
+            max-width: 900px;
+        }
+
+        .badge-container {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .division-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: linear-gradient(135deg, var(--color-crimson) 0%, var(--color-gold) 100%);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--color-text-primary);
+            box-shadow: 0 4px 20px rgba(139, 0, 0, 0.3);
+        }
+
+        .welcome-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-2xl);
+            font-weight: 300;
+        }
+
+        .agent-id {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-2xl);
+            letter-spacing: 0.1em;
+        }
+
+        .briefing-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .briefing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+        }
+
+        .briefing-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .briefing-icon {
+            font-size: 1.5rem;
+            color: var(--color-gold);
+        }
+
+        .briefing-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .briefing-text {
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .rank-display {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-gold);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .rank-icon {
+            font-size: 1.25rem;
+            color: var(--color-gold);
+        }
+
+        .rank-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: var(--spacing-md) var(--spacing-2xl);
+            font-size: 1rem;
+            min-width: 200px;
+        }
+
+        .team-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .team-member {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            border-color: var(--color-gold);
+            transform: translateY(-2px);
+        }
+
+        .team-member-icon {
+            font-size: 2rem;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .team-member-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .team-member-role {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.125rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-large {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="welcome-content">
+            <!-- Division Badge -->
+            <div class="badge-container">
+                <div class="division-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>PROJECT VRITRA INVESTIGATION DIVISION</span>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <h1 class="welcome-title">WELCOME, RECRUIT</h1>
+            <p class="welcome-subtitle">You have been selected to join the elite task force dedicated to uncovering the truth behind Project Vritra.</p>
+
+            <!-- Agent ID -->
+            <div class="agent-id">
+                AGENT ID: <span id="agentId">LOADING...</span>
+            </div>
+
+            <!-- Current Rank -->
+            <div class="rank-display">
+                <i class="fas fa-star rank-icon"></i>
+                <span class="rank-text">Current Rank: Investigation Intern</span>
+            </div>
+
+            <!-- Briefing Card -->
+            <div class="briefing-card">
+                <div class="briefing-header">
+                    <i class="fas fa-file-alt briefing-icon"></i>
+                    <h3 class="briefing-title">CLASSIFIED BRIEFING</h3>
+                </div>
+                <p class="briefing-text">
+                    Project Vritra is a conspiracy that has operated in the shadows for over two decades. As a member of the Investigation Division, you will work under Lead Investigator Prasoon Pathak and his specialist team to uncover the truth through database investigation and SQL analysis.
+                </p>
+                <p class="briefing-text">
+                    Your journey begins at the Detective Academy, where you will master the SQL skills necessary for field investigations. Complete your training to earn your first assignment.
+                </p>
+            </div>
+
+            <!-- Team Preview -->
+            <div class="team-preview">
+                <div class="team-member">
+                    <div class="team-member-icon"><i class="fas fa-user-secret"></i></div>
+                    <div class="team-member-name">Prasoon Pathak</div>
+                    <div class="team-member-role">Lead Investigator</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon"><i class="fas fa-laptop-code"></i></div>
+                    <div class="team-member-name">Gowrav Dubey</div>
+                    <div class="team-member-role">Digital Forensics</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon"><i class="fas fa-user-shield"></i></div>
+                    <div class="team-member-name">Harsh Shukla</div>
+                    <div class="team-member-role">Field Investigator</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon"><i class="fas fa-brain"></i></div>
+                    <div class="team-member-name">Tammana Tiwari</div>
+                    <div class="team-member-role">Criminal Psychologist</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon"><i class="fas fa-newspaper"></i></div>
+                    <div class="team-member-name">Amisha Singh</div>
+                    <div class="team-member-role">Investigative Journalist</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div class="team-member-name">Prof. Vedika Rao</div>
+                    <div class="team-member-role">Ancient Manuscript Expert</div>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="team-member-name">ACP Rudransh Pathak</div>
+                    <div class="team-member-role">Police Liaison</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary btn-large" onclick="proceedToAcademy()">
+                    <i class="fas fa-graduation-cap"></i>
+                    Begin Detective Academy
+                </button>
+                <button class="btn btn-secondary btn-large" onclick="viewDossier()">
+                    <i class="fas fa-folder-open"></i>
+                    View Task Force Dossier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate Agent ID
+        function generateAgentId() {
+            const userId = localStorage.getItem('user_id');
+            if (userId) {
+                // Use first 8 characters of UUID
+                const shortId = userId.substring(0, 8).toUpperCase();
+                document.getElementById('agentId').textContent = `PV-${shortId}`;
+            } else {
+                // Generate random ID if no user_id
+                const randomId = Math.random().toString(36).substring(2, 10).toUpperCase();
+                document.getElementById('agentId').textContent = `PV-${randomId}`;
+            }
+        }
+
+        // Proceed to Detective Academy
+        function proceedToAcademy() {
+            // Store that user has seen welcome screen
+            localStorage.setItem('welcome_seen', 'true');
+            
+            // Redirect to Detective Academy (Case 0)
+            window.location.href = 'detective-academy.html';
+        }
+
+        // View Task Force Dossier
+        function viewDossier() {
+            // Store that user has seen welcome screen
+            localStorage.setItem('welcome_seen', 'true');
+            
+            // Redirect to Dossier
+            window.location.href = 'dossier.html';
+        }
+
+        // Initialize
+        generateAgentId();
+
+        // Check if user has already seen welcome screen
+        if (localStorage.getItem('welcome_seen') === 'true') {
+            // If they have, redirect to dossier or academy based on progress
+            const casesCompleted = localStorage.getItem('cases_completed') || 0;
+            if (parseInt(casesCompleted) === 0) {
+                window.location.href = 'detective-academy.html';
+            } else {
+                window.location.href = 'dossier.html';
+            }
+        }
+    </script>
+</body>
+</html>

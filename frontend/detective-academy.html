@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detective Academy - Case 0</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <style>
+        .academy-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 100%);
+            position: relative;
+        }
+
+        .academy-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.05) 0%, transparent 70%);
+        }
+
+        .academy-header {
+            background: var(--color-bg-secondary);
+            border-bottom: 2px solid var(--color-crimson);
+            padding: var(--spacing-xl) 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .academy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-crimson) 0%, var(--color-gold) 100%);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .academy-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .academy-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .academy-content {
+            padding: var(--spacing-2xl) 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+
+        .game-panel {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .panel-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .objective-item {
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            transition: all 0.3s ease;
+        }
+
+        .objective-item.completed {
+            border-color: var(--color-success);
+            opacity: 0.7;
+        }
+
+        .objective-item.current {
+            border-color: var(--color-gold);
+            border-left: 3px solid var(--color-gold);
+        }
+
+        .objective-number {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .objective-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .objective-description {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+
+        .CodeMirror {
+            height: 300px;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+        }
+
+        .query-controls {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .result-container {
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: var(--spacing-sm);
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.875rem;
+        }
+
+        .result-table th {
+            color: var(--color-gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .result-table td {
+            color: var(--color-text-secondary);
+        }
+
+        .clue-item {
+            background: var(--color-dark-gray);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .clue-icon {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .clue-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .clue-description {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--color-slate);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: var(--spacing-lg);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+            transition: width 0.3s ease;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--color-success);
+            color: var(--color-success);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            font-size: 0.875rem;
+        }
+
+        .completion-screen {
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+
+        .completion-icon {
+            font-size: 4rem;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .completion-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .completion-text {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        @media (max-width: 1024px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="academy-container">
+        <!-- Academy Header -->
+        <div class="academy-header">
+            <div class="container">
+                <div class="academy-badge">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>DETECTIVE ACADEMY</span>
+                </div>
+                <h1 class="academy-title">CASE 0: MISSING EVIDENCE</h1>
+                <p class="academy-subtitle">Training Mission - Learn SQL Fundamentals</p>
+            </div>
+        </div>
+
+        <!-- Academy Content -->
+        <div class="academy-content">
+            <div class="container">
+                <!-- Briefing -->
+                <div class="game-panel" style="margin-bottom: var(--spacing-xl);">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <i class="fas fa-file-alt"></i>
+                            Mission Briefing
+                        </h3>
+                    </div>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        Welcome to the Detective Academy. As a new recruit, you must demonstrate your SQL skills by solving a missing evidence case. 
+                        Several items have disappeared from the evidence locker. Your task is to use SQL queries to investigate the database, 
+                        identify what's missing, and recover the critical evidence. Complete all 6 objectives to graduate and receive your first field assignment.
+                    </p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: var(--spacing-sm);">
+                        Progress: <span id="progressText">0/6 Objectives</span>
+                    </p>
+                </div>
+
+                <!-- Game Grid -->
+                <div class="game-grid" id="gameGrid">
+                    <!-- Objectives Panel -->
+                    <div class="game-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <i class="fas fa-tasks"></i>
+                                Objectives
+                            </h3>
+                        </div>
+                        <div id="objectivesList">
+                            <!-- Objectives will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- SQL Editor Panel -->
+                    <div class="game-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <i class="fas fa-code"></i>
+                                SQL Editor
+                            </h3>
+                        </div>
+                        <textarea id="sqlEditor"></textarea>
+                        <div class="query-controls">
+                            <button class="btn btn-primary btn-full" onclick="executeQuery()">
+                                <i class="fas fa-play"></i>
+                                Execute Query
+                            </button>
+                            <button class="btn btn-secondary btn-full" onclick="requestHint()">
+                                <i class="fas fa-lightbulb"></i>
+                                Hint
+                            </button>
+                        </div>
+                        <div id="queryResult" class="result-container" style="margin-top: var(--spacing-md); display: none;">
+                            <!-- Results will appear here -->
+                        </div>
+                        <div id="successMessage" style="margin-top: var(--spacing-md);"></div>
+                    </div>
+
+                    <!-- Clues Panel -->
+                    <div class="game-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <i class="fas fa-lightbulb"></i>
+                                Tutorial Clues
+                            </h3>
+                        </div>
+                        <div id="cluesList">
+                            <!-- Clues will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completion Screen (hidden initially) -->
+                <div class="game-panel" id="completionScreen" style="display: none; margin-top: var(--spacing-xl);">
+                    <div class="completion-screen">
+                        <div class="completion-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2 class="completion-title">Training Complete!</h2>
+                        <p class="completion-text">
+                            You have successfully completed the Detective Academy training. You have demonstrated the SQL skills necessary for field investigations.
+                            Report to the Task Force Dossier for your first assignment.
+                        </p>
+                        <div style="display: flex; gap: var(--spacing-md); justify-content: center;">
+                            <button class="btn btn-primary btn-large" onclick="goToDossier()">
+                                <i class="fas fa-folder-open"></i>
+                                Task Force Dossier
+                            </button>
+                            <button class="btn btn-secondary btn-large" onclick="goToCases()">
+                                <i class="fas fa-search"></i>
+                                View Cases
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/sql/sql.min.js"></script>
+    <script>
+        // Initialize CodeMirror
+        const editor = CodeMirror.fromTextArea(document.getElementById('sqlEditor'), {
+            mode: 'text/x-sql',
+            theme: 'dracula',
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            indentWithTabs: true,
+            smartIndent: true,
+            lineWrapping: true,
+            extraKeys: {
+                'Ctrl-Enter': executeQuery,
+                'Cmd-Enter': executeQuery
+            }
+        });
+
+        // Tutorial objectives
+        const objectives = [
+            {
+                id: 1,
+                title: 'View All Evidence',
+                description: 'Use SELECT to retrieve all items from the evidence_locker table.',
+                expectedQuery: 'SELECT * FROM evidence_locker',
+                hint: 'The SELECT statement retrieves data. Use: SELECT * FROM table_name'
+            },
+            {
+                id: 2,
+                title: 'Find Missing Evidence',
+                description: 'Use WHERE to filter for items with status "Missing".',
+                expectedQuery: "SELECT * FROM evidence_locker WHERE status = 'Missing'",
+                hint: 'The WHERE clause filters results. Use: SELECT * FROM table_name WHERE column = \'value\''
+            },
+            {
+                id: 3,
+                title: 'Count Evidence by Type',
+                description: 'Use COUNT with GROUP BY to count items of each type.',
+                expectedQuery: 'SELECT item_type, COUNT(*) FROM evidence_locker GROUP BY item_type',
+                hint: 'COUNT() with GROUP BY aggregates data. Use: SELECT column, COUNT(*) FROM table_name GROUP BY column'
+            },
+            {
+                id: 4,
+                title: 'View Recent Evidence',
+                description: 'Use LIMIT to show only the first 5 items.',
+                expectedQuery: 'SELECT * FROM evidence_locker LIMIT 5',
+                hint: 'LIMIT restricts rows. Use: SELECT * FROM table_name LIMIT number'
+            },
+            {
+                id: 5,
+                title: 'Sort Evidence by Date',
+                description: 'Use ORDER BY to sort by date_added in descending order.',
+                expectedQuery: 'SELECT * FROM evidence_locker ORDER BY date_added DESC',
+                hint: 'ORDER BY sorts results. Use DESC for descending: SELECT * FROM table_name ORDER BY column DESC'
+            },
+            {
+                id: 6,
+                title: 'Find Missing Forensic Evidence',
+                description: 'Combine conditions to find missing items of type "Forensic".',
+                expectedQuery: "SELECT * FROM evidence_locker WHERE status = 'Missing' AND item_type = 'Forensic'",
+                hint: 'Combine conditions with AND: SELECT * FROM table_name WHERE condition1 AND condition2'
+            }
+        ];
+
+        // Tutorial clues
+        const clues = [
+            { icon: '📚', title: 'Basic SELECT', description: 'The SELECT statement is the foundation of SQL. It retrieves data from database tables.' },
+            { icon: '🔍', title: 'Filtering with WHERE', description: 'WHERE clauses help you narrow down results to find exactly what you need.' },
+            { icon: '📊', title: 'Aggregation with COUNT', description: 'COUNT() helps you understand the distribution of data in your tables.' },
+            { icon: '📋', title: 'Limiting Results', description: 'LIMIT is useful when you only need to see a subset of data.' },
+            { icon: '📈', title: 'Sorting with ORDER BY', description: 'ORDER BY organizes your data, making patterns easier to spot.' },
+            { icon: '🧩', title: 'Combining Conditions', description: 'Using AND/OR in WHERE clauses allows for complex, precise queries.' }
+        ];
+
+        // Mock evidence locker data
+        const evidenceLocker = [
+            { id: 1, item_name: 'Fingerprint Report', item_type: 'Document', location: 'Locker A-12', status: 'Present', officer_assigned: 'Officer Sharma', date_added: '2024-01-15' },
+            { id: 2, item_name: 'Blood Sample Vial', item_type: 'Forensic', location: 'Lab 3', status: 'Present', officer_assigned: 'Dr. Patel', date_added: '2024-01-15' },
+            { id: 3, item_name: 'Weapon Knife', item_type: 'Evidence', location: 'Locker B-7', status: 'Missing', officer_assigned: 'Officer Kumar', date_added: '2024-01-14' },
+            { id: 4, item_name: 'Witness Statement #1', item_type: 'Document', location: 'File Cabinet 2', status: 'Present', officer_assigned: 'Officer Singh', date_added: '2024-01-15' },
+            { id: 5, item_name: 'CCTV Footage', item_type: 'Digital', location: 'Server Room', status: 'Present', officer_assigned: 'Tech Team', date_added: '2024-01-15' },
+            { id: 6, item_name: 'Phone Records', item_type: 'Document', location: 'Locker A-15', status: 'Missing', officer_assigned: 'Officer Sharma', date_added: '2024-01-14' },
+            { id: 7, item_name: 'Crime Scene Photos', item_type: 'Evidence', location: 'Locker B-3', status: 'Present', officer_assigned: 'Officer Kumar', date_added: '2024-01-15' },
+            { id: 8, item_name: 'Toxicology Report', item_type: 'Forensic', location: 'Lab 1', status: 'Present', officer_assigned: 'Dr. Mehta', date_added: '2024-01-15' },
+            { id: 9, item_name: 'Suspect Interview', item_type: 'Document', location: 'File Cabinet 1', status: 'Present', officer_assigned: 'Officer Singh', date_added: '2024-01-15' },
+            { id: 10, item_name: 'DNA Sample', item_type: 'Forensic', location: 'Lab 2', status: 'Missing', officer_assigned: 'Dr. Patel', date_added: '2024-01-14' }
+        ];
+
+        let currentObjectiveIndex = 0;
+        let completedObjectives = 0;
+
+        // Load objectives
+        function loadObjectives() {
+            const container = document.getElementById('objectivesList');
+            container.innerHTML = '';
+
+            objectives.forEach((obj, index) => {
+                const div = document.createElement('div');
+                div.className = `objective-item ${index === currentObjectiveIndex ? 'current' : ''} ${index < currentObjectiveIndex ? 'completed' : ''}`;
+                div.id = `objective-${index}`;
+                div.innerHTML = `
+                    <div class="objective-number">OBJECTIVE ${index + 1}/6</div>
+                    <div class="objective-title">${obj.title}</div>
+                    <div class="objective-description">${obj.description}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Load clues
+        function loadClues() {
+            const container = document.getElementById('cluesList');
+            container.innerHTML = '';
+
+            clues.forEach((clue, index) => {
+                const div = document.createElement('div');
+                div.className = 'clue-item';
+                div.innerHTML = `
+                    <div class="clue-icon">${clue.icon}</div>
+                    <div class="clue-title">${clue.title}</div>
+                    <div class="clue-description">${clue.description}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Execute query
+        function executeQuery() {
+            const query = editor.getValue().trim().toLowerCase();
+            const currentObj = objectives[currentObjectiveIndex];
+            const expectedQuery = currentObj.expectedQuery.toLowerCase();
+
+            // Simple query validation (in production, this would use actual SQL execution)
+            if (query.includes(expectedQuery.split('from')[1].trim()) || 
+                query === expectedQuery ||
+                query.includes(expectedQuery.replace(/\s+/g, ' '))) {
+                
+                // Show success
+                showSuccess('Correct! Objective completed.');
+                
+                // Show results
+                showResults(evidenceLocker);
+                
+                // Mark objective as complete
+                completeObjective();
+            } else {
+                showError('Query not quite right. Try again or use a hint.');
+            }
+        }
+
+        // Show results
+        function showResults(data) {
+            const container = document.getElementById('queryResult');
+            container.style.display = 'block';
+            
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: var(--color-text-secondary);">No results found.</p>';
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            let html = '<table class="result-table"><thead><tr>';
+            headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            data.forEach(row => {
+                html += '<tr>';
+                headers.forEach(header => {
+                    html += `<td>${row[header]}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            
+            container.innerHTML = html;
+        }
+
+        // Complete objective
+        function completeObjective() {
+            completedObjectives++;
+            currentObjectiveIndex++;
+            
+            // Update progress
+            const progress = (completedObjectives / objectives.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${completedObjectives}/6 Objectives`;
+            
+            // Reload objectives
+            loadObjectives();
+            
+            // Check if all objectives completed
+            if (completedObjectives === objectives.length) {
+                showCompletionScreen();
+            }
+        }
+
+        // Show completion screen
+        function showCompletionScreen() {
+            document.getElementById('gameGrid').style.display = 'none';
+            document.getElementById('completionScreen').style.display = 'block';
+            
+            // Update player progression
+            localStorage.setItem('cases_completed', '1');
+            localStorage.setItem('xp', '500'); // Case 0 gives 500 XP
+            localStorage.setItem('total_stars', '3'); // Perfect score for tutorial
+            
+            // Add welcome notification
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            notifications.push({
+                type: 'promotion_earned',
+                title: 'Training Complete',
+                message: 'You have completed Detective Academy training.',
+                time: new Date().toISOString()
+            });
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+
+        // Request hint
+        function requestHint() {
+            const currentObj = objectives[currentObjectiveIndex];
+            alert(currentObj.hint);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const container = document.getElementById('successMessage');
+            container.innerHTML = `<div class="success-message">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const container = document.getElementById('successMessage');
+            container.innerHTML = `<div class="error">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+
+        // Navigation functions
+        function goToDossier() {
+            window.location.href = 'dossier.html';
+        }
+
+        function goToCases() {
+            window.location.href = 'cases.html';
+        }
+
+        // Initialize
+        loadObjectives();
+        loadClues();
+    </script>
+</body>
+</html>

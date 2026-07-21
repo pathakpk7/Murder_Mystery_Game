@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vritra - FAQ</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .faq-grid {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: var(--spacing-xl);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: var(--color-bg-primary);
+        }
+
+        .faq-question h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+
+        .faq-icon {
+            font-size: 1.25rem;
+            color: var(--color-gold);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 var(--spacing-xl);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 var(--spacing-xl) var(--spacing-xl);
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            padding-bottom: var(--spacing-xl);
+        }
+
+        .faq-answer p:last-child {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <!-- Hero Section -->
+    <section class="section section-dark">
+        <div class="container text-center">
+            <h1 class="section-title">Frequently Asked Questions</h1>
+            <p class="section-subtitle">Everything you need to know about Project Vritra</p>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section">
+        <div class="container">
+            <div class="faq-grid">
+                <!-- SQL Knowledge -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Do I need to know SQL to play?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No prior SQL knowledge is required. Project Vritra is designed to teach you SQL through investigation. Each case introduces progressively more complex SQL concepts, starting with basic SELECT queries and advancing to JOINs, aggregations, and subqueries. The Detective Academy (How to Play section) provides a comprehensive 7-step onboarding to get you started.</p>
+                    </div>
+                </div>
+
+                <!-- Clue Unlocking -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How are clues unlocked?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Clues are unlocked by completing objectives within each case. Each objective teaches a specific SQL concept and, when solved correctly, reveals new evidence or information about the case. The clues you unlock are stored in your Evidence Locker and can be referenced throughout the investigation. Some clues may also unlock new cases or story revelations.</p>
+                    </div>
+                </div>
+
+                <!-- Replay -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I replay cases?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, you can replay any case at any time. Replaying allows you to try different approaches, discover alternative solutions, or simply enjoy the story again. Your best scores and completion times are tracked separately, so you can challenge yourself to improve your performance on previously solved cases.</p>
+                    </div>
+                </div>
+
+                <!-- Story Connections -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Are the cases connected?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely. Project Vritra tells a complete story across 18 cases organized into four acts. Each case builds on the previous ones, revealing new layers of the conspiracy. Clues unlocked in earlier cases may become crucial in later investigations. The story is designed to be experienced in order, but you can jump to any unlocked case if you prefer.</p>
+                    </div>
+                </div>
+
+                <!-- Game Length -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How long does it take to complete?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The total playtime varies depending on your SQL proficiency and how thoroughly you investigate. On average, each case takes 30-90 minutes to complete. With 18 cases, the full story experience typically takes 15-25 hours. However, you can play at your own pace—there's no time limit, and you can return to cases anytime.</p>
+                    </div>
+                </div>
+
+                <!-- Ending -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Does the story have multiple endings?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Project Vritra has a single canonical ending that reveals the full truth behind the conspiracy. However, the final case presents you with a meaningful choice that affects how the story concludes thematically. While the core truth remains the same, your decision shapes the narrative's final message and your character's journey.</p>
+                    </div>
+                </div>
+
+                <!-- Hints -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What happens if I use hints?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Hints are available for each objective, but they cost detective points. Using a hint will deduct 10 points from your score for that case. Hints provide guidance on the SQL approach without giving away the exact solution. Use them strategically—sometimes a small nudge is all you need to get back on track.</p>
+                    </div>
+                </div>
+
+                <!-- Difficulty -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I adjust the difficulty?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Each case has a fixed difficulty rating (Easy, Medium, or Hard) based on the SQL concepts required. However, the progression is designed to be accessible—easier cases in Act I teach foundational skills that prepare you for more complex challenges in later acts. If you're struggling, the Detective Academy and hint system are there to help you learn and progress.</p>
+                    </div>
+                </div>
+
+                <!-- Progress Saving -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is my progress saved?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, your progress is automatically saved locally in your browser. This includes completed cases, unlocked clues, scores, and your current position in the story. As long as you use the same browser, your progress will be preserved between sessions. Note that clearing your browser data will reset your progress.</p>
+                    </div>
+                </div>
+
+                <!-- Technical Requirements -->
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What are the technical requirements?</h3>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Project Vritra runs entirely in your web browser—no installation required. You need a modern web browser (Chrome, Firefox, Safari, or Edge) and an internet connection to access the game. The game is optimized for both desktop and tablet devices. For the best experience, we recommend using a desktop browser with a screen resolution of at least 1024x768.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section-dark">
+        <div class="container text-center">
+            <h2 class="section-title">Still Have Questions?</h2>
+            <p class="section-subtitle">Start investigating and learn as you play.</p>
+            <a href="cases.html" class="btn btn-primary btn-large">BEGIN INVESTIGATION</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>PROJECT VRITRA</span>
+                </div>
+                <p class="footer-tagline">A Detective Thriller</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Project Vritra. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                // Close all other items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Toggle current item
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

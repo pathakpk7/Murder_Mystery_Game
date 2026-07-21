@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vritra - Detective Academy</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Academy Styles */
+        .academy-hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 100%);
+            overflow: hidden;
+        }
+
+        .academy-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.15) 0%, transparent 60%);
+        }
+
+        .academy-content {
+            text-align: center;
+            z-index: 1;
+            padding: var(--spacing-3xl);
+        }
+
+        .academy-title {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .academy-subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl) 0;
+        }
+
+        .step-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--color-crimson);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .step-content {
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .step-example {
+            background: var(--color-bg-primary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .step-example-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .sql-code {
+            background: var(--color-deep-black);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: var(--color-text-primary);
+            overflow-x: auto;
+        }
+
+        .sql-code .keyword {
+            color: var(--color-crimson-light);
+        }
+
+        .sql-code .table {
+            color: var(--color-gold);
+        }
+
+        .step-tips {
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 3px solid var(--color-gold);
+            border-radius: var(--radius-sm);
+        }
+
+        .step-tips h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .step-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .step-tips li {
+            padding: var(--spacing-xs) 0;
+            padding-left: var(--spacing-lg);
+            position: relative;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .step-tips li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--color-gold);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .academy-title {
+                font-size: 2rem;
+            }
+            
+            .academy-subtitle {
+                font-size: 1rem;
+            }
+            
+            .step-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <!-- Hero Section -->
+    <section class="academy-hero">
+        <div class="academy-content">
+            <h1 class="academy-title">DETECTIVE ACADEMY</h1>
+            <p class="academy-subtitle">Learn SQL through investigation. Master the art of querying databases to uncover hidden truths. Your training begins now.</p>
+        </div>
+    </section>
+
+    <!-- Training Steps -->
+    <section class="section">
+        <div class="container">
+            <div class="steps-container">
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h2 class="step-title">Understand the Case</h2>
+                    </div>
+                    <div class="step-content">
+                        <p>Every investigation begins with understanding what happened. Read the case briefing carefully. Note the victim, location, time of death, and any initial evidence provided. This context will guide your investigation and help you form hypotheses about what queries to run.</p>
+                        <p>In Project Vritra, each case has a briefing page that provides all the background information you need. Take notes. Ask questions. The more you understand the situation, the more effective your SQL queries will be.</p>
+                    </div>
+                    <div class="step-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Detective Tip</h4>
+                        <ul>
+                            <li>Pay attention to dates and times—they're crucial for timeline analysis</li>
+                            <li>Look for connections between the victim and potential suspects</li>
+                            <li>Note any unusual patterns or inconsistencies in the evidence</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h2 class="step-title">Explore the Database</h2>
+                    </div>
+                    <div class="step-content">
+                        <p>Every case provides access to a database containing relevant information: witnesses, suspects, evidence, financial records, surveillance data, and more. Your first task is to understand what tables are available and what information each contains.</p>
+                        <p>Start with simple queries to explore the data structure. Use SELECT statements to see what columns exist in each table. This exploration phase is crucial—knowing your data is half the battle.</p>
+                    </div>
+                    <div class="step-example">
+                        <div class="step-example-title">Example: Explore a table</div>
+                        <div class="sql-code">
+                            <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="table">witnesses</span>;
+                        </div>
+                    </div>
+                    <div class="step-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Detective Tip</h4>
+                        <ul>
+                            <li>Always start by understanding table structure before writing complex queries</li>
+                            <li>Look for foreign keys that connect different tables</li>
+                            <li>Note data types—they'll affect how you filter and join data</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h2 class="step-title">Filter with WHERE Clauses</h2>
+                    </div>
+                    <div class="step-content">
+                        <p>Once you understand the data, you need to narrow it down to relevant information. The WHERE clause is your primary tool for filtering data based on conditions. Think of it as asking specific questions about the evidence.</p>
+                        <p>For example, if you need to find witnesses who saw the victim in the 24 hours before death, you'd use a WHERE clause to filter by time. If you're looking for suspects with a specific connection to the victim, filter by that relationship.</p>
+                    </div>
+                    <div class="step-example">
+                        <div class="step-example-title">Example: Find witnesses from a specific time</div>
+                        <div class="sql-code">
+                            <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="table">witnesses</span><br>
+                            <span class="keyword">WHERE</span> sighting_time >= '2024-01-15 00:00:00'<br>
+                            <span class="keyword">AND</span> sighting_time <= '2024-01-15 23:59:59';
+                        </div>
+                    </div>
+                    <div class="step-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Detective Tip</h4>
+                        <ul>
+                            <li>Use AND to combine multiple conditions</li>
+                            <li>Use OR for alternative conditions</li>
+                            <li>Be precise with your filters—too broad and you'll get irrelevant data, too narrow and you might miss important clues</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h2 class="step-title">Connect with JOINs</h2>
+                    </div>
+                    <div class="step-content">
+                        <p>The most powerful insights come from connecting different pieces of evidence. SQL JOINs allow you to combine data from multiple tables based on related columns. This is how you find connections that aren't obvious in any single dataset.</p>
+                        <p>For example, you might join witness statements with suspect profiles to find overlaps. Or join financial transactions with surveillance data to correlate money movements with physical presence.</p>
+                    </div>
+                    <div class="step-example">
+                        <div class="step-example-title">Example: Connect witnesses to suspects</div>
+                        <div class="sql-code">
+                            <span class="keyword">SELECT</span> w.name, s.suspect_name, w.statement<br>
+                            <span class="keyword">FROM</span> <span class="table">witnesses</span> w<br>
+                            <span class="keyword">INNER JOIN</span> <span class="table">suspects</span> s<br>
+                            <span class="keyword">ON</span> w.location_id = s.location_id;
+                        </div>
+                    </div>
+                    <div class="step-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Detective Tip</h4>
+                        <ul>
+                            <li>INNER JOIN returns only matching records from both tables</li>
+                            <li>LEFT JOIN returns all records from the left table, even if no match exists</li>
+                            <li>Always verify your join logic—wrong joins can lead to incorrect conclusions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <h2 class="step-title">Aggregate with GROUP BY</h2>
+                    </div>
+                    <div class="step-content">
+                        <p>Sometimes the truth lies in patterns across multiple records. SQL's aggregate functions (COUNT, SUM, AVG, MAX, MIN) combined with GROUP BY allow you to analyze data at a higher level, finding trends and anomalies that individual records might hide.</p>
+                        <p>For example, you might count how many times each suspect appears in witness statements, or sum financial transactions to find unusually large payments.</p>
+                    </div>
+                    <div class="step-example">
+                        <div class="step-example-title">Example: Count witness mentions per suspect</div>
+                        <div class="sql-code">
+                            <span class="keyword">SELECT</span> s.suspect_name, <span class="keyword">COUNT</span>(w.id) <span class="keyword">AS</span> mention_count<br>
+                            <span class="keyword">FROM</span> <span class="table">suspects</span> s<br>
+                            <span class="keyword">LEFT JOIN</span> <span class="table">witnesses</span> w <span class="keyword">ON</span> s.id = w.suspect_id<br>
+                            <span class="keyword">GROUP BY</span> s.suspect_name<br>
+                            <span class="keyword">ORDER BY</span> mention_count <span class="keyword">DESC</span>;
+                        </div>
+                    </div>
+                    <div class="step-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Detective Tip</h4>
+                        <ul>
+                            <li>Use COUNT to find frequencies and patterns</li>
+                            <li>Use SUM for financial analysis</li>
+                            <li>Use MAX/MIN to find extremes in time, amounts, or other numeric values</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">6</div>
+                        <h2 class="step-title">Analyze Results</h2>
+                    </div>
+                    <div class="step-content">
+                        <p>Running queries is only the beginning. The real detective work happens when you analyze the results. Look for patterns, anomalies, connections, and contradictions. Each query result is a piece of evidence—how does it fit with what you already know?</p>
+                        <p>Ask yourself: Does this result confirm or contradict my hypothesis? Does it reveal new questions? Does it connect to other evidence? The best detectives don't just find data—they understand what it means.</p>
+                    </div>
+                    <div class="step-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Detective Tip</h4>
+                        <ul>
+                            <li>Look for outliers—data points that don't fit the pattern</li>
+                            <li>Compare results across different time periods</li>
+                            <li>Correlate findings with other evidence sources</li>
+                            <li>Document your findings and the queries that produced them</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">7</div>
+                        <h2 class="step-title">Solve the Mystery</h2>
+                    </div>
+                    <div class="step-content">
+                        <p>Each case has multiple objectives. Complete them all to unlock the final truth. Objectives guide your investigation, teaching you progressively more complex SQL concepts while advancing the story. As you complete objectives, you'll unlock clues and evidence that bring you closer to solving the case.</p>
+                        <p>The final objective in each case requires you to identify the killer and their motive. This is where all your SQL skills and detective intuition come together. Use everything you've learned—filtering, joining, aggregating, and analysis—to build your case and make your accusation.</p>
+                    </div>
+                    <div class="step-tips">
+                        <h4><i class="fas fa-lightbulb"></i> Detective Tip</h4>
+                        <ul>
+                            <li>Complete objectives in order—they're designed to teach progressively</li>
+                            <li>Use hints if you're stuck, but they cost points</li>
+                            <li>Review all unlocked clues before making your final accusation</li>
+                            <li>Each solved case unlocks the next in the story</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section-dark">
+        <div class="container text-center">
+            <h2 class="section-title">Ready to Begin Your Training?</h2>
+            <p class="section-subtitle">Start with Case 001 and learn SQL through investigation.</p>
+            <a href="cases.html" class="btn btn-primary btn-large">START CASE 001</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>PROJECT VRITRA</span>
+                </div>
+                <p class="footer-tagline">A Detective Thriller</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Project Vritra. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

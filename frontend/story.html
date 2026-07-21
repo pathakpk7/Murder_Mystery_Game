@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vritra - Story Timeline</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl) 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--color-crimson) 0%, var(--color-gold) 50%, var(--color-crimson) 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--spacing-3xl);
+            width: 100%;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
+            margin-right: 50px;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 50px;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--color-gold);
+            border: 4px solid var(--color-deep-black);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            width: calc(50% - 50px);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: var(--color-gold);
+            transform: translateY(-4px);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid var(--color-border);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid var(--color-border);
+        }
+
+        .case-number {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .case-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text-primary);
+        }
+
+        .case-teaser {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .case-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .case-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .act-divider {
+            text-align: center;
+            padding: var(--spacing-2xl) 0;
+            position: relative;
+        }
+
+        .act-divider h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            background: var(--color-bg-primary);
+            padding: var(--spacing-md) var(--spacing-2xl);
+            border: 2px solid var(--color-gold);
+            border-radius: var(--radius-lg);
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 50px;
+                margin-right: 0;
+                text-align: left;
+                width: calc(100% - 50px);
+            }
+
+            .timeline-marker {
+                left: 20px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content::before,
+            .timeline-item:nth-child(even) .timeline-content::before {
+                left: -10px;
+                right: auto;
+                border-left: 10px solid var(--color-border);
+                border-right: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <!-- Hero Section -->
+    <section class="section section-dark">
+        <div class="container text-center">
+            <h1 class="section-title">The Investigation Timeline</h1>
+            <p class="section-subtitle">18 cases. Four acts. One conspiracy.</p>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="section">
+        <div class="container">
+            <div class="timeline">
+                <!-- Act I -->
+                <div class="act-divider">
+                    <h2>Act I: The Pattern</h2>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 001</div>
+                        <h3 class="case-title">The Blackwood Manor Mystery</h3>
+                        <p class="case-teaser">Industrialist Rajveer Rathore is found dead inside his locked study at Blackwood Manor. What initially appears to be suicide soon reveals signs of murder.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Easy</span>
+                            <span><i class="fas fa-clock"></i> 20 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 002</div>
+                        <h3 class="case-title">The Poisoned Soma</h3>
+                        <p class="case-teaser">Scholar and Ayurvedic researcher Acharya Devendra Mishra collapses during a private symposium after consuming a ceremonial Soma preparation.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Easy</span>
+                            <span><i class="fas fa-clock"></i> 25 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 003</div>
+                        <h3 class="case-title">The Temple Cipher</h3>
+                        <p class="case-teaser">A temple archivist is murdered after uncovering an encrypted Sanskrit message hidden within ancient records.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Easy</span>
+                            <span><i class="fas fa-clock"></i> 30 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 004</div>
+                        <h3 class="case-title">The Silent Devotee</h3>
+                        <p class="case-teaser">A monk who had not spoken for eight years is found murdered at Rudra Peeth Monastery. Before his death, he leaves behind a cryptic message linked to the serpent symbol.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Easy</span>
+                            <span><i class="fas fa-clock"></i> 30 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 005</div>
+                        <h3 class="case-title">The Ashes of Dharma</h3>
+                        <p class="case-teaser">Politician Devendra Pratap Singh dies in a suspicious fire hours before exposing a powerful organization known as Project Vritra.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Easy</span>
+                            <span><i class="fas fa-clock"></i> 35 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Act II -->
+                <div class="act-divider">
+                    <h2>Act II: The Conspiracy</h2>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 006</div>
+                        <h3 class="case-title">The Twin Illusion</h3>
+                        <p class="case-teaser">A man officially declared dead five years ago suddenly appears in financial records under a different identity.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Medium</span>
+                            <span><i class="fas fa-clock"></i> 40 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 007</div>
+                        <h3 class="case-title">The Wheel of Time</h3>
+                        <p class="case-teaser">A government analyst is murdered after discovering impossible discrepancies in national event records.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Medium</span>
+                            <span><i class="fas fa-clock"></i> 45 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 008</div>
+                        <h3 class="case-title">The Forgotten Monk</h3>
+                        <p class="case-teaser">A monk with no official identity appears in classified Project Vritra records. Investigating his past uncovers decades of memory manipulation experiments.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Medium</span>
+                            <span><i class="fas fa-clock"></i> 45 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 009</div>
+                        <h3 class="case-title">The Serpent Ledger</h3>
+                        <p class="case-teaser">An accountant linked to multiple shell organizations is murdered after discovering a hidden financial network funding Project Vritra.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Medium</span>
+                            <span><i class="fas fa-clock"></i> 50 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 010</div>
+                        <h3 class="case-title">The Vanishing Disciple</h3>
+                        <p class="case-teaser">A key witness connected to the Inner Circle disappears and all official records begin vanishing with him.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Medium</span>
+                            <span><i class="fas fa-clock"></i> 55 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Act III -->
+                <div class="act-divider">
+                    <h2>Act III: The System</h2>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 011</div>
+                        <h3 class="case-title">The Seven Shadows</h3>
+                        <p class="case-teaser">A retired intelligence officer is murdered after attempting to expose the secret leadership behind Project Vritra.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 60 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 012</div>
+                        <h3 class="case-title">The Maya Protocol</h3>
+                        <p class="case-teaser">A forensic analyst is murdered after discovering a classified system capable of manufacturing evidence and manipulating reality itself.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 65 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 013</div>
+                        <h3 class="case-title">The Crimson Yagna</h3>
+                        <p class="case-teaser">A sociologist is murdered after discovering that decades of disasters, murders and political crises were intentionally engineered as part of a social experiment.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 70 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 014</div>
+                        <h3 class="case-title">The Oracle Network</h3>
+                        <p class="case-teaser">A senior Oracle architect is murdered after attempting to expose the predictive system controlling Project Vritra.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 75 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 015</div>
+                        <h3 class="case-title">The Hidden Manuscript</h3>
+                        <p class="case-teaser">A historian is murdered while decoding a manuscript that predates Project Vritra and reveals the origins of its ideology.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 80 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Act IV -->
+                <div class="act-divider">
+                    <h2>Act IV: The Architect</h2>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 016</div>
+                        <h3 class="case-title">The Vritra Cycle</h3>
+                        <p class="case-teaser">A former Ninth Mandala archivist is murdered after revealing a master archive connecting every Project Vritra operation.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 90 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 017</div>
+                        <h3 class="case-title">The Ninth Realm</h3>
+                        <p class="case-teaser">Prasoon infiltrates the hidden command structure of the Ninth Mandala and discovers evidence of a systematic internal collapse.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 95 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="case-number">Case 018</div>
+                        <h3 class="case-title">The Last Witness</h3>
+                        <p class="case-teaser">The final surviving founder of Project Vritra is murdered before testifying. His testimony reveals the true purpose behind the entire conspiracy.</p>
+                        <div class="case-meta">
+                            <span><i class="fas fa-signal"></i> Hard</span>
+                            <span><i class="fas fa-clock"></i> 120 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section-dark">
+        <div class="container text-center">
+            <h2 class="section-title">Begin Your Investigation</h2>
+            <p class="section-subtitle">The truth awaits in the database.</p>
+            <a href="cases.html" class="btn btn-primary btn-large">START CASE 001</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>PROJECT VRITRA</span>
+                </div>
+                <p class="footer-tagline">A Detective Thriller</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Project Vritra. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

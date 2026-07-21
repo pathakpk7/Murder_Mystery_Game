@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Vritra - A Detective Thriller</title>
+    <link rel="stylesheet" href="global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Hero Section Styles */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 50%, var(--color-slate) 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .parallax-layer-1 {
+            background: radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.15) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+        .parallax-layer-2 {
+            background: radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+        .parallax-layer-3 {
+            background: radial-gradient(circle at 50% 50%, rgba(74, 144, 164, 0.08) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            padding: var(--spacing-3xl);
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 1s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-md);
+            animation: fadeIn 1s ease 0.2s backwards;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+            animation: fadeIn 1s ease 0.4s backwards;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-gold);
+        }
+
+        .hero-stat-label {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            animation: fadeIn 1s ease 0.6s backwards;
+        }
+
+        /* Story Arc Cards */
+        .story-arc-card {
+            text-align: center;
+            padding: var(--spacing-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-arc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
+        }
+
+        .act-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-gold);
+            opacity: 0.3;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .act-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text-primary);
+        }
+
+        .act-cases {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Difficulty Cards */
+        .difficulty-card {
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+
+        .difficulty-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .difficulty-card.easy .difficulty-icon { color: var(--color-success); }
+        .difficulty-card.medium .difficulty-icon { color: var(--color-gold); }
+        .difficulty-card.hard .difficulty-icon { color: var(--color-crimson-light); }
+
+        .difficulty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .difficulty-skills {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        /* Feature Cards */
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--color-gold);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation will be injected by nav.js -->
+    <script src="nav.js"></script>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <canvas id="particles-canvas"></canvas>
+        <div class="parallax-layer parallax-layer-1" data-speed="0.2"></div>
+        <div class="parallax-layer parallax-layer-2" data-speed="0.4"></div>
+        <div class="parallax-layer parallax-layer-3" data-speed="0.6"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">PROJECT VRITRA</h1>
+            <p class="hero-subtitle">A detective thriller where SQL becomes your investigation tool.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-number">18</div>
+                    <div class="hero-stat-label">Interconnected Mysteries</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">4</div>
+                    <div class="hero-stat-label">Story Acts</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-number">1</div>
+                    <div class="hero-stat-label">Hidden Architect</div>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="cases.html" class="btn btn-primary btn-large">START INVESTIGATION</a>
+                <a href="story.html" class="btn btn-secondary btn-large">EXPLORE STORY</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Arc Preview Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">The Story Arc</h2>
+            <p class="section-subtitle">Four acts. One conspiracy. The truth awaits.</p>
+            <div class="grid-4">
+                <div class="card card-premium story-arc-card">
+                    <div class="act-number">I</div>
+                    <h3 class="act-title">The Pattern</h3>
+                    <p class="act-cases">Cases 1-5</p>
+                    <p class="mt-md">Strange murders. Cryptic symbols. A pattern emerges from the chaos.</p>
+                </div>
+                <div class="card card-premium story-arc-card">
+                    <div class="act-number">II</div>
+                    <h3 class="act-title">The Conspiracy</h3>
+                    <p class="act-cases">Cases 6-10</p>
+                    <p class="mt-md">Financial networks. Vanishing witnesses. The pattern has architects.</p>
+                </div>
+                <div class="card card-premium story-arc-card">
+                    <div class="act-number">III</div>
+                    <h3 class="act-title">The System</h3>
+                    <p class="act-cases">Cases 11-15</p>
+                    <p class="mt-md">Predictive systems. Fabricated evidence. Reality itself is manipulated.</p>
+                </div>
+                <div class="card card-premium story-arc-card">
+                    <div class="act-number">IV</div>
+                    <h3 class="act-title">The Architect</h3>
+                    <p class="act-cases">Cases 16-18</p>
+                    <p class="mt-md">The final truth. The architect revealed. The cycle completes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Difficulty Levels Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Difficulty Levels</h2>
+            <p class="section-subtitle">Choose your challenge. Every case teaches SQL through investigation.</p>
+            <div class="grid-3">
+                <div class="card card-premium difficulty-card easy">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="difficulty-title">Easy</h3>
+                    <p class="difficulty-skills">
+                        Basic SELECT queries<br>
+                        Simple WHERE clauses<br>
+                        ORDER BY results<br>
+                        Single table operations
+                    </p>
+                </div>
+                <div class="card card-premium difficulty-card medium">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3 class="difficulty-title">Medium</h3>
+                    <p class="difficulty-skills">
+                        JOIN multiple tables<br>
+                        GROUP BY aggregations<br>
+                        Subqueries<br>
+                        Complex filtering
+                    </p>
+                </div>
+                <div class="card card-premium difficulty-card hard">
+                    <div class="difficulty-icon">
+                        <i class="fas fa-skull"></i>
+                    </div>
+                    <h3 class="difficulty-title">Hard</h3>
+                    <p class="difficulty-skills">
+                        Advanced JOIN patterns<br>
+                        Window functions<br>
+                        Complex subqueries<br>
+                        Performance optimization
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Project Vritra Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Why Project Vritra</h2>
+            <p class="section-subtitle">Not a tutorial. An investigation.</p>
+            <div class="grid-4">
+                <div class="card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="feature-title">Story Driven</h3>
+                    <p>18 interconnected cases forming a complete narrative. Every query advances the story.</p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3 class="feature-title">Learn SQL Naturally</h3>
+                    <p>Master SQL through investigation. No memorization. Real queries for real mysteries.</p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3 class="feature-title">Progressive Mystery</h3>
+                    <p>Each case unlocks new clues. The conspiracy deepens with every solved objective.</p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="feature-title">Detective Experience</h3>
+                    <p>Feel like a real investigator. Evidence lockers. Detective boards. Case files.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section">
+        <div class="container text-center">
+            <h2 class="section-title">Ready to Begin?</h2>
+            <p class="section-subtitle">The truth is hidden in the database. Are you ready to find it?</p>
+            <a href="cases.html" class="btn btn-primary btn-large">START INVESTIGATION</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-user-secret"></i>
+                    <span>PROJECT VRITRA</span>
+                </div>
+                <p class="footer-tagline">A Detective Thriller</p>
+                <div class="footer-links">
+                    <a href="about.html">About</a>
+                    <a href="story.html">Story</a>
+                    <a href="characters.html">Characters</a>
+                    <a href="how-to-play.html">How to Play</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Project Vritra. All rights reserved.</p>
+            </div>
+        </div>
+</footer>
+
+    <script>
+        // Particle System
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.color = Math.random() > 0.5 ? '212, 175, 55' : '139, 0, 0';
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(100, Math.floor((canvas.width * canvas.height) / 15000));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            animationId = requestAnimationFrame(animateParticles);
+        }
+
+        // Parallax Effect
+        function initParallax() {
+            const layers = document.querySelectorAll('.parallax-layer');
+            
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                layers.forEach(layer => {
+                    const speed = parseFloat(layer.getAttribute('data-speed'));
+                    const yOffset = scrollY * speed;
+                    layer.style.transform = `translateY(${yOffset}px)`;
+                });
+            });
+        }
+
+        // Initialize
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        resizeCanvas();
+        initParticles();
+        animateParticles();
+        initParallax();
+    </script>
+</body>
+</html>

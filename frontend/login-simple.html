@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Vritra - Login</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 100%);
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.15) 0%, transparent 60%);
+    }
+
+    .login-container {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-3xl);
+      max-width: 450px;
+      width: 100%;
+      margin: var(--spacing-2xl);
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .login-icon {
+      font-size: 3rem;
+      color: var(--color-gold);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .login-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+      background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-subtitle {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input {
+      width: 100%;
+      padding: var(--spacing-md);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--color-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    #usernameField {
+      display: none;
+    }
+
+    #usernameField.visible {
+      display: block;
+    }
+
+    .toggle {
+      text-align: center;
+      margin-top: var(--spacing-lg);
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    .toggle a {
+      color: var(--color-gold);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .toggle a:hover {
+      color: var(--color-crimson-light);
+    }
+
+    .error {
+      background: rgba(139, 0, 0, 0.1);
+      border: 1px solid var(--color-crimson);
+      color: var(--color-crimson-light);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      font-size: 0.875rem;
+    }
+
+    .success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid var(--color-success);
+      color: var(--color-success);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-icon">
+        <i class="fas fa-user-secret"></i>
+      </div>
+      <h1 class="login-title" id="formTitle">Login</h1>
+      <p class="login-subtitle">Enter the investigation</p>
+    </div>
+    
+    <div id="message"></div>
+    
+    <form id="authForm">
+      <div class="form-group" id="usernameField">
+        <label for="username">Detective Name</label>
+        <input type="text" id="username" name="username" placeholder="Enter your detective name">
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+      
+      <button type="submit" id="submitBtn" class="btn btn-primary btn-full">Login</button>
+    </form>
+    
+    <div class="toggle">
+      <span id="toggleText">New to the investigation? </span>
+      <a id="toggleLink">Join the team</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('authForm');
+    const formTitle = document.getElementById('formTitle');
+    const submitBtn = document.getElementById('submitBtn');
+    const toggleLink = document.getElementById('toggleLink');
+    const toggleText = document.getElementById('toggleText');
+    const usernameField = document.getElementById('usernameField');
+    const messageDiv = document.getElementById('message');
+
+    let isSignUp = false;
+
+    // Toggle between login and signup
+    toggleLink.addEventListener('click', () => {
+      isSignUp = !isSignUp;
+      
+      if (isSignUp) {
+        formTitle.textContent = 'Sign Up';
+        submitBtn.textContent = 'Sign Up';
+        toggleText.textContent = 'Already have an account? ';
+        toggleLink.textContent = 'Login';
+        usernameField.classList.add('visible');
+      } else {
+        formTitle.textContent = 'Login';
+        submitBtn.textContent = 'Login';
+        toggleText.textContent = "Don't have an account? ";
+        toggleLink.textContent = 'Sign up';
+        usernameField.classList.remove('visible');
+      }
+      
+      messageDiv.innerHTML = '';
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value;
+      
+      submitBtn.disabled = true;
+      messageDiv.innerHTML = '';
+
+      try {
+        // Simple localStorage authentication (no Supabase)
+        const authState = {
+          isLoggedIn: true,
+          username: username || email.split('@')[0],
+          email: email
+        };
+        
+        localStorage.setItem('mm_auth_state', JSON.stringify(authState));
+        localStorage.setItem('username', username || email.split('@')[0]);
+        localStorage.setItem('email', email);
+        
+        // Initialize player progression for new signups
+        if (isSignUp) {
+          localStorage.setItem('rank', 'Investigation Intern');
+          localStorage.setItem('level', '1');
+          localStorage.setItem('xp', '0');
+          localStorage.setItem('total_stars', '0');
+          localStorage.setItem('cases_completed', '0');
+          localStorage.setItem('user_id', Date.now().toString()); // Generate temporary user_id
+          
+          // Don't set welcome_seen yet - they need to see the welcome screen
+          localStorage.removeItem('welcome_seen');
+          
+          messageDiv.innerHTML = `<div class="success">Welcome to the Investigation Division, ${username || email.split('@')[0]}!</div>`;
+          
+          setTimeout(() => {
+            window.location.href = 'welcome-recruit.html';
+          }, 1500);
+        } else {
+          // For login, check if they've seen welcome screen
+          const welcomeSeen = localStorage.getItem('welcome_seen');
+          const casesCompleted = localStorage.getItem('cases_completed') || 0;
+          
+          messageDiv.innerHTML = `<div class="success">Logged in successfully!</div>`;
+          
+          setTimeout(() => {
+            if (!welcomeSeen && parseInt(casesCompleted) === 0) {
+              window.location.href = 'welcome-recruit.html';
+            } else {
+              window.location.href = 'index.html';
+            }
+          }, 1500);
+        }
+        
+      } catch (error) {
+        messageDiv.innerHTML = `<div class="error">${error.message}</div>`;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Check if user is already logged in
+    const savedAuth = localStorage.getItem('mm_auth_state');
+    if (savedAuth) {
+      try {
+        const authState = JSON.parse(savedAuth);
+        if (authState.isLoggedIn) {
+          console.log('User is already logged in:', authState.username);
+          window.location.href = 'index.html';
+        }
+      } catch (e) {
+        console.error('Error parsing auth state:', e);
+      }
+    }
+  </script>
+</body>
+</html>

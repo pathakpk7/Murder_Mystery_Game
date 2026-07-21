@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Vritra - Investigation</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+  <style>
+    /* Game Layout Styles */
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 70px);
+      padding: var(--spacing-lg);
+      gap: var(--spacing-lg);
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr 320px;
+      gap: var(--spacing-lg);
+      height: 100%;
+    }
+
+    .game-panel {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-dark-gray);
+    }
+
+    .panel-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+    }
+
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-lg);
+    }
+
+    /* Left Panel - Objectives */
+    .objective-card {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-crimson);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .objective-number {
+      display: inline-block;
+      background: var(--color-crimson);
+      color: var(--color-text-primary);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-right: var(--spacing-sm);
+    }
+
+    .objective-title {
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .objective-description {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    .case-info {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .case-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-xs) 0;
+      font-size: 0.875rem;
+    }
+
+    .case-info-label {
+      color: var(--color-text-muted);
+    }
+
+    .case-info-value {
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+
+    /* Center Panel - SQL Editor */
+    .sql-editor-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .CodeMirror {
+      flex: 1;
+      height: auto !important;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .results-section {
+      flex: 1;
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .results-header {
+      padding: var(--spacing-md);
+      background: var(--color-dark-gray);
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-gold);
+    }
+
+    .results-content {
+      flex: 1;
+      overflow: auto;
+      padding: var(--spacing-md);
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .results-table th,
+    .results-table td {
+      padding: var(--spacing-sm);
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .results-table th {
+      color: var(--color-gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    .results-table tr:hover {
+      background: var(--color-bg-secondary);
+    }
+
+    /* Right Panel - Evidence Locker */
+    .evidence-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .evidence-tab {
+      flex: 1;
+      padding: var(--spacing-sm);
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+    }
+
+    .evidence-tab:hover,
+    .evidence-tab.active {
+      color: var(--color-gold);
+      background: var(--color-bg-primary);
+    }
+
+    .evidence-card {
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .evidence-type {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .evidence-type.evidence {
+      background: rgba(139, 0, 0, 0.2);
+      color: var(--color-crimson-light);
+    }
+
+    .evidence-type.clue {
+      background: rgba(212, 175, 55, 0.2);
+      color: var(--color-gold);
+    }
+
+    .evidence-title {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .evidence-description {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Case Selection */
+    .case-selection-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-2xl);
+    }
+
+    .case-selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .case-select-card {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .case-select-card:hover {
+      border-color: var(--color-crimson);
+      transform: translateY(-4px);
+    }
+
+    .case-select-card.active {
+      border-color: var(--color-gold);
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    /* Messages */
+    .message {
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-md);
+      font-size: 0.875rem;
+    }
+
+    .message.success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid var(--color-success);
+      color: var(--color-success);
+    }
+
+    .message.error {
+      background: rgba(139, 0, 0, 0.1);
+      border: 1px solid var(--color-crimson);
+      color: var(--color-crimson-light);
+    }
+
+    /* Hint */
+    .hint-section {
+      margin-top: var(--spacing-lg);
+    }
+
+    .hint-button {
+      width: 100%;
+      padding: var(--spacing-sm);
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-gold);
+      color: var(--color-gold);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+    }
+
+    .hint-button:hover {
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .hint-text {
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--color-gold);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-top: var(--spacing-sm);
+      font-size: 0.875rem;
+      color: var(--color-gold);
+    }
+
+    /* Detective Board */
+    .detective-board-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: var(--color-bg-primary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    #detectiveBoardCanvas {
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    #detectiveBoardCanvas:active {
+      cursor: grabbing;
+    }
+
+    .board-controls {
+      position: absolute;
+      bottom: var(--spacing-md);
+      right: var(--spacing-md);
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .board-control-btn {
+      width: 32px;
+      height: 32px;
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .board-control-btn:hover {
+      background: var(--color-crimson);
+      border-color: var(--color-crimson);
+    }
+
+    /* User Info */
+    .user-info {
+      position: fixed;
+      top: 80px;
+      right: var(--spacing-lg);
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      z-index: 1000;
+    }
+
+    .user-info button {
+      background: var(--color-crimson);
+      border: none;
+      color: var(--color-text-primary);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .game-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation will be injected by nav.js -->
+  <script src="nav.js"></script>
+
+  <!-- User Info -->
+  <div class="user-info" id="userInfo">
+    <span id="userName">Detective</span>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <!-- Case Selection -->
+  <div id="caseSelection" class="case-selection-container">
+    <h1 class="section-title">Select a Case</h1>
+    <p class="section-subtitle">Choose your investigation</p>
+    <div id="casesList" class="case-selection-grid">
+      <div class="loading">Loading cases...</div>
+    </div>
+  </div>
+
+  <!-- Game Interface -->
+  <div id="gameInterface" class="game-container hidden">
+    <div class="game-grid">
+      <!-- Left Panel: Objectives & Case Info -->
+      <div class="game-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-tasks"></i> Objectives</h3>
+        </div>
+        <div class="panel-content">
+          <!-- Case Info -->
+          <div class="case-info">
+            <div class="case-info-item">
+              <span class="case-info-label">Case</span>
+              <span class="case-info-value" id="caseInfoTitle">-</span>
+            </div>
+            <div class="case-info-item">
+              <span class="case-info-label">Difficulty</span>
+              <span class="case-info-value" id="caseInfoDifficulty">-</span>
+            </div>
+          </div>
+
+          <!-- Current Objective -->
+          <div id="objectivePanel">
+            <div class="loading">Loading objective...</div>
+          </div>
+
+          <!-- Progress -->
+          <div class="progress-bar" style="margin-top: var(--spacing-lg);">
+            <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div id="progressText" class="progress-text" style="text-align: center; font-size: 0.75rem; color: var(--color-text-muted); margin-top: var(--spacing-xs);">0 / 0 objectives completed</div>
+
+          <!-- Hint -->
+          <div class="hint-section">
+            <button id="hintButton" class="hint-button hidden"><i class="fas fa-lightbulb"></i> Get Hint (-10 points)</button>
+            <div id="hintText" class="hint-text hidden"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Panel: SQL Editor -->
+      <div class="game-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-database"></i> SQL Editor</h3>
+        </div>
+        <div class="panel-content">
+          <div class="sql-editor-wrapper">
+            <textarea id="sqlQuery"></textarea>
+            
+            <div class="editor-actions">
+              <button id="executeButton" class="btn btn-primary"><i class="fas fa-play"></i> Execute Query</button>
+              <button id="clearButton" class="btn btn-secondary"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+            
+            <div id="messageContainer"></div>
+            
+            <div class="results-section">
+              <div class="results-header"><i class="fas fa-table"></i> Query Results</div>
+              <div class="results-content">
+                <div id="resultsContent">
+                  <p style="color: var(--color-text-muted); font-size: 0.875rem;">Execute a query to see results</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Evidence Locker -->
+      <div class="game-panel">
+        <div class="panel-header">
+          <h3><i class="fas fa-folder-open"></i> Evidence Locker</h3>
+        </div>
+        <div class="panel-content">
+          <div class="evidence-tabs">
+            <button class="evidence-tab active" data-tab="clues">Clues</button>
+            <button class="evidence-tab" data-tab="evidence">Evidence</button>
+            <button class="evidence-tab" data-tab="timeline">Timeline</button>
+            <button class="evidence-tab" data-tab="detective-board">Detective Board</button>
+          </div>
+          
+          <div id="cluesPanel">
+            <div class="loading">Loading clues...</div>
+          </div>
+          
+          <div id="detectiveBoardPanel" class="hidden">
+            <div class="detective-board-container">
+              <canvas id="detectiveBoardCanvas"></canvas>
+              <div class="board-controls">
+                <button class="board-control-btn" id="resetBoardBtn"><i class="fas fa-sync"></i></button>
+                <button class="board-control-btn" id="zoomInBtn"><i class="fas fa-plus"></i></button>
+                <button class="board-control-btn" id="zoomOutBtn"><i class="fas fa-minus"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+  <script>
+    // Configuration
+    const API_BASE = 'http://localhost:5433/api';
+    
+    // Game state
+    let currentCaseId = null;
+    let currentObjective = null;
+    let authToken = null;
+    let editor = null;
+    let currentCaseData = null;
+
+    // Initialize
+    async function init() {
+      // Check authentication
+      const authState = localStorage.getItem('mm_auth_state');
+      if (!authState) {
+        window.location.href = 'login-simple.html';
+        return;
+      }
+
+      try {
+        const parsedAuth = JSON.parse(authState);
+        if (parsedAuth.isLoggedIn) {
+          document.getElementById('userName').textContent = parsedAuth.username || 'Detective';
+        }
+      } catch (e) {
+        console.error('Error parsing auth state:', e);
+      }
+
+      // Initialize CodeMirror
+      editor = CodeMirror.fromTextArea(document.getElementById('sqlQuery'), {
+        mode: 'text/x-sql',
+        theme: 'dracula',
+        lineNumbers: true,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        indentWithTabs: true,
+        smartIndent: true,
+        lineWrapping: true,
+        extraKeys: {
+          'Ctrl-Enter': executeQuery,
+          'Cmd-Enter': executeQuery
+        }
+      });
+
+      await loadCases();
+    }
+
+    // Load available cases
+    async function loadCases() {
+      try {
+        console.log('🔍 Loading cases from backend...');
+        const response = await fetch(`${API_BASE}/game/cases`);
+        console.log('Response status:', response.status);
+        
+        const data = await response.json();
+        console.log('✅ Loaded', data.cases?.length || 0, 'cases');
+        
+        const casesList = document.getElementById('casesList');
+        casesList.innerHTML = '';
+        
+        if (!data.cases || data.cases.length === 0) {
+          casesList.innerHTML = '<p style="color: var(--color-text-muted);">No cases available. Please check if the game engine schema is applied to the database.</p>';
+          return;
+        }
+        
+        data.cases.forEach((caseItem, index) => {
+          console.log('Creating case card for:', caseItem.title);
+          const caseCard = document.createElement('div');
+          caseCard.className = 'card case-select-card';
+          caseCard.innerHTML = `
+            <h3 style="color: var(--color-text-primary); margin-bottom: var(--spacing-sm);">${caseItem.title}</h3>
+            <p style="color: var(--color-text-secondary); font-size: 0.875rem; line-height: 1.6; margin-bottom: var(--spacing-md);">${caseItem.description}</p>
+            <div style="display: flex; gap: var(--spacing-sm); font-size: 0.75rem; color: var(--color-text-muted);">
+              <span class="badge" style="background: var(--color-crimson);">${caseItem.difficulty}</span>
+              <span><i class="fas fa-clock"></i> ${caseItem.estimated_duration_minutes} min</span>
+            </div>
+          `;
+          
+          caseCard.addEventListener('click', () => startCase(caseItem.id));
+          casesList.appendChild(caseCard);
+        });
+      } catch (error) {
+        console.error('❌ Error loading cases:', error);
+        document.getElementById('casesList').innerHTML = '<p style="color: var(--color-crimson-light);">Failed to load cases. Make sure the backend is running on port 5433.</p>';
+      }
+    }
+
+    // Start a case
+    async function startCase(caseId) {
+      try {
+        currentCaseId = caseId;
+        
+        // Get auth token
+        const authState = localStorage.getItem('mm_auth_state');
+        const parsedAuth = authState ? JSON.parse(authState) : null;
+        
+        // Start the case on the server
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        
+        if (parsedAuth && parsedAuth.token) {
+          headers['Authorization'] = `Bearer ${parsedAuth.token}`;
+        }
+        
+        const response = await fetch(`${API_BASE}/game/cases/${caseId}/start`, {
+          method: 'POST',
+          headers: headers
+        });
+        
+        console.log('Start case response status:', response.status);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Start case error:', errorData);
+          throw new Error(errorData.message || 'Failed to start case');
+        }
+        
+        // Store case data
+        currentCaseData = await fetch(`${API_BASE}/game/cases/${caseId}`).then(r => r.json());
+        
+        // Update case info
+        document.getElementById('caseInfoTitle').textContent = currentCaseData.case?.title || 'Unknown';
+        document.getElementById('caseInfoDifficulty').textContent = currentCaseData.case?.difficulty || 'Unknown';
+        
+        // Show game interface
+        document.getElementById('caseSelection').classList.add('hidden');
+        document.getElementById('gameInterface').classList.remove('hidden');
+        
+        // Load game data
+        await loadObjective();
+        await loadClues();
+        await loadProgress();
+      } catch (error) {
+        console.error('❌ Error starting case:', error);
+        alert('Failed to start case. Please try again.');
+      }
+    }
+
+    // Load current objective
+    async function loadObjective() {
+      try {
+        const response = await fetch(`${API_BASE}/game/cases/${currentCaseId}/current-objective`);
+        const data = await response.json();
+        
+        if (!data.objective) {
+          // Case completed
+          showCompletionMessage();
+          return;
+        }
+        
+        currentObjective = data.objective;
+        
+        const objectivePanel = document.getElementById('objectivePanel');
+        objectivePanel.innerHTML = `
+          <div class="objective-card">
+            <span class="objective-number">${currentObjective.order_index}</span>
+            <div class="objective-title">${currentObjective.title}</div>
+            <div class="objective-description">${currentObjective.description}</div>
+          </div>
+        `;
+        
+        // Show hint button
+        document.getElementById('hintButton').classList.remove('hidden');
+        document.getElementById('hintText').classList.add('hidden');
+      } catch (error) {
+        console.error('❌ Error loading objective:', error);
+      }
+    }
+
+    // Load clues
+    async function loadClues() {
+      try {
+        const response = await fetch(`${API_BASE}/game/cases/${currentCaseId}/user-clues`);
+        const data = await response.json();
+        
+        const cluesPanel = document.getElementById('cluesPanel');
+        cluesPanel.innerHTML = '';
+        
+        if (!data.clues || data.clues.length === 0) {
+          cluesPanel.innerHTML = '<p style="color: var(--color-text-muted); font-size: 0.875rem;">No clues unlocked yet. Complete objectives to unlock clues!</p>';
+          return;
+        }
+        
+        data.clues.forEach((clue, index) => {
+          const clueCard = document.createElement('div');
+          clueCard.className = 'evidence-card';
+          clueCard.innerHTML = `
+            <span class="evidence-type clue">${clue.clue_type}</span>
+            <div class="evidence-title">${clue.title}</div>
+            <div class="evidence-description">${clue.description}</div>
+          `;
+          cluesPanel.appendChild(clueCard);
+        });
+      } catch (error) {
+        console.error('❌ Error loading clues:', error);
+      }
+    }
+
+    // Load progress
+    async function loadProgress() {
+      try {
+        const response = await fetch(`${API_BASE}/game/cases/${currentCaseId}/objective-progress`);
+        const data = await response.json();
+        
+        const completed = data.progress.filter(p => p.status === 'completed').length;
+        const total = data.progress.length;
+        
+        const percentage = total > 0 ? (completed / total) * 100 : 0;
+        
+        document.getElementById('progressFill').style.width = `${percentage}%`;
+        document.getElementById('progressText').textContent = `${completed} / ${total} objectives completed`;
+      } catch (error) {
+        console.error('❌ Error loading progress:', error);
+      }
+    }
+
+    // Execute query
+    async function executeQuery() {
+      const query = editor.getValue().trim();
+      
+      if (!query) {
+        showMessage('Please enter a SQL query', 'error');
+        return;
+      }
+      
+      if (!currentObjective) {
+        showMessage('No active objective', 'error');
+        return;
+      }
+      
+      const executeButton = document.getElementById('executeButton');
+      executeButton.disabled = true;
+      executeButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Executing...';
+      
+      try {
+        const response = await fetch(`${API_BASE}/game/execute-query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            objectiveId: currentObjective.id,
+            query: query
+          })
+        });
+        
+        const data = await response.json();
+        
+        // Display results
+        displayResults(data.rows);
+        
+        // Show game flow result
+        if (data.gameFlow) {
+          if (data.gameFlow.success) {
+            showMessage('✅ Objective completed! Clues unlocked!', 'success');
+            
+            // Reload game data after a short delay
+            setTimeout(async () => {
+              await loadObjective();
+              await loadClues();
+              await loadProgress();
+            }, 1500);
+          } else {
+            showMessage('❌ Query does not match expected result. Try again!', 'error');
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error executing query:', error);
+        showMessage(`Error: ${error.message}`, 'error');
+      } finally {
+        executeButton.disabled = false;
+        executeButton.innerHTML = '<i class="fas fa-play"></i> Execute Query';
+      }
+    }
+
+    // Display query results
+    function displayResults(rows) {
+      const resultsContent = document.getElementById('resultsContent');
+      
+      if (!rows || rows.length === 0) {
+        resultsContent.innerHTML = '<p style="color: var(--color-text-muted); font-size: 0.875rem;">No results returned</p>';
+        return;
+      }
+      
+      const columns = Object.keys(rows[0]);
+      
+      let html = '<table class="results-table"><thead><tr>';
+      columns.forEach(col => {
+        html += `<th>${col}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+      
+      rows.forEach(row => {
+        html += '<tr>';
+        columns.forEach(col => {
+          html += `<td>${row[col]}</td>`;
+        });
+        html += '</tr>';
+      });
+      
+      html += '</tbody></table>';
+      resultsContent.innerHTML = html;
+    }
+
+    // Show message
+    function showMessage(message, type) {
+      const container = document.getElementById('messageContainer');
+      container.innerHTML = `<div class="message ${type}">${message}</div>`;
+      
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 5000);
+    }
+
+    // Request hint
+    async function requestHint() {
+      if (!currentObjective) return;
+      
+      try {
+        const response = await fetch(`${API_BASE}/game/objectives/${currentObjective.id}/request-hint`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          document.getElementById('hintText').textContent = data.hint;
+          document.getElementById('hintText').classList.remove('hidden');
+          document.getElementById('hintButton').classList.add('hidden');
+          
+          // Reload progress to show point deduction
+          await loadProgress();
+        } else {
+          showMessage(data.message, 'error');
+        }
+      } catch (error) {
+        console.error('❌ Error requesting hint:', error);
+        showMessage('Failed to request hint', 'error');
+      }
+    }
+
+    // Show completion message
+    function showCompletionMessage() {
+      const objectivePanel = document.getElementById('objectivePanel');
+      objectivePanel.innerHTML = `
+        <div class="message success" style="text-align: center;">
+          <h3 style="margin-bottom: var(--spacing-sm);">🎉 Case Completed!</h3>
+          <p style="margin-bottom: var(--spacing-md);">You have successfully solved all objectives in this case.</p>
+          <button class="btn btn-primary" onclick="location.reload()" style="margin-top: var(--spacing-sm);">Back to Cases</button>
+        </div>
+      `;
+      
+      document.getElementById('hintButton').classList.add('hidden');
+      document.getElementById('progressFill').style.width = '100%';
+    }
+
+    // Clear query
+    function clearQuery() {
+      editor.setValue('');
+      document.getElementById('resultsContent').innerHTML = '<p style="color: var(--color-text-muted); font-size: 0.875rem;">Execute a query to see results</p>';
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('mm_auth_state');
+      window.location.href = 'login-simple.html';
+    }
+
+    // Event listeners
+    document.getElementById('executeButton').addEventListener('click', executeQuery);
+    document.getElementById('clearButton').addEventListener('click', clearQuery);
+    document.getElementById('hintButton').addEventListener('click', requestHint);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // Evidence tab switching
+    document.querySelectorAll('.evidence-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.evidence-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        const tabName = tab.getAttribute('data-tab');
+        
+        // Hide all panels
+        document.getElementById('cluesPanel').classList.add('hidden');
+        document.getElementById('detectiveBoardPanel').classList.add('hidden');
+        
+        // Show selected panel
+        if (tabName === 'clues') {
+          document.getElementById('cluesPanel').classList.remove('hidden');
+        } else if (tabName === 'detective-board') {
+          document.getElementById('detectiveBoardPanel').classList.remove('hidden');
+          initDetectiveBoard();
+        }
+      });
+    });
+
+    // Detective Board Visualization
+    let detectiveBoardCanvas, ctx;
+    let boardNodes = [];
+    let boardConnections = [];
+    let scale = 1;
+    let offsetX = 0;
+    let offsetY = 0;
+    let isDragging = false;
+    let draggedNode = null;
+    let lastMouseX, lastMouseY;
+
+    function initDetectiveBoard() {
+      detectiveBoardCanvas = document.getElementById('detectiveBoardCanvas');
+      ctx = detectiveBoardCanvas.getContext('2d');
+      
+      // Set canvas size
+      const container = detectiveBoardCanvas.parentElement;
+      detectiveBoardCanvas.width = container.clientWidth;
+      detectiveBoardCanvas.height = container.clientHeight;
+      
+      // Initialize mock data (would come from backend in production)
+      initializeBoardData();
+      
+      // Draw the board
+      drawBoard();
+      
+      // Add event listeners
+      detectiveBoardCanvas.addEventListener('mousedown', handleMouseDown);
+      detectiveBoardCanvas.addEventListener('mousemove', handleMouseMove);
+      detectiveBoardCanvas.addEventListener('mouseup', handleMouseUp);
+      detectiveBoardCanvas.addEventListener('wheel', handleWheel);
+      
+      document.getElementById('resetBoardBtn').addEventListener('click', resetBoard);
+      document.getElementById('zoomInBtn').addEventListener('click', () => zoomBoard(1.2));
+      document.getElementById('zoomOutBtn').addEventListener('click', () => zoomBoard(0.8));
+    }
+
+    function initializeBoardData() {
+      const centerX = detectiveBoardCanvas.width / 2;
+      const centerY = detectiveBoardCanvas.height / 2;
+      
+      boardNodes = [
+        { id: 'victim', type: 'victim', x: centerX, y: centerY - 100, label: 'Victim', color: '#8B0000' },
+        { id: 'suspect1', type: 'suspect', x: centerX - 150, y: centerY + 50, label: 'Suspect 1', color: '#D4AF37' },
+        { id: 'suspect2', type: 'suspect', x: centerX + 150, y: centerY + 50, label: 'Suspect 2', color: '#D4AF37' },
+        { id: 'witness1', type: 'witness', x: centerX - 200, y: centerY - 50, label: 'Witness 1', color: '#4A90A4' },
+        { id: 'witness2', type: 'witness', x: centerX + 200, y: centerY - 50, label: 'Witness 2', color: '#4A90A4' },
+        { id: 'evidence1', type: 'evidence', x: centerX - 100, y: centerY + 150, label: 'Evidence 1', color: '#6B8E23' },
+        { id: 'evidence2', type: 'evidence', x: centerX + 100, y: centerY + 150, label: 'Evidence 2', color: '#6B8E23' },
+        { id: 'timeline1', type: 'timeline', x: centerX, y: centerY + 220, label: 'Timeline Event', color: '#9932CC' }
+      ];
+      
+      boardConnections = [
+        { from: 'victim', to: 'suspect1', type: 'suspicion' },
+        { from: 'victim', to: 'suspect2', type: 'suspicion' },
+        { from: 'witness1', to: 'victim', type: 'saw' },
+        { from: 'witness2', to: 'victim', type: 'saw' },
+        { from: 'evidence1', to: 'suspect1', type: 'links' },
+        { from: 'evidence2', to: 'suspect2', type: 'links' },
+        { from: 'timeline1', to: 'victim', type: 'time' }
+      ];
+    }
+
+    function drawBoard() {
+      ctx.clearRect(0, 0, detectiveBoardCanvas.width, detectiveBoardCanvas.height);
+      
+      ctx.save();
+      ctx.translate(offsetX, offsetY);
+      ctx.scale(scale, scale);
+      
+      // Draw connections
+      boardConnections.forEach(conn => {
+        const fromNode = boardNodes.find(n => n.id === conn.from);
+        const toNode = boardNodes.find(n => n.id === conn.to);
+        
+        if (fromNode && toNode) {
+          ctx.beginPath();
+          ctx.moveTo(fromNode.x, fromNode.y);
+          ctx.lineTo(toNode.x, toNode.y);
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          
+          // Draw arrow
+          const angle = Math.atan2(toNode.y - fromNode.y, toNode.x - fromNode.x);
+          const arrowLength = 10;
+          ctx.beginPath();
+          ctx.moveTo(toNode.x - 30 * Math.cos(angle), toNode.y - 30 * Math.sin(angle));
+          ctx.lineTo(toNode.x - 30 * Math.cos(angle) - arrowLength * Math.cos(angle - Math.PI / 6), 
+                     toNode.y - 30 * Math.sin(angle) - arrowLength * Math.sin(angle - Math.PI / 6));
+          ctx.moveTo(toNode.x - 30 * Math.cos(angle), toNode.y - 30 * Math.sin(angle));
+          ctx.lineTo(toNode.x - 30 * Math.cos(angle) - arrowLength * Math.cos(angle + Math.PI / 6), 
+                     toNode.y - 30 * Math.sin(angle) - arrowLength * Math.sin(angle + Math.PI / 6));
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+          ctx.stroke();
+        }
+      });
+      
+      // Draw nodes
+      boardNodes.forEach(node => {
+        // Draw node circle
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 25, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Draw label
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px Inter';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(node.label, node.x, node.y);
+      });
+      
+      ctx.restore();
+    }
+
+    function handleMouseDown(e) {
+      const rect = detectiveBoardCanvas.getBoundingClientRect();
+      const mouseX = (e.clientX - rect.left - offsetX) / scale;
+      const mouseY = (e.clientY - rect.top - offsetY) / scale;
+      
+      // Check if clicking on a node
+      for (let node of boardNodes) {
+        const distance = Math.sqrt((mouseX - node.x) ** 2 + (mouseY - node.y) ** 2);
+        if (distance < 25) {
+          draggedNode = node;
+          isDragging = true;
+          return;
+        }
+      }
+      
+      // If not clicking on a node, start panning
+      isDragging = true;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    }
+
+    function handleMouseMove(e) {
+      if (!isDragging) return;
+      
+      if (draggedNode) {
+        const rect = detectiveBoardCanvas.getBoundingClientRect();
+        draggedNode.x = (e.clientX - rect.left - offsetX) / scale;
+        draggedNode.y = (e.clientY - rect.top - offsetY) / scale;
+        drawBoard();
+      } else {
+        offsetX += e.clientX - lastMouseX;
+        offsetY += e.clientY - lastMouseY;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        drawBoard();
+      }
+    }
+
+    function handleMouseUp() {
+      isDragging = false;
+      draggedNode = null;
+    }
+
+    function handleWheel(e) {
+      e.preventDefault();
+      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+      zoomBoard(zoomFactor);
+    }
+
+    function zoomBoard(factor) {
+      scale *= factor;
+      scale = Math.max(0.5, Math.min(2, scale));
+      drawBoard();
+    }
+
+    function resetBoard() {
+      scale = 1;
+      offsetX = 0;
+      offsetY = 0;
+      initializeBoardData();
+      drawBoard();
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
