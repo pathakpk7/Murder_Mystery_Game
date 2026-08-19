@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0a0a0c] text-[#e0e0e0] font-sans antialiased min-h-screen selection:bg-[#d4af37]/30 selection:text-[#d4af37];
+  }
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(139, 0, 0, 0.3);
+}
+
+.glow-border {
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262633;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* CodeMirror SQL Customization */
+.cm-editor {
+  background-color: #0d0d12 !important;
+  border-radius: 0.375rem;
+  min-height: 180px;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.cm-content {
+  color: #e0e0e0 !important;
+}
+
+.cm-gutters {
+  background-color: #141419 !important;
+  color: #8a8a9e !important;
+  border-right: 1px solid #262633 !important;
+}
