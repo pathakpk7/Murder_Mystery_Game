@@ -51,7 +51,7 @@ true,
 INSERT INTO case_characters
 (case_id, character_id, involvement_type, notes)
 VALUES
-(2,1,'Lead Investigator','Tracks pattern from Blackwood Manor'),
+(2,1,'Lead Investigator','Tracks pattern from Nagabhavan Estate'),
 (2,2,'Digital Forensics','Examines communications'),
 (2,3,'Field Investigator','Interviews participants'),
 (2,4,'Psychologist','Profiles suspects'),

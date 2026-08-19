@@ -9,7 +9,30 @@
  * - Game flow management
  */
 
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import supabase, { supabaseAdmin } from './supabaseClient.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const canonicalJsonPath = path.join(__dirname, '../frontend/canonical_database.json');
+
+let cachedCanonicalDb = null;
+function getCanonicalDb() {
+  if (!cachedCanonicalDb) {
+    try {
+      if (fs.existsSync(canonicalJsonPath)) {
+        const raw = fs.readFileSync(canonicalJsonPath, 'utf8');
+        cachedCanonicalDb = JSON.parse(raw);
+      }
+    } catch (e) {
+      console.error('Failed to read canonical_database.json:', e);
+      cachedCanonicalDb = {};
+    }
+  }
+  return cachedCanonicalDb || {};
+}
 
 // ============================================
 // CASE MANAGEMENT
@@ -20,14 +43,20 @@ import supabase, { supabaseAdmin } from './supabaseClient.js';
  * @returns {Promise<Array>} Array of cases
  */
 export async function getAllCases() {
-  const { data, error } = await supabase
-    .from('game_cases')
-    .select('id, title, description, difficulty, estimated_duration_minutes, mythology_theme, story_background, is_active')
-    .eq('is_active', true)
-    .order('id');
-  
-  if (error) throw error;
-  return data;
+  try {
+    const { data, error } = await supabase
+      .from('game_cases')
+      .select('id, title, description, difficulty, estimated_duration_minutes, mythology_theme, story_background, is_active')
+      .eq('is_active', true)
+      .order('id');
+    
+    if (!error && data && data.length > 0) return data;
+  } catch (err) {
+    console.warn('Supabase getAllCases query error, returning canonical JSON fallback');
+  }
+
+  const db = getCanonicalDb();
+  return db.game_cases || [];
 }
 
 /**
@@ -36,14 +65,102 @@ export async function getAllCases() {
  * @returns {Promise<Object|null>} Case details
  */
 export async function getCaseById(caseId) {
-  const { data, error } = await supabase
-    .from('game_cases')
-    .select('*')
-    .eq('id', caseId)
-    .single();
-  
-  if (error) throw error;
-  return data;
+  try {
+    const { data, error } = await supabase
+      .from('game_cases')
+      .select('*')
+      .eq('id', caseId)
+      .single();
+    
+    if (!error && data) return data;
+  } catch (err) {
+    console.warn(`Supabase getCaseById query error for ${caseId}`);
+  }
+
+  const db = getCanonicalDb();
+  return (db.game_cases || []).find(c => Number(c.id) === Number(caseId)) || null;
+}
+
+/**
+ * Get full bundle for a case including suspects, witnesses, evidence, forensics, timeline, objectives, clues
+ * @param {number} caseId - Case ID
+ * @returns {Promise<Object>} Full case bundle
+ */
+export async function getFullCaseBundle(caseId) {
+  let caseData = null, suspects = [], witnesses = [], evidence = [], forensics = [], timeline = [], objectives = [], clues = [], evidenceLocker = [];
+
+  try {
+    const [caseRes, suspectsRes, witnessesRes, evidenceRes, forensicsRes, timelineRes, objectivesRes, cluesRes] = await Promise.all([
+      supabase.from('game_cases').select('*').eq('id', caseId).single(),
+      supabase.from('suspects').select('*').eq('case_id', caseId),
+      supabase.from('witnesses').select('*').eq('case_id', caseId),
+      supabase.from('evidence').select('*').eq('case_id', caseId),
+      supabase.from('forensics').select('*').eq('case_id', caseId),
+      supabase.from('timeline').select('*').eq('case_id', caseId),
+      supabase.from('game_objectives').select('*').eq('case_id', caseId).order('order_index'),
+      supabase.from('game_clues').select('*').eq('case_id', caseId).order('order_index')
+    ]);
+
+    caseData = caseRes.data || null;
+    suspects = suspectsRes.data || [];
+    witnesses = witnessesRes.data || [];
+    evidence = evidenceRes.data || [];
+    forensics = forensicsRes.data || [];
+    timeline = timelineRes.data || [];
+    objectives = objectivesRes.data || [];
+    clues = cluesRes.data || [];
+
+    if (Number(caseId) === 0) {
+      const { data: lockerData } = await supabase.from('evidence_locker').select('*');
+      evidenceLocker = lockerData || [];
+    }
+  } catch (e) {
+    console.warn(`Supabase fetch failed for case ${caseId}, using canonical JSON fallback`);
+  }
+
+  // Fallback to canonical_database.json if Supabase gave empty results
+  const db = getCanonicalDb();
+  const cid = Number(caseId);
+
+  if (!caseData && db.game_cases) {
+    caseData = db.game_cases.find(c => Number(c.id) === cid) || null;
+  }
+  if (suspects.length === 0 && db.suspects) {
+    suspects = db.suspects.filter(s => Number(s.case_id) === cid);
+  }
+  if (witnesses.length === 0 && db.witnesses) {
+    witnesses = db.witnesses.filter(w => Number(w.case_id) === cid);
+  }
+  if (evidence.length === 0 && db.evidence) {
+    evidence = db.evidence.filter(e => Number(e.case_id) === cid);
+  }
+  if (forensics.length === 0 && db.forensics) {
+    forensics = db.forensics.filter(f => Number(f.case_id) === cid);
+  }
+  if (timeline.length === 0 && db.timeline) {
+    timeline = db.timeline.filter(t => Number(t.case_id) === cid);
+  }
+  if (objectives.length === 0 && db.game_objectives) {
+    objectives = db.game_objectives.filter(o => Number(o.case_id) === cid);
+  }
+  if (clues.length === 0 && db.game_clues) {
+    clues = db.game_clues.filter(c => Number(c.case_id) === cid);
+  }
+  if (cid === 0 && evidenceLocker.length === 0 && db.evidence_locker) {
+    evidenceLocker = db.evidence_locker;
+  }
+
+  return {
+    case: caseData,
+    suspects,
+    witnesses,
+    evidence,
+    forensics,
+    timeline,
+    objectives,
+    clues,
+    evidenceLocker
+  };
 }
 
 /**

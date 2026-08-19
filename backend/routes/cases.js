@@ -4,7 +4,7 @@
  */
 
 import express from 'express';
-import { getAllCases, getCaseById, getCaseObjectives, getCaseClues } from '../gameEngine.js';
+import { getAllCases, getCaseById, getFullCaseBundle, getCaseObjectives, getCaseClues } from '../gameEngine.js';
 
 const router = express.Router();
 
@@ -16,6 +16,24 @@ router.get('/', async (req, res, next) => {
   try {
     const cases = await getAllCases();
     res.json({ success: true, count: cases.length, data: cases });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/cases/:id/full
+ * Get full bundle for a specific case (suspects, witnesses, evidence, forensics, timeline, objectives, clues)
+ */
+router.get('/:id/full', async (req, res, next) => {
+  try {
+    const caseId = parseInt(req.params.id);
+    if (isNaN(caseId)) {
+      return res.status(400).json({ success: false, error: 'Invalid case ID' });
+    }
+    
+    const caseBundle = await getFullCaseBundle(caseId);
+    res.json({ success: true, data: caseBundle });
   } catch (error) {
     next(error);
   }

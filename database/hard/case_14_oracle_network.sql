@@ -59,6 +59,65 @@ VALUES
 (14,6,'Police Liaison','Coordinates national agencies'),
 (14,7,'Expert Consultant','Studies Oracle architecture');
 
+INSERT INTO suspects
+(case_id,name,age,occupation,motive,alibi,contradiction,connection_to_monastery)
+VALUES
+
+(
+14,
+'Dr. Alok Sen',
+49,
+'Chief Algorithm Architect',
+'Feared victim would expose bias and manipulation in predictive algorithms',
+'Claims he was in a board conference',
+'Network server shows override from his personal workstation',
+'Lead designer of Trikal Darshan predictive core'
+),
+
+(
+14,
+'Vivek Mathur',
+42,
+'Director of Security Infrastructure',
+'Victim threatened to expose illegal surveillance and backdoor channels',
+'Claims he was monitoring access logs from home',
+'VPN connection logged directly to internal Oracle database during incident',
+'Head of Oracle physical security'
+),
+
+(
+14,
+'Arvind Kaushik',
+54,
+'Senior Strategic Director',
+'Massive financial kickbacks from corporate clients receiving advance predictions',
+'Attending an executive gala',
+'CCTV reveals his vehicle exiting Oracle compound shortly before lockdown',
+'Liaison to Seven Shadows executive council'
+),
+
+(
+14,
+'Tanya Roy',
+36,
+'Lead Data Engineer',
+'Passed over for promotion, victim discovered she sold prediction datasets',
+'Claims in server room diagnostics',
+'Access keycard used at victim office 10 minutes prior to attack',
+'Assistant to the victim'
+),
+
+(
+14,
+'Deepak Malhotra',
+47,
+'Intelligence Contractor',
+'Contract terminated after victim discovered unauthorized data scraping',
+'Claims out of city',
+'Flight manifest confirms presence in capital during the murder window',
+'Operative tied to The Ninth Mandala'
+);
+
 INSERT INTO witnesses
 (case_id,name,age,occupation,statement,reliability)
 VALUES

@@ -21,7 +21,10 @@ const ALLOWED_TABLES = [
   'timeline',
   'game_clues',
   'game_cases',
-  'game_objectives'
+  'game_objectives',
+  'evidence_locker',
+  'characters',
+  'case_characters'
 ];
 
 // Forbidden SQL keywords (case-insensitive)

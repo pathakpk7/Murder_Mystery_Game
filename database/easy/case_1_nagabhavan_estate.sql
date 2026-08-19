@@ -5,7 +5,6 @@
 -- Run core_schema.sql BEFORE running this file.
 -- ============================================
 
-
 BEGIN;
 
 DELETE FROM game_clues WHERE case_id = 1;
@@ -36,12 +35,12 @@ primary_villain
 VALUES
 (
 1,
-'The Blackwood Manor Mystery',
-'Industrialist Rajveer Rathore is found dead inside his locked study at Blackwood Manor. What initially appears to be suicide soon reveals signs of murder.',
+'The Nagabhavan Estate Mystery',
+'Industrialist Rajveer Rathore is found dead inside his locked study at Nagabhavan Estate. What initially appears to be suicide soon reveals signs of murder.',
 'easy',
 20,
 'Naga Symbol',
-'Prasoon Pathak is called to Blackwood Manor after ACP Rudransh Pathak suspects foul play in a seemingly impossible locked-room death.',
+'Prasoon Pathak is called to Nagabhavan Estate after ACP Rudransh Pathak suspects foul play in a seemingly impossible locked-room death.',
 true,
 1,
 1,

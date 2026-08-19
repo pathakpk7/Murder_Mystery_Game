@@ -3,492 +3,882 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Vritra - A Detective Thriller</title>
+    <title>Project Vritra — Story-Driven SQL Detective Thriller</title>
     <link rel="stylesheet" href="global.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Hero Section Styles */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: linear-gradient(135deg, var(--color-deep-black) 0%, var(--color-dark-gray) 50%, var(--color-slate) 100%);
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        #particles-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .parallax-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            will-change: transform;
-        }
-
-        .parallax-layer-1 {
-            background: radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.15) 0%, transparent 40%);
-            z-index: 0;
-        }
-
-        .parallax-layer-2 {
-            background: radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%);
-            z-index: 0;
-        }
-
-        .parallax-layer-3 {
-            background: radial-gradient(circle at 50% 50%, rgba(74, 144, 164, 0.08) 0%, transparent 50%);
-            z-index: 0;
-        }
-
-        .hero-content {
-            text-align: center;
-            z-index: 1;
-            padding: var(--spacing-3xl);
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            margin-bottom: var(--spacing-lg);
-            background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeIn 1s ease;
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: var(--color-text-secondary);
-            margin-bottom: var(--spacing-md);
-            animation: fadeIn 1s ease 0.2s backwards;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-2xl);
-            margin-bottom: var(--spacing-2xl);
-            animation: fadeIn 1s ease 0.4s backwards;
-        }
-
-        .hero-stat {
-            text-align: center;
-        }
-
-        .hero-stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--color-gold);
-        }
-
-        .hero-stat-label {
-            font-size: 0.875rem;
-            color: var(--color-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-lg);
-            animation: fadeIn 1s ease 0.6s backwards;
-        }
-
-        /* Story Arc Cards */
-        .story-arc-card {
-            text-align: center;
-            padding: var(--spacing-2xl);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .story-arc-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--color-crimson), var(--color-gold));
-        }
-
-        .act-number {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--color-gold);
-            opacity: 0.3;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .act-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: var(--spacing-sm);
-            color: var(--color-text-primary);
-        }
-
-        .act-cases {
-            color: var(--color-text-muted);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Difficulty Cards */
-        .difficulty-card {
-            text-align: center;
-            padding: var(--spacing-2xl);
-        }
-
-        .difficulty-icon {
-            font-size: 3rem;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .difficulty-card.easy .difficulty-icon { color: var(--color-success); }
-        .difficulty-card.medium .difficulty-icon { color: var(--color-gold); }
-        .difficulty-card.hard .difficulty-icon { color: var(--color-crimson-light); }
-
-        .difficulty-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .difficulty-skills {
-            color: var(--color-text-secondary);
-            font-size: 0.875rem;
-            line-height: 1.8;
-        }
-
-        /* Feature Cards */
-        .feature-icon {
-            font-size: 2.5rem;
-            color: var(--color-gold);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .feature-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.125rem;
-            }
-            
-            .hero-stats {
-                flex-direction: column;
-                gap: var(--spacing-md);
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
 </head>
 <body>
-    <!-- Navigation will be injected by nav.js -->
-    <script src="nav.js"></script>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <canvas id="particles-canvas"></canvas>
-        <div class="parallax-layer parallax-layer-1" data-speed="0.2"></div>
-        <div class="parallax-layer parallax-layer-2" data-speed="0.4"></div>
-        <div class="parallax-layer parallax-layer-3" data-speed="0.6"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">PROJECT VRITRA</h1>
-            <p class="hero-subtitle">A detective thriller where SQL becomes your investigation tool.</p>
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <div class="hero-stat-number">18</div>
-                    <div class="hero-stat-label">Interconnected Mysteries</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="hero-stat-number">4</div>
-                    <div class="hero-stat-label">Story Acts</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="hero-stat-number">1</div>
-                    <div class="hero-stat-label">Hidden Architect</div>
-                </div>
-            </div>
-            <div class="hero-buttons">
-                <a href="cases.html" class="btn btn-primary btn-large">START INVESTIGATION</a>
-                <a href="story.html" class="btn btn-secondary btn-large">EXPLORE STORY</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Story Arc Preview Section -->
-    <section class="section section-dark">
-        <div class="container">
-            <h2 class="section-title">The Story Arc</h2>
-            <p class="section-subtitle">Four acts. One conspiracy. The truth awaits.</p>
-            <div class="grid-4">
-                <div class="card card-premium story-arc-card">
-                    <div class="act-number">I</div>
-                    <h3 class="act-title">The Pattern</h3>
-                    <p class="act-cases">Cases 1-5</p>
-                    <p class="mt-md">Strange murders. Cryptic symbols. A pattern emerges from the chaos.</p>
-                </div>
-                <div class="card card-premium story-arc-card">
-                    <div class="act-number">II</div>
-                    <h3 class="act-title">The Conspiracy</h3>
-                    <p class="act-cases">Cases 6-10</p>
-                    <p class="mt-md">Financial networks. Vanishing witnesses. The pattern has architects.</p>
-                </div>
-                <div class="card card-premium story-arc-card">
-                    <div class="act-number">III</div>
-                    <h3 class="act-title">The System</h3>
-                    <p class="act-cases">Cases 11-15</p>
-                    <p class="mt-md">Predictive systems. Fabricated evidence. Reality itself is manipulated.</p>
-                </div>
-                <div class="card card-premium story-arc-card">
-                    <div class="act-number">IV</div>
-                    <h3 class="act-title">The Architect</h3>
-                    <p class="act-cases">Cases 16-18</p>
-                    <p class="mt-md">The final truth. The architect revealed. The cycle completes.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Difficulty Levels Section -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Difficulty Levels</h2>
-            <p class="section-subtitle">Choose your challenge. Every case teaches SQL through investigation.</p>
-            <div class="grid-3">
-                <div class="card card-premium difficulty-card easy">
-                    <div class="difficulty-icon">
-                        <i class="fas fa-leaf"></i>
+    <!-- Top Global Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo" data-view-target="home">
+                <i class="fas fa-shield-alt text-crimson"></i>
+                <span>PROJECT VRITRA</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-item active" data-view-target="home">HOME</a></li>
+                <li><a href="#cases" class="nav-item" data-view-target="cases">CASES DOSSIER</a></li>
+                <li><a href="#investigation" class="nav-item" data-view-target="investigation">INVESTIGATION</a></li>
+                <li><a href="#story" class="nav-item" data-view-target="story">LORE & INTEL</a></li>
+                <li><a href="#team" class="nav-item" data-view-target="team">TASK FORCE</a></li>
+                <li><a href="#progress" class="nav-item" data-view-target="progress">PROGRESS</a></li>
+                <li><a href="#credentials" class="nav-item" data-view-target="credentials">CREDENTIALS</a></li>
+                <li><a href="#guide" class="nav-item" data-view-target="guide">GUIDE</a></li>
+            </ul>
+            <div class="header-stats-bar">
+                <div class="user-menu-wrapper">
+                    <div class="stat-pill clickable" id="btn-user-menu" onclick="VritraApp.toggleUserDropdown(event)" title="Investigator Identity & Menu" style="cursor: pointer;">
+                        <i class="fas fa-user-secret"></i>
+                        <span id="header-detective-name">Prasoon Pathak</span>
+                        <i class="fas fa-caret-down text-gold" style="font-size: 0.7rem; margin-left: 4px;"></i>
                     </div>
-                    <h3 class="difficulty-title">Easy</h3>
-                    <p class="difficulty-skills">
-                        Basic SELECT queries<br>
-                        Simple WHERE clauses<br>
-                        ORDER BY results<br>
-                        Single table operations
+                    <!-- Dropdown Menu -->
+                    <div id="user-dropdown-menu" class="user-dropdown hidden">
+                        <div class="dropdown-header">
+                            <strong id="dropdown-agent-name">Prasoon Pathak</strong>
+                            <small id="dropdown-agent-email" class="text-muted">prasoon.pathak@vritra-tf.gov.in</small>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="#progress" class="dropdown-item" data-view-target="progress" onclick="VritraApp.navigate('progress')">
+                            <i class="fas fa-chart-line text-gold"></i> View Detective Progress
+                        </a>
+                        <a href="#credentials" class="dropdown-item" data-view-target="credentials" onclick="VritraApp.navigate('credentials')">
+                            <i class="fas fa-id-card text-gold"></i> Edit Credentials
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="javascript:void(0)" id="dropdown-logout-btn" class="dropdown-item text-error" onclick="VritraApp.handleDropdownAuthClick()">
+                            <i class="fas fa-sign-out-alt"></i> Logout / Switch Agent
+                        </a>
+                    </div>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-medal"></i>
+                    <span id="header-rank-badge">Investigation Intern</span>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-bolt text-gold"></i>
+                    <span id="header-xp-value">0 XP</span>
+                </div>
+                <a href="#investigation" class="nav-cta" data-view-target="investigation" title="Resume Active Investigation">
+                    <i class="fas fa-terminal"></i> WORKBENCH
+                </a>
+            </div>
+            <div class="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Single-Page Views Container -->
+    <main class="main-content">
+
+        <!-- ================================================================= -->
+        <!-- VIEW 1: HOME / STORY-DRIVEN SCROLL LANDING VIEW -->
+        <!-- ================================================================= -->
+        <section id="view-home" class="spa-view">
+            <!-- Hero Landing Section -->
+            <div class="landing-hero-container" style="padding: var(--spacing-3xl) 0 var(--spacing-2xl); text-align: center;">
+                <div class="container">
+                    <span class="case-badge easy mb-md pulse" style="letter-spacing: 0.15em;"><i class="fas fa-shield-alt"></i> VRITRA TASK FORCE OPERATIONAL HEADQUARTERS</span>
+                    <h1 class="hero-title glow-text" style="font-size: 3.5rem; margin-bottom: 10px;">PROJECT VRITRA</h1>
+                    <h3 class="text-gold mb-md" style="font-weight: 600; letter-spacing: 0.08em;">STORY-DRIVEN SQL DETECTIVE THRILLER</h3>
+                    <p class="hero-subtitle" style="max-width: 800px; margin: 0 auto var(--spacing-xl); font-size: 1.1rem; color: var(--color-text-secondary); line-height: 1.6;">
+                        Step into the shoes of an elite Task Force investigator in India. Uncover decades of dark secrets, encrypted financial ledgers, and ritualistic homicides using real SQL database queries as your primary forensic weapon.
                     </p>
-                </div>
-                <div class="card card-premium difficulty-card medium">
-                    <div class="difficulty-icon">
-                        <i class="fas fa-fire"></i>
+                    
+                    <div class="hero-stats-row justify-center mb-xl flex gap-md justify-center flex-wrap">
+                        <div class="hero-stat-card">
+                            <div class="num">19</div>
+                            <div class="lbl">Interconnected Cases</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="num">4</div>
+                            <div class="lbl">Dramatic Story Acts</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="num" id="home-completed-count">0 / 18 Solved</div>
+                            <div class="lbl">Overall Mission Clearance</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="num">1</div>
+                            <div class="lbl">The Sutradhar Mastermind</div>
+                        </div>
                     </div>
-                    <h3 class="difficulty-title">Medium</h3>
-                    <p class="difficulty-skills">
-                        JOIN multiple tables<br>
-                        GROUP BY aggregations<br>
-                        Subqueries<br>
-                        Complex filtering
-                    </p>
-                </div>
-                <div class="card card-premium difficulty-card hard">
-                    <div class="difficulty-icon">
-                        <i class="fas fa-skull"></i>
+
+                    <div class="flex gap-md justify-center flex-wrap mb-2xl">
+                        <button class="btn btn-primary btn-lg" onclick="VritraApp.openCase(0)">
+                            <i class="fas fa-graduation-cap"></i> DETECTIVE ACADEMY (CASE 0)
+                        </button>
+                        <button class="btn btn-gold btn-lg" onclick="VritraApp.openAuthModal()">
+                            <i class="fas fa-key"></i> LOGIN / REGISTER AGENT
+                        </button>
+                        <button class="btn btn-secondary btn-lg" onclick="document.getElementById('landing-story-section').scrollIntoView({behavior: 'smooth'})">
+                            <i class="fas fa-scroll"></i> UNCOVER THE MYSTERY <i class="fas fa-chevron-down"></i>
+                        </button>
                     </div>
-                    <h3 class="difficulty-title">Hard</h3>
-                    <p class="difficulty-skills">
-                        Advanced JOIN patterns<br>
-                        Window functions<br>
-                        Complex subqueries<br>
-                        Performance optimization
-                    </p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Why Project Vritra Section -->
-    <section class="section section-dark">
-        <div class="container">
-            <h2 class="section-title">Why Project Vritra</h2>
-            <p class="section-subtitle">Not a tutorial. An investigation.</p>
-            <div class="grid-4">
-                <div class="card">
-                    <div class="feature-icon">
-                        <i class="fas fa-book-open"></i>
+            <!-- Scroll Section 1: The Narrative Arc -->
+            <div id="landing-story-section" class="landing-scroll-section" style="background: var(--color-bg-secondary); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: var(--spacing-3xl) 0;">
+                <div class="container">
+                    <div class="text-center mb-2xl">
+                        <span class="case-badge hard mb-sm">CLASSIFIED DOSSIER</span>
+                        <h2>The Nagabhavan Murder & The Ninth Mandala</h2>
+                        <p class="text-muted" style="max-width: 750px; margin: 0 auto;">What began as a late-night homicide inside a locked study at Nagabhavan Estate has unearthed a nationwide conspiracy engineered by a ghost entity known as <strong>The Sutradhar</strong>.</p>
                     </div>
-                    <h3 class="feature-title">Story Driven</h3>
-                    <p>18 interconnected cases forming a complete narrative. Every query advances the story.</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">
-                        <i class="fas fa-database"></i>
+
+                    <div class="grid grid-2 gap-xl">
+                        <div class="act-box" style="border-left: 4px solid var(--color-crimson);">
+                            <h3 class="text-crimson mb-xs"><i class="fas fa-skull"></i> 01. The Nagabhavan Crime Scene</h3>
+                            <p class="text-secondary" style="font-size: 0.9rem; line-height: 1.6;">
+                                Industrialist Vikramaditya Nagabhavan is found poisoned with a synthetic Soma compound in a sealed room. Five suspects present conflicting alibis, but hidden SQL queries reveal altered timestamps and physical evidence.
+                            </p>
+                        </div>
+                        <div class="act-box" style="border-left: 4px solid var(--color-gold);">
+                            <h3 class="text-gold mb-xs"><i class="fas fa-sitemap"></i> 02. The Saptarishi Shadow Network</h3>
+                            <p class="text-secondary" style="font-size: 0.9rem; line-height: 1.6;">
+                                As you cross-reference financial ledgers with forensic lab records, a covert organization—the Saptarishi Parallel—emerges. Off-shore bank accounts match serial killings across 18 distinct case files.
+                            </p>
+                        </div>
+                        <div class="act-box" style="border-left: 4px solid var(--color-warning);">
+                            <h3 class="text-warning mb-xs"><i class="fas fa-network-wired"></i> 03. The Oracle Predictive Engine</h3>
+                            <p class="text-secondary" style="font-size: 0.9rem; line-height: 1.6;">
+                                In Act III, you uncover the Maya Protocol: an automated artificial intelligence system manufacturing synthetic evidence and controlling public narratives before crimes even occur.
+                            </p>
+                        </div>
+                        <div class="act-box" style="border-left: 4px solid var(--color-success);">
+                            <h3 class="text-success mb-xs"><i class="fas fa-chess-king"></i> 04. The Final Confrontation</h3>
+                            <p class="text-secondary" style="font-size: 0.9rem; line-height: 1.6;">
+                                In Case 18, you face Dr. Vedant Kashyap (*The Sutradhar*). Only flawless SQL joins, timeline analysis, and bulletproof evidence will bring down the architect of Project Vritra.
+                            </p>
+                        </div>
                     </div>
-                    <h3 class="feature-title">Learn SQL Naturally</h3>
-                    <p>Master SQL through investigation. No memorization. Real queries for real mysteries.</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">
-                        <i class="fas fa-puzzle-piece"></i>
-                    </div>
-                    <h3 class="feature-title">Progressive Mystery</h3>
-                    <p>Each case unlocks new clues. The conspiracy deepens with every solved objective.</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h3 class="feature-title">Detective Experience</h3>
-                    <p>Feel like a real investigator. Evidence lockers. Detective boards. Case files.</p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- CTA Section -->
-    <section class="section">
-        <div class="container text-center">
-            <h2 class="section-title">Ready to Begin?</h2>
-            <p class="section-subtitle">The truth is hidden in the database. Are you ready to find it?</p>
-            <a href="cases.html" class="btn btn-primary btn-large">START INVESTIGATION</a>
+            <!-- Scroll Section 2: SQL As Your Forensic Instrument -->
+            <div class="landing-scroll-section" style="padding: var(--spacing-3xl) 0;">
+                <div class="container">
+                    <div class="text-center mb-2xl">
+                        <span class="case-badge easy mb-sm">INVESTIGATIVE MECHANIC</span>
+                        <h2>Master SQL to Solve Murders</h2>
+                        <p class="text-muted">No point-and-click guessing. Execute canonical database queries to uncover truth.</p>
+                    </div>
+
+                    <div class="grid grid-4 gap-md">
+                        <div class="act-box text-center">
+                            <i class="fas fa-users text-gold mb-md" style="font-size: 2rem;"></i>
+                            <h4><code>SELECT *</code></h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Interrogate suspect rosters, witness testimony, and forensic laboratory logs.</p>
+                        </div>
+                        <div class="act-box text-center">
+                            <i class="fas fa-filter text-crimson mb-md" style="font-size: 2rem;"></i>
+                            <h4><code>WHERE</code></h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Isolate specific toxin signatures, missing evidence items, and alibi gaps.</p>
+                        </div>
+                        <div class="act-box text-center">
+                            <i class="fas fa-link text-warning mb-md" style="font-size: 2rem;"></i>
+                            <h4><code>JOIN</code></h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Connect fingerprint analysis directly to suspect profiles and bank transfers.</p>
+                        </div>
+                        <div class="act-box text-center">
+                            <i class="fas fa-history text-success mb-md" style="font-size: 2rem;"></i>
+                            <h4><code>ORDER BY</code></h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Reconstruct chronological crime scene occurrences to catch perjury.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Section 3: Direct Inline Sign-Up & Login Action Section -->
+            <div class="landing-scroll-section" style="background: rgba(212, 175, 55, 0.04); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: var(--spacing-3xl) 0;">
+                <div class="container text-center" style="max-width: 600px;">
+                    <span class="case-badge easy mb-sm"><i class="fas fa-id-badge"></i> INVESTIGATOR CLEARANCE</span>
+                    <h2 class="mb-md">Enlist in the Vritra Task Force</h2>
+                    <p class="text-muted mb-xl">Register your credentials to automatically sync your clearance rank, XP, and solved case files to Supabase cloud storage.</p>
+                    
+                    <form class="act-box text-left" onsubmit="event.preventDefault(); VritraApp.saveAuthIdentity();">
+                        <div class="form-group mb-md">
+                            <label for="home-auth-name">Investigator Full Name:</label>
+                            <input type="text" id="home-auth-name" class="form-control" value="Prasoon Pathak" required>
+                        </div>
+                        <div class="form-group mb-md">
+                            <label for="home-auth-email">Task Force Email / Clearance Code:</label>
+                            <input type="email" id="home-auth-email" class="form-control" value="prasoon.pathak@vritra-tf.gov.in" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full"><i class="fas fa-user-check"></i> START / CONTINUE INVESTIGATION</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Scroll Section 4: Story Acts Roadmap -->
+            <div class="landing-scroll-section" style="padding: var(--spacing-3xl) 0;">
+                <div class="container">
+                    <div class="text-center mb-xl">
+                        <span class="case-badge medium mb-sm">MISSION CAMPAIGN</span>
+                        <h2>4 Master Story Acts • 19 Cases</h2>
+                        <p class="text-muted">Every case solved unlocks the next encrypted file in the Vritra dossier</p>
+                    </div>
+
+                    <div class="acts-overview-grid">
+                        <div class="act-box">
+                            <div class="case-number">TUTORIAL</div>
+                            <h4>Detective Academy</h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Master evidence locker querying with SELECT, WHERE, COUNT, and ORDER BY under Prasoon Pathak.</p>
+                        </div>
+                        <div class="act-box">
+                            <div class="case-number">ACT I (CASES 1-5)</div>
+                            <h4>The Pattern</h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">From Nagabhavan Estate to the Temple Cipher, recurring serpent symbols appear.</p>
+                        </div>
+                        <div class="act-box">
+                            <div class="case-number">ACT II (CASES 6-10)</div>
+                            <h4>The Conspiracy</h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Uncover multi-table JOINs and financial ledgers connecting murders directly to The Ninth Mandala.</p>
+                        </div>
+                        <div class="act-box">
+                            <div class="case-number">ACT III (CASES 11-15)</div>
+                            <h4>The System</h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Investigate institutional manipulation, the Maya Protocol, and the predictive Oracle Network.</p>
+                        </div>
+                        <div class="act-box">
+                            <div class="case-number">ACT IV (CASES 16-18)</div>
+                            <h4>The Architect</h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Confront Dr. Vedant Kashyap—the Sutradhar—and expose the truth behind Project Vritra.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 2: CASES DOSSIER (ALL 19 INVESTIGATIONS) -->
+        <!-- ================================================================= -->
+        <section id="view-cases" class="spa-view hidden">
+            <div class="container" style="padding: var(--spacing-2xl) 0;">
+                <div class="dossier-header-bar">
+                    <div>
+                        <h2>Investigation Case Files</h2>
+                        <p class="text-muted">Select an active investigation to open the terminal workbench</p>
+                    </div>
+                    <div class="act-filter-group">
+                        <button class="act-filter-btn active" data-act="all">All Cases</button>
+                        <button class="act-filter-btn" data-act="training">Academy</button>
+                        <button class="act-filter-btn" data-act="1">Act I: Pattern</button>
+                        <button class="act-filter-btn" data-act="2">Act II: Conspiracy</button>
+                        <button class="act-filter-btn" data-act="3">Act III: System</button>
+                        <button class="act-filter-btn" data-act="4">Act IV: Architect</button>
+                    </div>
+                </div>
+
+                <div id="cases-grid-container" class="cases-grid">
+                    <!-- Cases dynamically rendered from Database -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 3: INVESTIGATION WORKBENCH & TERMINAL -->
+        <!-- ================================================================= -->
+        <section id="view-investigation" class="spa-view hidden">
+            <div class="container-fluid investigation-container">
+                
+                <!-- Case Header Banner -->
+                <div class="investigation-header-banner">
+                    <div>
+                        <div class="banner-case-meta">
+                            <span id="term-case-number"><i class="fas fa-folder"></i> CASE 01</span>
+                            <span>•</span>
+                            <span id="term-case-arc">Act I: The Pattern</span>
+                            <span>•</span>
+                            <span id="term-case-theme"><i class="fas fa-scroll"></i> Naga Symbol</span>
+                        </div>
+                        <h2 class="banner-case-title" id="term-case-title">The Nagabhavan Estate Mystery</h2>
+                        <p class="banner-case-bg" id="term-case-background">
+                            Industrialist Rajveer Rathore is found dead inside his locked study at Nagabhavan Estate. What initially appears to be suicide soon reveals signs of murder.
+                        </p>
+                    </div>
+                    <div class="flex gap-sm">
+                        <button class="btn btn-ghost btn-sm" onclick="VritraApp.openSchemaModal()">
+                            <i class="fas fa-table"></i> Schema
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="VritraApp.openBriefingModal(VritraApp.activeCaseId)">
+                            <i class="fas fa-file-alt"></i> Briefing
+                        </button>
+                        <button id="btn-open-accusation" class="btn btn-primary btn-sm">
+                            <i class="fas fa-gavel"></i> Accuse / Solve Case
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3-Column Workbench Grid -->
+                <div class="workbench-grid">
+
+                    <!-- Left Column: Objectives & Guide -->
+                    <div class="workbench-panel">
+                        <div class="panel-title-bar">
+                            <span><i class="fas fa-tasks"></i> Investigation Objectives</span>
+                            <span id="term-objectives-progress-text" style="font-size: 0.75rem; color: var(--color-text-muted);">0 / 0</span>
+                        </div>
+                        <div class="progress-bar" style="border-radius: 0; height: 3px;">
+                            <div id="term-objectives-progress-fill" class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="panel-scroll-body">
+                            <div id="term-objectives-list">
+                                <!-- Dynamic Objectives List -->
+                            </div>
+
+                            <div style="margin-top: var(--spacing-md);">
+                                <button id="btn-get-hint" class="btn btn-secondary btn-sm w-full">
+                                    <i class="fas fa-lightbulb"></i> Request Forensic Clue
+                                </button>
+                                <div id="term-hint-box" class="hint-container hidden"></div>
+                            </div>
+
+                            <!-- Quick SQL Templates -->
+                            <div class="quick-templates-box">
+                                <h5><i class="fas fa-magic"></i> Quick Query Templates</h5>
+                                <div class="templates-btn-grid">
+                                    <button class="template-chip" data-sql-template="SELECT * FROM suspects WHERE case_id = {case_id};">All Suspects</button>
+                                    <button class="template-chip" data-sql-template="SELECT * FROM witnesses WHERE case_id = {case_id};">Witnesses</button>
+                                    <button class="template-chip" data-sql-template="SELECT * FROM evidence WHERE case_id = {case_id};">Evidence</button>
+                                    <button class="template-chip" data-sql-template="SELECT * FROM forensics WHERE case_id = {case_id};">Forensics</button>
+                                    <button class="template-chip" data-sql-template="SELECT * FROM timeline WHERE case_id = {case_id};">Timeline</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center Column: CodeMirror SQL Terminal & Live Query Results -->
+                    <div class="workbench-panel">
+                        <div class="sql-terminal-box">
+                            <div class="panel-title-bar">
+                                <span><i class="fas fa-terminal"></i> SQL Query Editor</span>
+                                <span style="font-size: 0.75rem; color: var(--color-text-muted); font-family: monospace;">PostgreSQL / Supabase</span>
+                            </div>
+                            
+                            <!-- SQL Editor Textarea -->
+                            <textarea id="sql-editor-textarea"></textarea>
+
+                            <!-- Controls Bar -->
+                            <div class="editor-controls-bar">
+                                <div class="flex gap-sm">
+                                    <button id="btn-run-query" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-play"></i> Run Query (Ctrl+Enter)
+                                    </button>
+                                    <button id="btn-clear-query" class="btn btn-ghost btn-sm">
+                                        <i class="fas fa-trash-alt"></i> Clear
+                                    </button>
+                                </div>
+                                <div class="flex gap-md" style="font-size: 0.8rem;">
+                                    <span id="term-results-count-badge" class="text-gold">0 rows</span>
+                                    <span id="term-results-timer-badge" class="text-muted">⚡ 0ms</span>
+                                </div>
+                            </div>
+
+                            <!-- Live Results Table Container -->
+                            <div class="results-wrapper" id="term-results-container">
+                                <div class="results-empty-state">
+                                    <i class="fas fa-search"></i>
+                                    <p>Execute a SELECT query above to inspect database records.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Evidence Locker & Intelligence Tabs -->
+                    <div class="workbench-panel">
+                        <!-- Evidence Tab Bar -->
+                        <div class="evidence-tab-bar">
+                            <button class="evidence-tab-btn active" data-tab="suspects"><i class="fas fa-user-secret"></i> Suspects</button>
+                            <button class="evidence-tab-btn" data-tab="witnesses"><i class="fas fa-user"></i> Witnesses</button>
+                            <button class="evidence-tab-btn" data-tab="evidence"><i class="fas fa-fingerprint"></i> Evidence</button>
+                            <button class="evidence-tab-btn" data-tab="forensics"><i class="fas fa-microscope"></i> Forensics</button>
+                            <button class="evidence-tab-btn" data-tab="timeline"><i class="fas fa-clock"></i> Timeline</button>
+                            <button class="evidence-tab-btn" data-tab="clues"><i class="fas fa-key"></i> Clues</button>
+                            <button class="evidence-tab-btn" data-tab="board"><i class="fas fa-project-diagram"></i> Board</button>
+                        </div>
+
+                        <!-- Dynamic Tab Content -->
+                        <div class="panel-scroll-body" id="term-evidence-tab-content">
+                            <!-- Tab Intel rendered dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 4: STORY & LORE -->
+        <!-- ================================================================= -->
+        <section id="view-story" class="spa-view hidden">
+            <div class="container" style="padding: var(--spacing-2xl) 0; max-width: 900px;">
+                <div class="text-center mb-xl">
+                    <span class="case-badge hard mb-sm">CLASSIFIED DOSSIER</span>
+                    <h2>The Lore of Project Vritra</h2>
+                    <p class="text-muted">The single source of truth behind the conspiracy, ancient manuscripts, and the Ninth Mandala.</p>
+                </div>
+
+                <div class="act-box mb-lg">
+                    <h4><i class="fas fa-shield-alt text-gold"></i> The Meaning of "Vritra"</h4>
+                    <p>In ancient Indian mythology, <em>Vritra</em> represents the primordial serpent of obstruction—the cosmic obstacle blocking the flow of life and truth. In modern India, <strong>Project Vritra</strong> is not a person, but an underground institutional conspiracy that manipulates evidence, erases records, and conceals corporate and political crimes behind ancient symbols.</p>
+                </div>
+
+                <div class="act-box mb-lg">
+                    <h4><i class="fas fa-crown text-gold"></i> The Sutradhar (Dr. Vedant Kashyap)</h4>
+                    <p><em>The Sutradhar</em> ("The Puppet Master") is the symbolic title given to Dr. Vedant Kashyap. Operating from behind the scenes, his weapon is not physical violence—it is the control, deletion, and fabrication of information. Only an investigator skilled in SQL can query through the falsehoods to recover the truth.</p>
+                </div>
+
+                <div class="act-box mb-lg">
+                    <h4><i class="fas fa-circle-notch text-gold"></i> The Ninth Mandala</h4>
+                    <p>An ancient secret network whose presence spans across temple ciphers, corporate shell ledgers, automated predictive models (The Maya Protocol & Oracle Network), and government archives. Discovered piece by piece through the 18 active murder cases.</p>
+                </div>
+
+                <div class="act-box">
+                    <h4><i class="fas fa-history text-gold"></i> The 4 Canonical Story Arcs</h4>
+                    <ul style="padding-left: var(--spacing-lg); line-height: 1.8; color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <li><strong>Act I — The Pattern (Cases 1–5):</strong> Seemingly disconnected homicides reveal identical Naga symbols and rare chemical compounds.</li>
+                        <li><strong>Act II — The Conspiracy (Cases 6–10):</strong> Uncovering offshore banking ledgers, vanishing witnesses, and the first mentions of Project Vritra.</li>
+                        <li><strong>Act III — The System (Cases 11–15):</strong> Uncovering institutional corruption, the Seven Shadows, and automated population surveillance.</li>
+                        <li><strong>Act IV — The Architect (Cases 16–18):</strong> Concluding the investigation by bringing down the Sutradhar and presenting the final indictment.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 5: TASK FORCE TEAM -->
+        <!-- ================================================================= -->
+        <section id="view-team" class="spa-view hidden">
+            <div class="container" style="padding: var(--spacing-2xl) 0;">
+                <div class="text-center mb-xl">
+                    <span class="case-badge medium mb-sm">PERSONNEL DIRECTORY</span>
+                    <h2>Investigation Task Force</h2>
+                    <p class="text-muted">The elite multidisciplinary division assigned to uncover Project Vritra</p>
+                </div>
+
+                <div id="team-grid-container" class="team-grid">
+                    <!-- Dynamically rendered team character cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 6: DETECTIVE DOSSIER & PROGRESS PAGE -->
+        <!-- ================================================================= -->
+        <section id="view-progress" class="spa-view hidden">
+            <div class="container" style="padding: var(--spacing-2xl) 0; max-width: 900px;">
+                <div class="text-center mb-xl">
+                    <span class="case-badge easy mb-sm"><i class="fas fa-chart-line"></i> DETECTIVE DOSSIER</span>
+                    <h2>Investigator Clearance & Mission Progress</h2>
+                    <p class="text-muted">Track your total XP, earned promotion rank, solved cases, and mission stars</p>
+                </div>
+
+                <div class="act-box mb-xl flex justify-between items-center flex-wrap gap-md" style="background: rgba(212, 175, 55, 0.08); border-color: var(--color-gold);">
+                    <div>
+                        <h2 class="text-gold mb-xs" id="page-progress-name">Prasoon Pathak</h2>
+                        <p class="text-muted" id="page-progress-email">prasoon.pathak@vritra-tf.gov.in</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="case-badge easy" id="page-progress-rank">Investigation Intern</span>
+                        <div class="text-gold mt-xs" style="font-weight: 700; font-size: 1.4rem;" id="page-progress-xp">0 XP</div>
+                    </div>
+                </div>
+
+                <div class="act-box mb-xl">
+                    <div class="flex justify-between text-muted mb-xs" style="font-size: 0.9rem;">
+                        <span>Overall Mission Campaign Clearance:</span>
+                        <strong id="page-progress-pct" class="text-gold">0%</strong>
+                    </div>
+                    <div class="progress-bar-bg" style="height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden;">
+                        <div id="page-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--color-crimson), var(--color-gold)); transition: width 0.4s ease;"></div>
+                    </div>
+                </div>
+
+                <div class="act-box mb-xl">
+                    <h3 class="text-gold mb-md"><i class="fas fa-folder-open"></i> Solved Cases Campaign Checklist</h3>
+                    <div id="page-progress-cases-list" class="flex flex-col gap-sm">
+                        <!-- Dynamically rendered checklist -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 7: EDIT IDENTITY & CREDENTIALS PAGE -->
+        <!-- ================================================================= -->
+        <section id="view-credentials" class="spa-view hidden">
+            <div class="container" style="padding: var(--spacing-2xl) 0; max-width: 650px;">
+                <div class="text-center mb-xl">
+                    <span class="case-badge medium mb-sm"><i class="fas fa-id-card"></i> IDENTITY SETTINGS</span>
+                    <h2>Investigator Credentials & Cloud Sync</h2>
+                    <p class="text-muted">Manage your Task Force identity and sync progress with Supabase cloud database</p>
+                </div>
+
+                <div class="act-box">
+                    <form onsubmit="event.preventDefault(); VritraApp.saveAuthIdentity();">
+                        <div class="form-group mb-md">
+                            <label for="page-auth-name">Investigator Full Name:</label>
+                            <input type="text" id="page-auth-name" class="form-control" value="Prasoon Pathak" required>
+                        </div>
+                        <div class="form-group mb-md">
+                            <label for="page-auth-email">Task Force Email / Clearance Code:</label>
+                            <input type="email" id="page-auth-email" class="form-control" value="prasoon.pathak@vritra-tf.gov.in" required>
+                        </div>
+                        
+                        <div class="act-box mb-lg" style="background: rgba(46, 204, 113, 0.08); border-color: var(--color-success);">
+                            <h4 class="text-success mb-xs"><i class="fas fa-database"></i> Supabase Cloud Database Connected</h4>
+                            <p class="text-muted" style="font-size: 0.8rem;">Saving credentials automatically syncs your rank, XP, and solved case progress across all devices.</p>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="VritraApp.logoutUser()">
+                                <i class="fas fa-sign-out-alt"></i> Logout / Switch Agent
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-save"></i> Save & Sync Credentials
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 7: INVESTIGATION GUIDE & SQL CHEAT SHEET -->
+        <!-- ================================================================= -->
+        <section id="view-guide" class="spa-view hidden">
+            <div class="container" style="padding: var(--spacing-2xl) 0; max-width: 1000px;">
+                <div class="text-center mb-xl">
+                    <span class="case-badge easy mb-sm">DETECTIVE HANDBOOK</span>
+                    <h2>SQL Investigative Field Manual & Full Game Solution Guide</h2>
+                    <p class="text-muted">Master SQL commands and access the exact step-by-step query guide to complete all 19 Project Vritra cases</p>
+                </div>
+
+                <div class="act-box mb-xl">
+                    <h3 class="text-gold mb-md"><i class="fas fa-graduation-cap"></i> SQL Core Commands Reference</h3>
+                    
+                    <div class="act-box mb-sm">
+                        <h4><code>SELECT * FROM table;</code> — Inspect Table Records</h4>
+                        <p>Retrieves all records and fields from a department table (e.g. <code>SELECT * FROM suspects WHERE case_id = 1;</code>).</p>
+                    </div>
+
+                    <div class="act-box mb-sm">
+                        <h4><code>WHERE column = 'value';</code> — Filter Suspects & Evidence</h4>
+                        <p>Isolates specific records matching parameters (e.g. <code>WHERE status = 'Missing'</code> or <code>WHERE type = 'Chemical'</code>).</p>
+                    </div>
+
+                    <div class="act-box mb-sm">
+                        <h4><code>ORDER BY time ASC;</code> — Chronological Reconstruction</h4>
+                        <p>Sorts timeline occurrences sequentially (e.g. <code>ORDER BY time ASC</code>).</p>
+                    </div>
+
+                    <div class="act-box mb-sm">
+                        <h4><code>JOIN table2 ON table1.id = table2.case_id;</code> — Cross-Reference Proof</h4>
+                        <p>Connects suspects to matching forensic laboratory reports and fingerprints.</p>
+                    </div>
+                </div>
+
+                <!-- Complete Step-by-Step Query Solution Guide for All 19 Cases -->
+                <div class="act-box">
+                    <h3 class="text-gold mb-md"><i class="fas fa-key"></i> Step-by-Step Master SQL Solutions (Cases 0 to 18)</h3>
+                    <p class="text-muted mb-lg">Copy and paste these queries into the SQL Query Editor during your investigation to pass every objective with 3 stars.</p>
+
+                    <div class="guide-solutions-accordion">
+                        
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">🎓 Case 0: Detective Academy (Missing Evidence)</h4>
+                            <p class="text-muted mb-xs">Perpetrator / Finding: <code>missing_evidence</code></p>
+                            <pre class="sql-code-block">SELECT * FROM evidence_locker;
+SELECT * FROM evidence_locker WHERE status = 'Missing';
+SELECT item_type, COUNT(*) FROM evidence_locker GROUP BY item_type;</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">🏛️ Case 1: The Nagabhavan Estate Mystery (Act I)</h4>
+                            <p class="text-muted mb-xs">Perpetrator: <code>Raghav Sethi</code></p>
+                            <pre class="sql-code-block">SELECT * FROM suspects WHERE case_id = 1;
+SELECT * FROM witnesses WHERE case_id = 1;
+SELECT * FROM evidence WHERE case_id = 1;
+SELECT * FROM forensics WHERE case_id = 1;
+SELECT * FROM timeline WHERE case_id = 1 ORDER BY time ASC;
+SELECT s.name, s.motive, f.analysis_result FROM suspects s JOIN forensics f ON s.case_id = f.case_id WHERE s.case_id = 1 AND f.analysis_result LIKE '%Raghav Sethi%';</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">🧪 Case 2: The Poisoned Soma (Act I)</h4>
+                            <p class="text-muted mb-xs">Perpetrator: <code>Dr. Madhavan Joshi</code></p>
+                            <pre class="sql-code-block">SELECT * FROM suspects WHERE case_id = 2;
+SELECT * FROM forensics WHERE case_id = 2 AND type = 'Chemical';
+SELECT * FROM timeline WHERE case_id = 2 ORDER BY time ASC;</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">🛕 Case 3: The Temple Cipher (Act I)</h4>
+                            <p class="text-muted mb-xs">Perpetrator: <code>Kallol Sen</code></p>
+                            <pre class="sql-code-block">SELECT * FROM evidence WHERE case_id = 3;
+SELECT * FROM suspects WHERE case_id = 3;</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">📿 Case 4: The Silent Devotee (Act I)</h4>
+                            <p class="text-muted mb-xs">Perpetrator: <code>Swami Shankarananda</code></p>
+                            <pre class="sql-code-block">SELECT * FROM suspects WHERE case_id = 4;
+SELECT * FROM witnesses WHERE case_id = 4;</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">🔥 Case 5: Ashes of Dharma (Act I)</h4>
+                            <p class="text-muted mb-xs">Perpetrator: <code>Devabrata Ray</code></p>
+                            <pre class="sql-code-block">SELECT * FROM suspects WHERE case_id = 5;
+SELECT * FROM forensics WHERE case_id = 5;</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">👥 Cases 6–10 (Act II: The Conspiracy)</h4>
+                            <pre class="sql-code-block">-- Case 6 (Twin Illusion): SELECT * FROM suspects WHERE case_id = 6; -> Accuse: Vikram & Vivek Malhotra
+-- Case 7 (Wheel of Time): SELECT * FROM suspects WHERE case_id = 7; -> Accuse: Kalyan Sen
+-- Case 8 (Forgotten Monk): SELECT * FROM suspects WHERE case_id = 8; -> Accuse: Swami Dayanand
+-- Case 9 (Serpent Ledger): SELECT * FROM suspects WHERE case_id = 9; -> Accuse: Sudhir Varma
+-- Case 10 (Vanishing Disciple): SELECT * FROM suspects WHERE case_id = 10; -> Accuse: Aniket Deshpande</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">🌐 Cases 11–15 (Act III: The System)</h4>
+                            <pre class="sql-code-block">-- Case 11 (Seven Shadows): SELECT * FROM suspects WHERE case_id = 11; -> Accuse: Varun Somayaji
+-- Case 12 (Maya Protocol): SELECT * FROM suspects WHERE case_id = 12; -> Accuse: Dr. Siddharth Nair
+-- Case 13 (Crimson Yagna): SELECT * FROM suspects WHERE case_id = 13; -> Accuse: Keshava Namboodiri
+-- Case 14 (Oracle Network): SELECT * FROM suspects WHERE case_id = 14; -> Accuse: Dr. Alok Sen
+-- Case 15 (Hidden Manuscript): SELECT * FROM suspects WHERE case_id = 15; -> Accuse: Prof. Radhamadhav Tripathi</pre>
+                        </div>
+
+                        <div class="guide-case-item mb-md">
+                            <h4 class="text-gold">👑 Cases 16–18 (Act IV: The Architect Final Confrontation)</h4>
+                            <pre class="sql-code-block">-- Case 16 (Vritra Cycle): SELECT * FROM suspects WHERE case_id = 16; -> Accuse: Indrajit Bhattacharya
+-- Case 17 (Ninth Realm): SELECT * FROM suspects WHERE case_id = 17; -> Accuse: Naveen Kashyap
+-- Case 18 (The Last Witness / Architect): 
+SELECT * FROM suspects WHERE case_id = 18;
+SELECT * FROM evidence WHERE case_id = 18;
+SELECT s.name, s.motive, f.analysis_result FROM suspects s JOIN forensics f ON s.case_id = f.case_id WHERE s.case_id = 18 AND f.analysis_result LIKE '%Vedant Kashyap%';
+-> Accuse: Dr. Vedant Kashyap</pre>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================================================================= -->
+    <!-- MODAL 1: CASE BRIEFING MODAL -->
+    <!-- ================================================================= -->
+    <div id="modal-briefing" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="briefing-modal-title">Case Briefing</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="briefing-modal-body">
+                <!-- Dynamic briefing details -->
+            </div>
+            <div class="modal-header" style="justify-content: flex-end; gap: var(--spacing-sm);">
+                <button class="btn btn-secondary btn-sm modal-close">Dismiss</button>
+                <button id="briefing-modal-start-btn" class="btn btn-primary btn-sm">Enter Investigation Terminal</button>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODAL 2: CASE DEDUCTION & ACCUSATION MODAL -->
+    <!-- ================================================================= -->
+    <div id="modal-accusation" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-gavel text-crimson"></i> Submit Investigation Report</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="accusation-form" class="modal-body">
+                <p id="accuse-modal-case-title" class="text-gold mb-md" style="font-weight: 600;">Case 1: The Nagabhavan Estate Mystery</p>
+
+                <div class="form-group">
+                    <label for="accuse-suspect-select">Primary Perpetrator / Target Finding:</label>
+                    <select id="accuse-suspect-select" class="form-control" required>
+                        <option value="">-- Select Prime Suspect --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="accuse-motive-input">Identified Criminal Motive:</label>
+                    <input type="text" id="accuse-motive-input" class="form-control" placeholder="e.g. Unauthorized financial transfers / Inheritance dispute" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="accuse-evidence-input">Key Corroborating Forensic Proof:</label>
+                    <input type="text" id="accuse-evidence-input" class="form-control" placeholder="e.g. Toxicology report rare poison / Fingerprints on medicine cabinet" required>
+                </div>
+
+                <div class="flex justify-end gap-sm mt-lg">
+                    <button type="button" class="btn btn-secondary btn-sm modal-close">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-check"></i> File Formal Indictment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODAL 3: CASE SOLVED CELEBRATION MODAL -->
+    <!-- ================================================================= -->
+    <div id="modal-case-solved" class="modal-overlay hidden">
+        <div class="modal-box text-center" style="border-top-color: var(--color-success);">
+            <div class="modal-body" style="padding: var(--spacing-2xl) var(--spacing-lg);">
+                <i class="fas fa-check-circle text-success" style="font-size: 3.5rem; margin-bottom: var(--spacing-md);"></i>
+                <h2 id="solved-modal-case-title">CASE SOLVED</h2>
+                <div id="solved-modal-debrief" class="mb-lg">
+                    <!-- Solved debrief -->
+                </div>
+                <button class="btn btn-primary btn-lg" onclick="document.getElementById('modal-case-solved').classList.add('hidden'); VritraApp.navigate('cases');">
+                    <i class="fas fa-arrow-right"></i> Proceed to Next Case Dossier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODAL 4: DATABASE SCHEMA INSPECTOR -->
+    <!-- ================================================================= -->
+    <div id="modal-schema" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-database text-gold"></i> Database Schema Reference</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="schema-explorer">
+                    <div class="schema-table-item">
+                        <strong>suspects</strong>
+                        <code>id, case_id, name, age, occupation, motive, alibi, contradiction</code>
+                    </div>
+                    <div class="schema-table-item">
+                        <strong>witnesses</strong>
+                        <code>id, case_id, name, age, occupation, statement, reliability</code>
+                    </div>
+                    <div class="schema-table-item">
+                        <strong>evidence</strong>
+                        <code>id, case_id, name, description, location, type</code>
+                    </div>
+                    <div class="schema-table-item">
+                        <strong>forensics</strong>
+                        <code>id, case_id, name, description, analysis_result, type</code>
+                    </div>
+                    <div class="schema-table-item">
+                        <strong>timeline</strong>
+                        <code>id, case_id, time, event, description</code>
+                    </div>
+                    <div class="schema-table-item">
+                        <strong>game_cases</strong>
+                        <code>id, title, description, difficulty, estimated_duration_minutes, story_arc</code>
+                    </div>
+                    <div class="schema-table-item">
+                        <strong>evidence_locker</strong> (Case 0 Training Table)
+                        <code>id, item_name, item_type, location, status, officer_assigned, date_added</code>
+                    </div>
+                </div>
+            </div>
+    <!-- ================================================================= -->
+    <!-- MODAL 5: AGENT AUTHENTICATION & IDENTITY MODAL -->
+    <!-- ================================================================= -->
+    <div id="modal-auth" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-id-card text-gold"></i> Investigator Identity & Login</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="auth-form" class="modal-body" onsubmit="event.preventDefault(); VritraApp.saveAuthIdentity();">
+                <p class="text-muted mb-md">Enter your official Task Force Investigator Credentials to track XP, rank promotions, and solved case files.</p>
+                <div class="form-group mb-md">
+                    <label for="auth-agent-name">Investigator Full Name:</label>
+                    <input type="text" id="auth-agent-name" class="form-control" value="Prasoon Pathak" required>
+                </div>
+                <div class="form-group mb-md">
+                    <label for="auth-agent-email">Task Force Email / Clearance Code:</label>
+                    <input type="email" id="auth-agent-email" class="form-control" value="prasoon.pathak@vritra-tf.gov.in" required>
+                </div>
+                <div class="flex justify-end gap-sm mt-lg">
+                    <button type="button" class="btn btn-secondary btn-sm modal-close">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Save Credentials</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODAL 6: DETECTIVE PROGRESS & DOSSIER MODAL -->
+    <!-- ================================================================= -->
+    <div id="modal-progress" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-chart-line text-gold"></i> Investigator Progress & Dossier</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="act-box mb-md flex justify-between items-center" style="background: rgba(212, 175, 55, 0.08); border-color: var(--color-gold);">
+                    <div>
+                        <h3 class="text-gold mb-xs" id="progress-modal-name">Prasoon Pathak</h3>
+                        <p class="text-muted" style="font-size: 0.85rem;" id="progress-modal-email">prasoon.pathak@vritra-tf.gov.in</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="case-badge easy" id="progress-modal-rank">Investigation Intern</span>
+                        <div class="text-gold mt-xs" style="font-weight: 700; font-size: 1.1rem;" id="progress-modal-xp">0 XP</div>
+                    </div>
+                </div>
+
+                <div class="mb-lg">
+                    <div class="flex justify-between text-muted mb-xs" style="font-size: 0.85rem;">
+                        <span>Overall Mission Completion:</span>
+                        <strong id="progress-modal-pct" class="text-gold">0%</strong>
+                    </div>
+                    <div class="progress-bar-bg" style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden;">
+                        <div id="progress-modal-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--color-crimson), var(--color-gold)); transition: width 0.4s ease;"></div>
+                    </div>
+                </div>
+
+                <h4 class="text-gold mb-sm"><i class="fas fa-folder-open"></i> Solved Cases Checklist</h4>
+                <div id="progress-modal-cases-list" class="flex flex-col gap-xs" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                    <!-- Dynamically populated checklist -->
+                </div>
+            </div>
+            <div class="modal-footer flex justify-between items-center mt-md pt-sm" style="border-top: 1px solid var(--color-border);">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="VritraApp.openAuthModal()"><i class="fas fa-id-card"></i> Switch / Edit Identity</button>
+                <button type="button" class="btn btn-primary btn-sm modal-close">Close Dossier</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <i class="fas fa-user-secret"></i>
-                    <span>PROJECT VRITRA</span>
-                </div>
-                <p class="footer-tagline">A Detective Thriller</p>
-                <div class="footer-links">
-                    <a href="about.html">About</a>
-                    <a href="story.html">Story</a>
-                    <a href="characters.html">Characters</a>
-                    <a href="how-to-play.html">How to Play</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Project Vritra. All rights reserved.</p>
-            </div>
+        <div class="container text-center">
+            <p class="text-gold" style="font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px;">PROJECT VRITRA — INVESTIGATION TASK FORCE</p>
+            <p class="text-muted" style="font-size: 0.8rem;">Official Story-Driven SQL Detective Thriller • Indian Traditional Lore • Dynamic Relational Engine</p>
         </div>
-</footer>
+    </footer>
 
-    <script>
-        // Particle System
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationId;
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.speedY = (Math.random() - 0.5) * 0.5;
-                this.opacity = Math.random() * 0.5 + 0.2;
-                this.color = Math.random() > 0.5 ? '212, 175, 55' : '139, 0, 0';
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
-                    this.reset();
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            const particleCount = Math.min(100, Math.floor((canvas.width * canvas.height) / 15000));
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-            animationId = requestAnimationFrame(animateParticles);
-        }
-
-        // Parallax Effect
-        function initParallax() {
-            const layers = document.querySelectorAll('.parallax-layer');
-            
-            window.addEventListener('scroll', () => {
-                const scrollY = window.scrollY;
-                layers.forEach(layer => {
-                    const speed = parseFloat(layer.getAttribute('data-speed'));
-                    const yOffset = scrollY * speed;
-                    layer.style.transform = `translateY(${yOffset}px)`;
-                });
-            });
-        }
-
-        // Initialize
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            initParticles();
-        });
-
-        resizeCanvas();
-        initParticles();
-        animateParticles();
-        initParallax();
-    </script>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script src="notification-system.js"></script>
+    <script src="progression-system.js"></script>
+    <script src="evidence-locker.js"></script>
+    <script src="detective-board.js"></script>
+    <script src="team-communications.js"></script>
+    <script src="canonicalData.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
