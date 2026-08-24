@@ -1,257 +1,640 @@
-# 🕵️ PROJECT VRITRA — STORY-DRIVEN SQL DETECTIVE THRILLER
+🕵️ Project Vritra
 
-Official Master Guide & Complete Step-by-Step SQL Walkthrough for **Project Vritra**.
+A story-driven SQL detective thriller where every query uncovers a piece of the conspiracy.
 
----
+Project Vritra turns learning and practicing SQL into an investigation. You are not simply solving database exercises—you are an investigator inside the Vritra Task Force, progressing through a connected 18-case conspiracy.
 
-## 🚀 Quick Start Guide
+Every suspect, witness, forensic report, timeline entry, and piece of evidence lives inside a database.
 
-### 1. Start the Backend API Server
-```cmd
-cd backend
-node app.js
-```
-*The Express server runs on `http://localhost:5433` with Supabase database connection and canonical offline fallback.*
+Your SQL queries are your investigative tools.
 
-### 2. Launch the Single-Page Application (SPA)
-Open `frontend/index.html` directly in any web browser.
+✦ The Premise
 
----
+A suspicious death at Nagabhavan Estate appears to be an isolated murder.
 
-## 🎯 Master Step-by-Step Gameplay & SQL Query Walkthrough (Cases 0 to 18)
+It isn't.
 
-Copy and paste the exact SQL queries into the **SQL Query Editor** to complete every mission, earn 3 stars, unlock ranks, and expose Dr. Vedant Kashyap (*The Sutradhar*).
+As you investigate, seemingly unrelated cases begin revealing the same symbols, organizations, financial trails, forensic signatures, and manipulated records.
 
----
+The investigation gradually exposes:
 
-### 🎓 CASE 0: Detective Academy (Onboarding & Missing Evidence Audit)
-- **Primary Finding:** `missing_evidence`
-- **Queries:**
-```sql
--- Step 1: Inspect all items in the evidence locker
+ONE MURDER
+     ↓
+A PATTERN
+     ↓
+A CONSPIRACY
+     ↓
+A SYSTEM
+     ↓
+THE ARCHITECT
+
+At the center of it all is:
+
+Dr. Vedant Kashyap — "The Sutradhar"
+
+But reaching him requires surviving all 18 investigations.
+
+🎮 How the Game Works
+
+Project Vritra combines three things:
+
+🕵️ Investigation
+
+Read the case, inspect evidence, interview witnesses and identify suspects.
+
+💻 SQL
+
+Use SQL queries to retrieve the information hidden inside the investigation database.
+
+📖 Story
+
+Every completed investigation advances the larger Project Vritra narrative.
+
+Your progression is therefore:
+
+Read
+ ↓
+Investigate
+ ↓
+Query
+ ↓
+Discover
+ ↓
+Connect
+ ↓
+Solve
+ ↓
+Unlock
+ ↓
+Advance
+🧑‍💻 Your Role
+
+You begin as:
+
+Investigation Intern
+
+You are assigned to the Vritra Task Force and initially handle database research and evidence analysis.
+
+As you solve cases, you earn:
+
+⭐ Stars
+XP
+Case completions
+Rank promotions
+Story progression
+New investigations
+
+Your objective is not merely to finish the game.
+
+It is to become the investigator capable of exposing the entire Vritra conspiracy.
+
+🏫 Case 0 — Detective Academy
+
+Before entering the real investigation, you are introduced to the SQL system.
+
+Case 0 is your training ground.
+
+You learn how to:
+
+inspect a table
+retrieve records
+filter records
+count records
+group information
+sort results
+First Query
 SELECT * FROM evidence_locker;
 
--- Step 2: Filter for missing items
-SELECT * FROM evidence_locker WHERE status = 'Missing';
+This retrieves every item currently recorded in the evidence locker.
 
--- Step 3: Group and count by item type
-SELECT item_type, COUNT(*) FROM evidence_locker GROUP BY item_type;
+Filter Missing Evidence
+SELECT *
+FROM evidence_locker
+WHERE status = 'Missing';
+Count Evidence by Type
+SELECT item_type, COUNT(*)
+FROM evidence_locker
+GROUP BY item_type;
+Sort Evidence Chronologically
+SELECT *
+FROM evidence_locker
+ORDER BY date_added ASC;
 
--- Step 4: Chronological audit
-SELECT * FROM evidence_locker ORDER BY date_added ASC;
-```
+These four queries introduce the basic investigation workflow:
 
----
+SELECT
+WHERE
+GROUP BY
+ORDER BY
 
-### 🏛️ CASE 1: The Nagabhavan Estate Mystery (Act I: The Pattern)
-- **Prime Suspect / Perpetrator:** `Raghav Sethi`
-- **Queries:**
-```sql
--- Step 1: Identify all registered suspects
+Once you understand these, you are ready for the field.
+
+🗂️ The Investigation Database
+
+The game revolves around interconnected investigation tables.
+
+Some of the most important are:
+
+Table	Purpose
+suspects	People connected to the case
+witnesses	Witness statements and reliability
+evidence	Physical, digital and documentary evidence
+forensics	Laboratory and forensic findings
+timeline	Chronological events
+game_objectives	Investigation missions
+game_clues	Narrative clues
+evidence_locker	Training and evidence inventory
+
+The database isn't just a technical exercise.
+
+The database is the crime scene.
+
+🧩 The Four Acts
+
+The 18 investigations form one continuous story divided into four acts.
+
+ACT I — THE PATTERN
+Cases 1–5
+
+The investigation begins with apparently isolated crimes.
+
+You encounter:
+
+suspicious deaths
+poisonings
+strange symbols
+temple connections
+unexplained evidence
+recurring investigative patterns
+
+The first question emerges:
+
+Why do these cases look connected?
+
+ACT II — THE CONSPIRACY
+Cases 6–10
+
+The investigation moves beyond individual crimes.
+
+The Task Force begins uncovering:
+
+financial networks
+hidden identities
+disappearing witnesses
+manipulated records
+offshore connections
+coordinated operations
+
+The question changes:
+
+Who is coordinating these events?
+
+ACT III — THE SYSTEM
+Cases 11–15
+
+The investigation reveals that the conspiracy isn't simply a criminal organization.
+
+It is a system.
+
+You encounter:
+
+The Seven Shadows
+Maya Protocol
+manipulated evidence
+predictive systems
+information warfare
+hidden archives
+institutional corruption
+
+The question becomes:
+
+How deep does the system go?
+
+ACT IV — THE ARCHITECT
+Cases 16–18
+
+The Task Force finally closes in on the organization behind the entire operation.
+
+The investigation leads toward:
+
+the Vritra Cycle
+the Ninth Realm
+the final archive
+the mastermind
+
+The final question:
+
+Who built the system?
+
+The answer:
+
+Dr. Vedant Kashyap — The Sutradhar.
+
+📁 Complete Case Archive
+ACT I — THE PATTERN
+Case 1 — The Nagabhavan Estate Mystery
+
+Prime suspect: Raghav Sethi
+
+The investigation begins with a murder at Nagabhavan Estate.
+
+Start with:
+
 SELECT * FROM suspects WHERE case_id = 1;
 
--- Step 2: Review witness statements
+Then examine witnesses:
+
 SELECT * FROM witnesses WHERE case_id = 1;
 
--- Step 3: Inspect crime scene evidence
+Inspect evidence:
+
 SELECT * FROM evidence WHERE case_id = 1;
 
--- Step 4: Analyze forensic lab toxicology and fingerprints
+Analyze forensics:
+
 SELECT * FROM forensics WHERE case_id = 1;
 
--- Step 5: Chronological timeline reconstruction
-SELECT * FROM timeline WHERE case_id = 1 ORDER BY time ASC;
+Reconstruct the timeline:
 
--- Step 6: Cross-reference fingerprints with suspects
-SELECT s.name, s.motive, f.analysis_result FROM suspects s JOIN forensics f ON s.case_id = f.case_id WHERE s.case_id = 1 AND f.analysis_result LIKE '%Raghav Sethi%';
-```
+SELECT *
+FROM timeline
+WHERE case_id = 1
+ORDER BY time ASC;
 
----
+Finally, cross-reference the forensic evidence:
 
-### 🧪 CASE 2: The Poisoned Soma (Act I: The Pattern)
-- **Prime Suspect / Perpetrator:** `Dr. Madhavan Joshi`
-- **Queries:**
-```sql
+SELECT
+    s.name,
+    s.motive,
+    f.analysis_result
+FROM suspects s
+JOIN forensics f
+    ON s.case_id = f.case_id
+WHERE s.case_id = 1
+AND f.analysis_result LIKE '%Raghav Sethi%';
+Case 2 — The Poisoned Soma
+
+Prime suspect: Dr. Madhavan Joshi
+
 SELECT * FROM suspects WHERE case_id = 2;
-SELECT * FROM forensics WHERE case_id = 2 AND type = 'Chemical';
-SELECT * FROM timeline WHERE case_id = 2 ORDER BY time ASC;
-```
 
----
+SELECT *
+FROM forensics
+WHERE case_id = 2
+AND type = 'Chemical';
 
-### 🛕 CASE 3: The Temple Cipher (Act I: The Pattern)
-- **Prime Suspect / Perpetrator:** `Kallol Sen`
-- **Queries:**
-```sql
+SELECT *
+FROM timeline
+WHERE case_id = 2
+ORDER BY time ASC;
+Case 3 — The Temple Cipher
+
+Prime suspect: Kallol Sen
+
 SELECT * FROM evidence WHERE case_id = 3;
+
 SELECT * FROM suspects WHERE case_id = 3;
-```
+Case 4 — The Silent Devotee
 
----
+Prime suspect: Swami Shankarananda
 
-### 📿 CASE 4: The Silent Devotee (Act I: The Pattern)
-- **Prime Suspect / Perpetrator:** `Swami Shankarananda`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 4;
+
 SELECT * FROM witnesses WHERE case_id = 4;
-```
+Case 5 — Ashes of Dharma
 
----
+Prime suspect: Devabrata Ray
 
-### 🔥 CASE 5: Ashes of Dharma (Act I: The Pattern)
-- **Prime Suspect / Perpetrator:** `Devabrata Ray`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 5;
+
 SELECT * FROM forensics WHERE case_id = 5;
-```
+ACT II — THE CONSPIRACY
+Case 6 — The Twin Illusion
 
----
+Prime suspects: Vikram & Vivek Malhotra
 
-### 👥 CASE 6: The Twin Illusion (Act II: The Conspiracy)
-- **Prime Suspect / Perpetrator:** `Vikram & Vivek Malhotra`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 6;
-SELECT * FROM timeline WHERE case_id = 6 ORDER BY time ASC;
-```
 
----
+SELECT *
+FROM timeline
+WHERE case_id = 6
+ORDER BY time ASC;
+Case 7 — Wheel of Time
 
-### ⏳ CASE 7: Wheel of Time (Act II: The Conspiracy)
-- **Prime Suspect / Perpetrator:** `Kalyan Sen`
-- **Queries:**
-```sql
+Prime suspect: Kalyan Sen
+
 SELECT * FROM suspects WHERE case_id = 7;
+
 SELECT * FROM evidence WHERE case_id = 7;
-```
+Case 8 — The Forgotten Monk
 
----
+Prime suspect: Swami Dayanand
 
-### 🧘 CASE 8: The Forgotten Monk (Act II: The Conspiracy)
-- **Prime Suspect / Perpetrator:** `Swami Dayanand`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 8;
+
 SELECT * FROM witnesses WHERE case_id = 8;
-```
+Case 9 — The Serpent Ledger
 
----
+Prime suspect: Sudhir Varma
 
-### 📜 CASE 9: The Serpent Ledger (Act II: The Conspiracy)
-- **Prime Suspect / Perpetrator:** `Sudhir Varma`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 9;
+
 SELECT * FROM forensics WHERE case_id = 9;
-```
+Case 10 — The Vanishing Disciple
 
----
+Prime suspect: Aniket Deshpande
 
-### 👤 CASE 10: The Vanishing Disciple (Act II: The Conspiracy)
-- **Prime Suspect / Perpetrator:** `Aniket Deshpande`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 10;
-SELECT * FROM timeline WHERE case_id = 10 ORDER BY time ASC;
-```
 
----
+SELECT *
+FROM timeline
+WHERE case_id = 10
+ORDER BY time ASC;
+ACT III — THE SYSTEM
+Case 11 — The Seven Shadows
 
-### 👤 CASE 11: The Seven Shadows (Act III: The System)
-- **Prime Suspect / Perpetrator:** `Varun Somayaji`
-- **Queries:**
-```sql
+Prime suspect: Varun Somayaji
+
 SELECT * FROM suspects WHERE case_id = 11;
+
 SELECT * FROM evidence WHERE case_id = 11;
-```
+Case 12 — The Maya Protocol
 
----
+Prime suspect: Dr. Siddharth Nair
 
-### 💻 CASE 12: The Maya Protocol (Act III: The System)
-- **Prime Suspect / Perpetrator:** `Dr. Siddharth Nair`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 12;
+
 SELECT * FROM forensics WHERE case_id = 12;
-```
+Case 13 — Crimson Yagna
 
----
+Prime suspect: Keshava Namboodiri
 
-### 🩸 CASE 13: Crimson Yagna (Act III: The System)
-- **Prime Suspect / Perpetrator:** `Keshava Namboodiri`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 13;
+
 SELECT * FROM witnesses WHERE case_id = 13;
-```
+Case 14 — The Oracle Network
 
----
+Prime suspect: Dr. Alok Sen
 
-### 🌐 CASE 14: The Oracle Network (Act III: The System)
-- **Prime Suspect / Perpetrator:** `Dr. Alok Sen`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 14;
-SELECT * FROM timeline WHERE case_id = 14 ORDER BY time ASC;
-```
 
----
+SELECT *
+FROM timeline
+WHERE case_id = 14
+ORDER BY time ASC;
+Case 15 — The Hidden Manuscript
 
-### 📖 CASE 15: The Hidden Manuscript (Act III: The System)
-- **Prime Suspect / Perpetrator:** `Prof. Radhamadhav Tripathi`
-- **Queries:**
-```sql
+Prime suspect: Prof. Radhamadhav Tripathi
+
 SELECT * FROM suspects WHERE case_id = 15;
+
 SELECT * FROM evidence WHERE case_id = 15;
-```
+ACT IV — THE ARCHITECT
+Case 16 — The Vritra Cycle
 
----
+Prime suspect: Indrajit Bhattacharya
 
-### 🔄 CASE 16: The Vritra Cycle (Act IV: The Architect)
-- **Prime Suspect / Perpetrator:** `Indrajit Bhattacharya`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 16;
+
 SELECT * FROM forensics WHERE case_id = 16;
-```
+Case 17 — The Ninth Realm
 
----
+Prime suspect: Naveen Kashyap
 
-### 🏰 CASE 17: The Ninth Realm (Act IV: The Architect)
-- **Prime Suspect / Perpetrator:** `Naveen Kashyap`
-- **Queries:**
-```sql
 SELECT * FROM suspects WHERE case_id = 17;
-SELECT * FROM timeline WHERE case_id = 17 ORDER BY time ASC;
-```
 
----
+SELECT *
+FROM timeline
+WHERE case_id = 17
+ORDER BY time ASC;
+👑 Case 18 — The Last Witness
+THE ARCHITECT
 
-### 👑 CASE 18: The Last Witness / The Architect (Act IV: The Architect Final Confrontation)
-- **Prime Suspect / Perpetrator:** `Dr. Vedant Kashyap` (*The Sutradhar*)
-- **Queries:**
-```sql
--- Step 1: Query the primary mastermind
-SELECT * FROM suspects WHERE case_id = 18;
+Final target: Dr. Vedant Kashyap
+Codename: The Sutradhar
 
--- Step 2: Examine final encryption evidence
-SELECT * FROM evidence WHERE case_id = 18;
+The final investigation.
 
--- Step 3: Expose Dr. Vedant Kashyap
-SELECT s.name, s.motive, f.analysis_result FROM suspects s JOIN forensics f ON s.case_id = f.case_id WHERE s.case_id = 18 AND f.analysis_result LIKE '%Vedant Kashyap%';
-```
+Begin with:
 
----
+SELECT *
+FROM suspects
+WHERE case_id = 18;
 
-## 🎖️ Task Force Rank Structure
+Examine the final evidence:
 
-1. **Investigation Intern** (0 Cases • 0 XP)
-2. **Junior Analyst** (2 Cases • 1,000 XP)
-3. **Investigation Officer** (5 Cases • 3,000 XP)
-4. **Crime Analyst** (8 Cases • 6,000 XP)
-5. **Senior Investigator** (11 Cases • 10,000 XP)
-6. **Lead Investigator** (14 Cases • 15,000 XP)
-7. **Special Operations Lead** (17 Cases • 20,000 XP)
-8. **Vritra Task Force Commander** (18 Cases • 25,000 XP)
+SELECT *
+FROM evidence
+WHERE case_id = 18;
+
+Then cross-reference the forensic evidence:
+
+SELECT
+    s.name,
+    s.motive,
+    f.analysis_result
+FROM suspects s
+JOIN forensics f
+    ON s.case_id = f.case_id
+WHERE s.case_id = 18
+AND f.analysis_result LIKE '%Vedant Kashyap%';
+
+The investigation ends where it began:
+
+with the database.
+
+⭐ Progression System
+
+Every case contributes to your investigator profile.
+
+Your performance can earn:
+
+⭐
+⭐⭐
+⭐⭐⭐
+
+Stars represent investigation quality.
+
+XP contributes toward your rank.
+
+Your progression:
+
+INVESTIGATION INTERN
+        ↓
+JUNIOR ANALYST
+        ↓
+INVESTIGATION OFFICER
+        ↓
+CRIME ANALYST
+        ↓
+SENIOR INVESTIGATOR
+        ↓
+LEAD INVESTIGATOR
+        ↓
+SPECIAL OPERATIONS LEAD
+        ↓
+VRITRA TASK FORCE COMMANDER
+🎖️ Task Force Ranks
+Rank	Cases	XP
+Investigation Intern	0	0
+Junior Analyst	2	1,000
+Investigation Officer	5	3,000
+Crime Analyst	8	6,000
+Senior Investigator	11	10,000
+Lead Investigator	14	15,000
+Special Operations Lead	17	20,000
+Vritra Task Force Commander	18	25,000
+
+The ultimate objective:
+
+Complete all 18 cases and reach Vritra Task Force Commander.
+
+🧠 SQL Is Your Investigative Weapon
+
+You will progressively use SQL concepts such as:
+
+SELECT
+WHERE
+ORDER BY
+GROUP BY
+COUNT
+JOIN
+LIKE
+Filtering
+Aggregation
+Cross-referencing
+Timeline analysis
+
+The game is designed so that SQL isn't separated from the story.
+
+A query isn't simply:
+
+SELECT * FROM suspects;
+
+It represents:
+
+"Show me everyone who could have committed this crime."
+
+A JOIN isn't just a database operation.
+
+It represents:
+
+"Connect these two pieces of evidence."
+
+A WHERE clause isn't merely filtering.
+
+It represents:
+
+"Show me only the evidence relevant to this investigation."
+
+🏗️ Technical Architecture
+
+Project Vritra currently uses:
+
+Frontend
+React / Vite / Tailwind CSS
+        │
+        ▼
+Node.js + Express
+        │
+        ▼
+Supabase PostgreSQL
+
+The investigation interface includes:
+
+SQL query editor
+case selection
+objectives
+clues
+evidence
+forensic reports
+witness records
+suspects
+timelines
+detective board
+progression
+XP
+stars
+ranks
+Task Force communications
+
+The application also maintains a canonical data fallback for offline/preview scenarios.
+
+🚀 Running Project Vritra
+1. Start the backend
+cd backend
+node app.js
+
+The API runs on:
+
+http://localhost:5433
+2. Start the frontend
+
+Launch the Vite frontend using the project's configured development command.
+
+Typically:
+
+npm install
+npm run dev
+
+Then open the Vite development URL shown in the terminal.
+
+🗺️ The Complete Journey
+CASE 0
+Detective Academy
+      │
+      ▼
+CASE 1–5
+THE PATTERN
+      │
+      ▼
+CASE 6–10
+THE CONSPIRACY
+      │
+      ▼
+CASE 11–15
+THE SYSTEM
+      │
+      ▼
+CASE 16–17
+THE ARCHITECT
+      │
+      ▼
+CASE 18
+THE LAST WITNESS
+      │
+      ▼
+DR. VEDANT KASHYAP
+"THE SUTRADHAR"
+      │
+      ▼
+VRITRA TASK FORCE COMMANDER
+🔍 The Philosophy
+
+Project Vritra is built around one idea:
+
+Information becomes evidence when you know how to interrogate it.
+
+The game therefore turns database exploration into detective work.
+
+You don't simply read the answer.
+
+You query for it.
+
+You don't simply receive clues.
+
+You discover connections.
+
+And you don't simply complete isolated SQL exercises.
+
+You uncover a conspiracy that has been hiding inside the data all along.
+
+🕵️ Enter the Investigation
+
+The evidence is in the database.
+
+The clues are waiting.
+
+The query is yours.
+
+BEGIN INVESTIGATION;
