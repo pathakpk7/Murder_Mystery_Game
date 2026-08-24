@@ -9,7 +9,6 @@ import HomeView from './views/HomeView';
 import CasesDossierView from './views/CasesDossierView';
 import InvestigationWorkbenchView from './views/InvestigationWorkbenchView';
 import LoreIntelView from './views/LoreIntelView';
-import TaskForceView from './views/TaskForceView';
 import LeaderboardView from './views/LeaderboardView';
 import ProgressView from './views/ProgressView';
 import CredentialsView from './views/CredentialsView';
@@ -87,7 +86,7 @@ function AppContent() {
         )}
 
         {currentView === 'story' && <LoreIntelView />}
-        {currentView === 'team' && <TaskForceView />}
+        {currentView === 'team' && <LoreIntelView defaultSection="taskforce" />}
         {currentView === 'leaderboard' && <LeaderboardView />}
         {currentView === 'progress' && <ProgressView />}
         {currentView === 'credentials' && <CredentialsView />}

@@ -21,9 +21,7 @@ export default function Navbar({ currentView, onNavigate, onOpenAuth }) {
     { id: 'cases', label: 'CASES DOSSIER' },
     { id: 'investigation', label: 'INVESTIGATION' },
     { id: 'story', label: 'LORE & INTEL' },
-    { id: 'team', label: 'TASK FORCE' },
     { id: 'leaderboard', label: 'LEADERBOARD' },
-    { id: 'progress', label: 'PROGRESS' },
     { id: 'credentials', label: 'CREDENTIALS' },
     { id: 'guide', label: 'GUIDE' },
   ];
@@ -68,9 +66,13 @@ export default function Navbar({ currentView, onNavigate, onOpenAuth }) {
         <div className="flex items-center gap-2 shrink-0">
           <UserDropdown onNavigate={onNavigate} onOpenAuth={onOpenAuth} />
 
-          <div className="hidden sm:flex items-center gap-1.5 bg-[#141419] border border-[#262633] px-2.5 py-1 rounded text-xs font-semibold text-[#8a8a9e] whitespace-nowrap">
-            <Medal className="w-3.5 h-3.5 text-[#d4af37]" />
-            <span className="text-[#e0e0e0] truncate max-w-[120px] font-mono text-[11px]">{player.rank}</span>
+          <div className="hidden sm:flex items-center gap-2 bg-[#141419] border border-[#262633] px-2.5 py-1 rounded text-xs font-semibold text-[#8a8a9e]">
+            <Medal className="w-4 h-4 text-[#d4af37] shrink-0" />
+            <div className="flex flex-col text-[10px] font-mono leading-tight font-bold text-[#e0e0e0] uppercase">
+              {player.rank.split(' ').map((word, i) => (
+                <span key={i} className={i === 0 ? "text-[#d4af37]" : "text-[#e0e0e0]"}>{word}</span>
+              ))}
+            </div>
           </div>
 
           <div className="hidden md:flex items-center gap-1 bg-[#141419] border border-[#262633] px-2.5 py-1 rounded text-xs font-semibold text-[#d4af37] whitespace-nowrap font-mono">

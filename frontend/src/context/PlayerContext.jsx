@@ -207,6 +207,34 @@ export const PlayerProvider = ({ children }) => {
     savePlayerState(updated);
   };
 
+  // Deduct XP to unlock clue or query template
+  const unlockClueOrTemplate = (key, xpCost = 25) => {
+    const unlocked = player.unlockedClues || [];
+    if (unlocked.includes(key)) {
+      return true; // Already unlocked
+    }
+
+    if (player.xp < xpCost) {
+      showToast(`❌ Insufficient XP! Unlocking requires ${xpCost} XP (Current: ${player.xp} XP). Complete cases to earn XP!`, 'error');
+      return false;
+    }
+
+    const newXp = player.xp - xpCost;
+    const updated = {
+      ...player,
+      xp: newXp,
+      unlockedClues: [...unlocked, key]
+    };
+
+    savePlayerState(updated);
+    showToast(`🔓 Unlocked intelligence file! Deducted ${xpCost} XP. (Remaining: ${newXp} XP)`, 'success');
+    return true;
+  };
+
+  const isClueUnlocked = (key) => {
+    return Boolean(player.unlockedClues?.includes(key));
+  };
+
   return (
     <PlayerContext.Provider value={{
       player,
@@ -219,7 +247,9 @@ export const PlayerProvider = ({ children }) => {
       loginUser,
       logoutUser,
       savePlayerState,
-      completeCase
+      completeCase,
+      unlockClueOrTemplate,
+      isClueUnlocked
     }}>
       {children}
     </PlayerContext.Provider>
