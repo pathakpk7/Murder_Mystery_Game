@@ -23,9 +23,25 @@ export default function HomeView({ onNavigate, onOpenBriefing, onOpenAuth }) {
       {/* 1. Cinematic Opening Intro */}
       <section className="text-center max-w-4xl mx-auto px-4 space-y-8 min-h-[70vh] flex flex-col justify-center">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7 }}
+          className="flex justify-center"
+        >
+          <div className="relative group p-1">
+            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-red-700 via-[#d4af37] to-red-900 opacity-70 blur-md group-hover:opacity-100 transition duration-500" />
+            <img
+              src="/logo.jpg"
+              alt="Murder Mystery - Project Vritra Emblem"
+              className="relative w-40 h-40 sm:w-52 sm:h-52 rounded-full border-2 border-[#d4af37] object-cover shadow-2xl shadow-red-950/90 group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
           <span className="inline-flex items-center gap-2 bg-red-950/60 border border-red-500/40 text-red-400 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest animate-pulse">
             <Shield className="w-4 h-4" />

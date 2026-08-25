@@ -14,6 +14,7 @@ export default function GuideView() {
       difficulty: "Easy",
       duration: 15,
       theme: "Training Protocol",
+      primarySuspect: "Raghav Sethi (Fingerprint ID #409)",
       story: "You have just joined the Investigation Division under Prasoon Pathak. Before working on live homicides, you must audit the evidence locker to learn SQL filtering and sorting.",
       clues: [
         "Status column contains 'Missing' entries.",
@@ -34,6 +35,7 @@ export default function GuideView() {
       difficulty: "Easy",
       duration: 20,
       theme: "Naga Serpent Symbol",
+      primarySuspect: "Raghav Sethi (Business Rival)",
       story: "Industrialist Rajveer Rathore is found dead inside his sealed study at Nagabhavan Estate. What appears to be suicide reveals signs of synthetic Soma poisoning.",
       clues: [
         "A rare Naga serpent emblem carved under the mahogany desk.",
@@ -55,6 +57,7 @@ export default function GuideView() {
       difficulty: "Easy",
       duration: 25,
       theme: "Soma Ritual",
+      primarySuspect: "Dr. Acharya Devendra Mishra / Saptarishi Chemist",
       story: "Scholar Devendra Mishra collapses during a private symposium after drinking a ceremonial Soma preparation. Forensic reports point to synthetic Somalatha toxins.",
       clues: [
         "Traces of synthetic Somalatha alkaloid in the brass goblet.",
@@ -74,6 +77,7 @@ export default function GuideView() {
       difficulty: "Easy",
       duration: 30,
       theme: "Ancient Temple Records",
+      primarySuspect: "Acharya Vedika Rao (Temple Gate Curator)",
       story: "A temple archivist is murdered after decoding an ancient Sanskrit inscription describing the Ninth Mandala and its secret network.",
       clues: [
         "Encrypted parchment fragment hidden behind the Sun Temple altar.",
@@ -91,6 +95,7 @@ export default function GuideView() {
       difficulty: "Easy",
       duration: 30,
       theme: "Monastic Secrets",
+      primarySuspect: "Swami Narottam (Monastery Head)",
       story: "A monk who took a vow of silence is murdered at Rudra Peeth Monastery. Before dying, he writes a final cipher in sacred ash.",
       clues: [
         "Ash cipher matches the Nagabhavan serpent emblem.",
@@ -108,6 +113,7 @@ export default function GuideView() {
       difficulty: "Easy",
       duration: 35,
       theme: "Dharma and Power",
+      primarySuspect: "Devendra Oberoi (Saptarishi Bio-Tech Arsonist)",
       story: "Politician Devendra Pratap Singh dies in an arson fire hours before exposing Project Vritra. Intercepted radio transmissions mention 'The Seven Shadows'.",
       clues: [
         "Military arson accelerant residues found in the estate study.",
@@ -125,6 +131,7 @@ export default function GuideView() {
       difficulty: "Medium",
       duration: 40,
       theme: "Maya and Identity",
+      primarySuspect: "Vikramaditya Rathore (The Twin Identity)",
       story: "A man declared dead 5 years ago resurfaces in offshore bank ledgers under an alias, transferring funds to Saptarishi accounts.",
       clues: [
         "Dual passport records registered under corporate aliases.",
@@ -142,6 +149,7 @@ export default function GuideView() {
       difficulty: "Medium",
       duration: 45,
       theme: "Kalachakra",
+      primarySuspect: "Anand Vardhan (Kalachakra System Analyst)",
       story: "A government data analyst is murdered after discovering altered historical event logs and manipulated government servers.",
       clues: [
         "Altered database timestamps on central server racks.",
@@ -159,6 +167,7 @@ export default function GuideView() {
       difficulty: "Medium",
       duration: 45,
       theme: "Memory and Samskara",
+      primarySuspect: "Dr. Rohan Acharya (Neuroscience Director)",
       story: "Classified records reveal a monk subjected to psychological memory suppression experiments in a hidden laboratory.",
       clues: [
         "Encrypted clinical notes stored in evidence locker.",
@@ -176,6 +185,7 @@ export default function GuideView() {
       difficulty: "Medium",
       duration: 50,
       theme: "Naga Treasury",
+      primarySuspect: "Rajat Bhandari (Chartered Accountant)",
       story: "An auditor is murdered after tracing a web of 12 shell corporations back to Dr. Vedant Kashyap (*The Sutradhar*).",
       clues: [
         "Offshore Swiss bank codes matching Saptarishi accounts.",
@@ -193,6 +203,7 @@ export default function GuideView() {
       difficulty: "Medium",
       duration: 55,
       theme: "Maya and Identity",
+      primarySuspect: "Ashwin Kapoor (National Records Officer)",
       story: "A key whistleblower disappears from police custody, and his birth records vanish from government database servers.",
       clues: [
         "Erased database rows matching whistleblower identity.",
@@ -210,6 +221,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 60,
       theme: "Sapta Rishi Parallel",
+      primarySuspect: "Viraj Khatri (Former Intelligence Director)",
       story: "A retired general is assassinated after drafting a dossier on the 7 shadow directors controlling Project Vritra.",
       clues: [
         "Encrypted shadow council roster.",
@@ -227,6 +239,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 65,
       theme: "Maya AI",
+      primarySuspect: "Shadow #1 — Devendra Oberoi (The Architect)",
       story: "A digital investigator discovers an AI system that generates synthetic crime scene evidence automatically.",
       clues: [
         "AI deepfake audio recordings.",
@@ -244,6 +257,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 70,
       theme: "Sacrifice and Order",
+      primarySuspect: "Shadow #2 — Rajat Bhandari (The Banker)",
       story: "A sociologist is murdered after proving that 15 public riots over 20 years were intentionally engineered by the Ninth Mandala.",
       clues: [
         "Psychological profiling ledgers.",
@@ -261,6 +275,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 75,
       theme: "Trikal Darshan",
+      primarySuspect: "Shadow #3 — Acharya Vedika (The Scholar)",
       story: "An engineer on the Oracle Predictive System is found dead inside the server vault after leaking predictive algorithms.",
       clues: [
         "Server rack access logs.",
@@ -278,6 +293,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 80,
       theme: "Mahabharata - Sutradhar",
+      primarySuspect: "Shadow #4 — Viraj Khatri (The General)",
       story: "A historian is killed while translating a 300-year-old manuscript outlining the philosophical blueprint for Project Vritra.",
       clues: [
         "Sanskrit parchment folio describing the Sutradhar.",
@@ -295,6 +311,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 90,
       theme: "Cycle of Creation and Destruction",
+      primarySuspect: "Shadow #5 — Ishaan Trivedi (The Cryptographer)",
       story: "An archivist is murdered inside the master vault, leaving behind a hard drive linking all 18 cases directly to Dr. Kashyap.",
       clues: [
         "Master case index hard drive.",
@@ -312,6 +329,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 95,
       theme: "Navam Loka",
+      primarySuspect: "Maya Protocol AI Central Engine Core",
       story: "Prasoon Task Force raids the underground command bunker of the Ninth Mandala in New Delhi.",
       clues: [
         "Mainframe server logs.",
@@ -329,6 +347,7 @@ export default function GuideView() {
       difficulty: "Hard",
       duration: 120,
       theme: "End of Kali Yuga",
+      primarySuspect: "Dr. Vedant Kashyap (The Sutradhar Mastermind)",
       story: "Dr. Vedant Kashyap (*The Sutradhar*) makes his final move. You must execute final SQL queries to indict the mastermind behind Project Vritra.",
       clues: [
         "Direct wire transfers from Kashyap's private account.",
@@ -440,11 +459,19 @@ export default function GuideView() {
             </div>
 
             {/* Story Backdrop */}
-            <div className="bg-[#0a0a0c] border border-[#262633] p-4 rounded-md space-y-1.5">
-              <h4 className="text-xs font-bold text-[#d4af37] uppercase tracking-wider flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> Crime Scene Briefing & Backstory
-              </h4>
-              <p className="text-xs text-[#e0e0e0] leading-relaxed">{currentCase.story}</p>
+            <div className="bg-[#0a0a0c] border border-[#262633] p-4 rounded-md space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#262633] pb-2">
+                <h4 className="text-xs font-bold text-[#d4af37] uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                  <FileText className="w-3.5 h-3.5" /> Crime Scene Briefing & Backstory
+                </h4>
+                {currentCase?.primarySuspect && (
+                  <span className="text-xs font-mono font-bold text-red-400 bg-red-950/60 border border-red-500/50 px-2.5 py-1 rounded inline-flex items-center gap-1 shadow-md">
+                    <Skull className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                    <span>Primary Suspect: <strong className="text-white">{currentCase.primarySuspect}</strong></span>
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-[#e0e0e0] leading-relaxed pt-0.5">{currentCase.story}</p>
             </div>
 
             {/* Clues Breakdown */}

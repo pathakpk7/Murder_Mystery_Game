@@ -8,7 +8,7 @@
         <nav class="navbar">
             <div class="nav-container">
                 <a href="index.html" class="nav-logo">
-                    <i class="fas fa-user-secret"></i>
+                    <img src="logo.jpg" alt="Project Vritra" style="width:28px;height:28px;border-radius:50%;border:1px solid #d4af37;object-fit:cover;margin-right:8px;" />
                     <span>PROJECT VRITRA</span>
                 </a>
                 <ul class="nav-menu">

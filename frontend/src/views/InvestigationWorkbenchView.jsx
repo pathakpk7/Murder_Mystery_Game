@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { usePlayer } from '../context/PlayerContext';
+import canonicalDb from '../data/canonicalData.js';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
 import DetectiveBoard from '../components/DetectiveBoard';
@@ -9,8 +10,19 @@ import {
 } from 'lucide-react';
 
 export default function InvestigationWorkbenchView({ selectedCaseId, onSelectCase, onShowCaseSolved }) {
-  const { db, player, isCaseUnlocked, completeCase, showToast, unlockClueOrTemplate, isClueUnlocked } = usePlayer();
-  const [activeCase, setActiveCase] = useState(null);
+  const { db, player, isCaseUnlocked, completeCase, showToast, unlockClueOrTemplate, isClueUnlocked, awardXP } = usePlayer();
+
+  const parsedCaseId = parseInt(selectedCaseId ?? 0, 10);
+  const validCaseId = isNaN(parsedCaseId) ? 0 : parsedCaseId;
+
+  const [activeCase, setActiveCase] = useState(() => {
+    return (
+      db?.game_cases?.find((c) => c.id === validCaseId) ||
+      db?.game_cases?.[0] ||
+      canonicalDb?.game_cases?.find((c) => c.id === validCaseId) ||
+      canonicalDb?.game_cases?.[0]
+    );
+  });
   const [caseBundle, setCaseBundle] = useState(null);
   const [query, setQuery] = useState('');
   const [queryResults, setQueryResults] = useState(null);
@@ -158,9 +170,18 @@ export default function InvestigationWorkbenchView({ selectedCaseId, onSelectCas
 
   // Load case bundle whenever selectedCaseId changes
   useEffect(() => {
-    const caseId = parseInt(selectedCaseId, 10);
-    const caseData = db?.game_cases?.find((c) => c.id === caseId) || db?.game_cases?.[0];
-    setActiveCase(caseData);
+    const parsed = parseInt(selectedCaseId ?? 0, 10);
+    const caseId = isNaN(parsed) ? 0 : parsed;
+    const sourceDb = db || canonicalDb;
+
+    const caseData =
+      sourceDb?.game_cases?.find((c) => c.id === caseId) ||
+      sourceDb?.game_cases?.[0] ||
+      canonicalDb?.game_cases?.[0];
+
+    if (caseData) {
+      setActiveCase(caseData);
+    }
 
     const defaultQuery = `SELECT * FROM suspects WHERE case_id = ${caseId};`;
     setQuery(defaultQuery);
@@ -180,16 +201,16 @@ export default function InvestigationWorkbenchView({ selectedCaseId, onSelectCas
       }
 
       // In-memory fallback
-      if (db) {
+      if (sourceDb) {
         setCaseBundle({
           case: caseData,
-          suspects: db.suspects?.filter((s) => s.case_id === caseId) || [],
-          witnesses: db.witnesses?.filter((w) => w.case_id === caseId) || [],
-          evidence: db.evidence_locker?.filter((e) => e.case_id === caseId) || [],
-          forensics: db.forensic_analysis?.filter((f) => f.case_id === caseId) || [],
-          timeline: db.timeline?.filter((t) => t.case_id === caseId) || [],
-          objectives: db.objectives?.filter((o) => o.case_id === caseId) || [],
-          clues: db.clues?.filter((c) => c.case_id === caseId) || [],
+          suspects: sourceDb.suspects?.filter((s) => s.case_id === caseId) || [],
+          witnesses: sourceDb.witnesses?.filter((w) => w.case_id === caseId) || [],
+          evidence: sourceDb.evidence_locker?.filter((e) => e.case_id === caseId) || [],
+          forensics: sourceDb.forensic_analysis?.filter((f) => f.case_id === caseId) || [],
+          timeline: sourceDb.timeline?.filter((t) => t.case_id === caseId) || [],
+          objectives: sourceDb.objectives?.filter((o) => o.case_id === caseId) || [],
+          clues: sourceDb.clues?.filter((c) => c.case_id === caseId) || [],
         });
       }
     };
@@ -249,33 +270,48 @@ export default function InvestigationWorkbenchView({ selectedCaseId, onSelectCas
   const evaluateInMemoryQuery = (sqlStr) => {
     if (!sqlStr) return [];
     const cleanSql = sqlStr.trim();
-    const fromMatch = cleanSql.match(/FROM\s+([a-zA-Z0-9_]+)/i);
-    if (!fromMatch) return [];
 
-    const tableName = fromMatch[1].toLowerCase();
-    const caseId = activeCase?.id || 0;
+    const caseId = activeCase?.id !== undefined ? activeCase.id : 0;
     let rows = [];
 
-    if (tableName === 'suspects') {
-      rows = caseBundle?.suspects?.length ? caseBundle.suspects : (db?.suspects?.filter(s => s.case_id === caseId) || []);
-    } else if (tableName === 'witnesses') {
-      rows = caseBundle?.witnesses?.length ? caseBundle.witnesses : (db?.witnesses?.filter(w => w.case_id === caseId) || []);
-    } else if (tableName === 'evidence' || tableName === 'evidence_locker') {
-      rows = caseBundle?.evidence?.length ? caseBundle.evidence : (db?.evidence_locker?.filter(e => e.case_id === caseId) || []);
-    } else if (tableName === 'forensics' || tableName === 'forensic_analysis') {
-      rows = caseBundle?.forensics?.length ? caseBundle.forensics : (db?.forensic_analysis?.filter(f => f.case_id === caseId) || []);
-    } else if (tableName === 'timeline') {
-      rows = caseBundle?.timeline?.length ? caseBundle.timeline : (db?.timeline?.filter(t => t.case_id === caseId) || []);
-    } else if (tableName === 'game_cases') {
-      rows = db?.game_cases || [];
+    // Detect target table name
+    const fromMatch = cleanSql.match(/FROM\s+[`"]?([a-zA-Z0-9_]+)[`"]?/i);
+    const tableName = fromMatch ? fromMatch[1].toLowerCase() : '';
+
+    const sourceDb = db || canonicalDb;
+    if (!sourceDb) return [];
+
+    if (tableName.includes('suspect')) {
+      rows = caseBundle?.suspects?.length ? caseBundle.suspects : (sourceDb.suspects?.filter(s => s.case_id === caseId) || []);
+      if (!rows.length) rows = sourceDb.suspects || [];
+    } else if (tableName.includes('witness')) {
+      rows = caseBundle?.witnesses?.length ? caseBundle.witnesses : (sourceDb.witnesses?.filter(w => w.case_id === caseId) || []);
+      if (!rows.length) rows = sourceDb.witnesses || [];
+    } else if (tableName.includes('evidence') || tableName.includes('locker')) {
+      rows = caseBundle?.evidence?.length ? caseBundle.evidence : (sourceDb.evidence_locker?.filter(e => e.case_id === caseId) || []);
+      if (!rows.length) rows = sourceDb.evidence_locker || [];
+    } else if (tableName.includes('forensic') || tableName.includes('lab')) {
+      rows = caseBundle?.forensics?.length ? caseBundle.forensics : (sourceDb.forensic_analysis?.filter(f => f.case_id === caseId) || []);
+      if (!rows.length) rows = sourceDb.forensic_analysis || [];
+    } else if (tableName.includes('timeline') || tableName.includes('event')) {
+      rows = caseBundle?.timeline?.length ? caseBundle.timeline : (sourceDb.timeline?.filter(t => t.case_id === caseId) || []);
+      if (!rows.length) rows = sourceDb.timeline || [];
+    } else if (tableName.includes('case')) {
+      rows = sourceDb.game_cases || [];
+    } else if (tableName.includes('ledger') || tableName.includes('financial') || tableName.includes('cipher') || tableName.includes('surveillance')) {
+      rows = sourceDb.evidence_locker?.filter(e => e.case_id === caseId) || sourceDb.evidence_locker || [];
+    } else {
+      rows = (caseBundle?.suspects?.length ? caseBundle.suspects : sourceDb.suspects) || [];
     }
 
+    // Check if SQL contains explicit `WHERE case_id = X`
     const whereMatch = cleanSql.match(/WHERE\s+([\s\S]*?)(?:GROUP\s+BY|ORDER\s+BY|LIMIT|$)/i);
     if (whereMatch) {
       const caseWhereMatch = whereMatch[1].match(/case_id\s*=\s*(\d+)/i);
       if (caseWhereMatch) {
         const targetId = parseInt(caseWhereMatch[1], 10);
-        rows = rows.filter(r => r.case_id === undefined || r.case_id === targetId);
+        const filtered = rows.filter(r => r.case_id === undefined || r.case_id === targetId);
+        if (filtered.length > 0) rows = filtered;
       }
     }
 
@@ -322,8 +358,13 @@ export default function InvestigationWorkbenchView({ selectedCaseId, onSelectCas
 
     setQueryResults(results);
     setCurrentPage(1);
-    showToast(`⚡ QUERY ACCEPTED: ${results.length} evidence rows extracted`, 'success');
     setIsExecuting(false);
+
+    if (results && results.length > 0) {
+      awardXP(25, `${results.length} evidence rows extracted`);
+    } else {
+      showToast('⚠️ Query executed cleanly, but returned 0 evidence rows.', 'info');
+    }
   };
 
   // Submit Accusation
@@ -345,7 +386,8 @@ export default function InvestigationWorkbenchView({ selectedCaseId, onSelectCas
     }
   };
 
-  if (!activeCase) return null;
+  const currentActiveCase = activeCase || db?.game_cases?.[0] || canonicalDb?.game_cases?.[0];
+  if (!currentActiveCase) return null;
 
   const totalRows = queryResults?.length || 0;
   const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;

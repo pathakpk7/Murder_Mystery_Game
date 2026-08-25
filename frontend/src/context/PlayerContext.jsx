@@ -235,6 +235,35 @@ export const PlayerProvider = ({ children }) => {
     return Boolean(player.unlockedClues?.includes(key));
   };
 
+  // Award XP to player for successful query execution or milestone
+  const awardXP = (amount = 25, reason = 'SQL Evidence Query Executed') => {
+    const newXp = (player.xp || 0) + amount;
+    
+    // Check rank promotion
+    let newRank = player.rank || 'Investigation Intern';
+    if (db && db.rank_progression) {
+      const ranks = [...db.rank_progression].reverse();
+      for (const r of ranks) {
+        if ((player.completedCases || []).length >= r.minCases && newXp >= r.minXP) {
+          if (newRank !== r.rank) {
+            newRank = r.rank;
+            showToast(`🎖️ Promotion! You have attained the rank of ${r.rank}`, 'success');
+          }
+          break;
+        }
+      }
+    }
+
+    const updated = {
+      ...player,
+      xp: newXp,
+      rank: newRank,
+    };
+
+    savePlayerState(updated);
+    showToast(`⚡ +${amount} XP Earned! (${reason})`, 'success');
+  };
+
   return (
     <PlayerContext.Provider value={{
       player,
@@ -249,7 +278,8 @@ export const PlayerProvider = ({ children }) => {
       savePlayerState,
       completeCase,
       unlockClueOrTemplate,
-      isClueUnlocked
+      isClueUnlocked,
+      awardXP
     }}>
       {children}
     </PlayerContext.Provider>

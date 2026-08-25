@@ -39,8 +39,12 @@ export default function Navbar({ currentView, onNavigate, onOpenAuth }) {
           className="flex items-center gap-2.5 text-base font-extrabold text-[#e0e0e0] whitespace-nowrap group font-serif tracking-tight"
         >
           <div className="relative flex items-center justify-center">
-            <ShieldAlert className="w-5 h-5 text-red-600 group-hover:scale-110 transition-transform" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <img 
+              src="/logo.jpg" 
+              alt="Murder Mystery Logo" 
+              className="w-8 h-8 rounded-full border border-[#d4af37]/60 object-cover group-hover:scale-110 transition-transform shadow-md shadow-red-950/60" 
+            />
+            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping border border-[#070709]" />
           </div>
           <span className="glow-text">PROJECT VRITRA</span>
         </button>

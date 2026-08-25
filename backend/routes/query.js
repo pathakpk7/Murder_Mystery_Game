@@ -6,6 +6,7 @@
 import express from 'express';
 import { validateQuery as validateSQL } from '../queryValidator.js';
 import { recordQueryAttempt, getQueryAttempts } from '../gameEngine.js';
+import supabase from '../supabaseClient.js';
 
 const router = express.Router();
 
@@ -25,6 +26,70 @@ router.post('/validate', async (req, res, next) => {
     res.json({ success: true, data: validation });
   } catch (error) {
     next(error);
+  }
+});
+
+/**
+ * POST /api/query/execute
+ * Safely execute a SELECT SQL query against Supabase or return canonical table results
+ */
+router.post('/execute', async (req, res, next) => {
+  try {
+    const { query, case_id } = req.body;
+
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({ success: false, error: 'SQL Query parameter is required' });
+    }
+
+    const cleanSql = query.trim();
+
+    // 1. Validate safety
+    const validation = validateSQL(cleanSql);
+    if (!validation.valid) {
+      return res.status(400).json({ success: false, error: validation.error || 'SQL Query failed validation' });
+    }
+
+    // 2. Extract target table name
+    const fromMatch = cleanSql.match(/FROM\s+([a-[#a-zA-Z0-9_]+)/i);
+    if (!fromMatch) {
+      return res.status(400).json({ success: false, error: 'Invalid SQL syntax: Missing FROM table clause' });
+    }
+
+    const tableName = fromMatch[1].toLowerCase();
+
+    // 3. Query Supabase table
+    let supabaseQuery = supabase.from(tableName).select('*');
+
+    // Parse case_id filter if provided
+    const targetCaseId = case_id !== undefined ? parseInt(case_id, 10) : null;
+    const caseWhereMatch = cleanSql.match(/case_id\s*=\s*(\d+)/i);
+    const parsedCaseId = caseWhereMatch ? parseInt(caseWhereMatch[1], 10) : targetCaseId;
+
+    if (parsedCaseId !== null && !isNaN(parsedCaseId)) {
+      supabaseQuery = supabaseQuery.eq('case_id', parsedCaseId);
+    }
+
+    const { data, error } = await supabaseQuery;
+
+    if (error) {
+      console.warn(`Supabase table query warn (${tableName}):`, error.message);
+      // Fallback query execution response if table not initialized in cloud
+      return res.json({
+        success: true,
+        results: [],
+        table: tableName,
+        count: 0
+      });
+    }
+
+    res.json({
+      success: true,
+      results: data || [],
+      count: (data || []).length
+    });
+  } catch (error) {
+    console.error('Query execution error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Internal query execution error' });
   }
 });
 

@@ -15,6 +15,7 @@ export default function BriefingModal({ caseData, isOpen, onClose, onStartInvest
         {/* Modal Title Bar */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#262633] bg-[#0a0a0c]">
           <div className="flex items-center gap-2.5">
+            <img src="/logo.jpg" alt="Logo" className="w-6 h-6 rounded-full border border-[#d4af37]/50 object-cover" />
             <span className="bg-[#d4af37]/10 text-[#d4af37] border border-[#d4af37]/30 px-2 py-0.5 rounded text-xs font-bold font-mono">
               CASE {caseData.id.toString().padStart(2, '0')}
             </span>

@@ -26,8 +26,8 @@ export default function AuthModal({ isOpen, onClose }) {
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-[#141419] border border-[#262633] rounded-lg max-w-md w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#262633] bg-[#0a0a0c]">
-          <h3 className="text-base font-bold text-[#e0e0e0] flex items-center gap-2">
-            <IdCard className="w-5 h-5 text-[#d4af37]" />
+          <h3 className="text-base font-bold text-[#e0e0e0] flex items-center gap-2.5">
+            <img src="/logo.jpg" alt="Logo" className="w-6 h-6 rounded-full border border-[#d4af37]/50 object-cover" />
             Investigator Identity & Login
           </h3>
           <button
