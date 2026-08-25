@@ -16,14 +16,18 @@ import supabase, { supabaseAdmin } from './supabaseClient.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const canonicalJsonPath = path.join(__dirname, '../frontend/canonical_database.json');
+const backendCanonicalPath = path.join(__dirname, 'canonical_database.json');
+const frontendCanonicalPath = path.join(__dirname, '../frontend/canonical_database.json');
 
 let cachedCanonicalDb = null;
 function getCanonicalDb() {
   if (!cachedCanonicalDb) {
     try {
-      if (fs.existsSync(canonicalJsonPath)) {
-        const raw = fs.readFileSync(canonicalJsonPath, 'utf8');
+      if (fs.existsSync(backendCanonicalPath)) {
+        const raw = fs.readFileSync(backendCanonicalPath, 'utf8');
+        cachedCanonicalDb = JSON.parse(raw);
+      } else if (fs.existsSync(frontendCanonicalPath)) {
+        const raw = fs.readFileSync(frontendCanonicalPath, 'utf8');
         cachedCanonicalDb = JSON.parse(raw);
       }
     } catch (e) {

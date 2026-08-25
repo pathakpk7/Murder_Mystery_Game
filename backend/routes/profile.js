@@ -14,10 +14,10 @@ const router = express.Router();
 const userProfilesStore = {};
 
 /**
- * POST /api/profile/sync
+ * POST /api/profile/sync, /api/player/state, /api/user/profile, etc.
  * Sync/Save user progress state to Supabase
  */
-router.post('/sync', async (req, res, next) => {
+router.post(['/sync', '/state', '/profile', '/game-state'], async (req, res, next) => {
   try {
     const { player } = req.body;
     if (!player || !player.email) {
@@ -55,10 +55,10 @@ router.post('/sync', async (req, res, next) => {
 });
 
 /**
- * GET /api/profile/sync
+ * GET /api/profile/sync, /api/player/state, /api/user/profile, etc.
  * Fetch user progress state from Supabase by email
  */
-router.get('/sync', async (req, res, next) => {
+router.get(['/sync', '/state', '/profile', '/game-state'], async (req, res, next) => {
   try {
     const email = req.query.email;
     if (!email) {
