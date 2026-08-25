@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import canonicalDb from '../data/canonicalData.js';
+import { getApiUrl } from '../api/config.js';
 
 const PlayerContext = createContext();
 
@@ -85,7 +86,7 @@ export const PlayerProvider = ({ children }) => {
 
         // Background sync to Supabase Express API
         try {
-          fetch('/api/profile/sync', {
+          fetch(getApiUrl('/api/profile/sync'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ player: updated })
@@ -119,7 +120,7 @@ export const PlayerProvider = ({ children }) => {
 
     // Try fetching from Supabase DB first
     try {
-      const res = await fetch(`/api/profile/sync?email=${encodeURIComponent(emailKey)}`);
+      const res = await fetch(getApiUrl(`/api/profile/sync?email=${encodeURIComponent(emailKey)}`));
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {

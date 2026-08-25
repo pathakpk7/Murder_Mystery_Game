@@ -1,42 +1,52 @@
 /**
  * Rate Limiting Middleware
  * Protects API endpoints from abuse and DDoS attacks
+ * Compatible with standalone server & serverless environments
  */
 
 import rateLimit from 'express-rate-limit';
 
-// General rate limiter for all endpoints
+// General rate limiter for all API endpoints
 export const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 200, // Limit each IP to 200 requests per 15 mins
   message: {
     success: false,
-    error: 'Too many requests, please try again later'
+    error: 'Too many requests from this IP, please try again later.'
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false }
 });
 
-// Stricter rate limit for query validation (prevents brute force)
+// Stricter rate limit for query validation/execution
 export const queryRateLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 10, // Limit each IP to 10 query validations per minute
+  max: 30, // Limit each IP to 30 queries per minute
   message: {
     success: false,
-    error: 'Too many query attempts, please slow down'
+    error: 'Too many SQL query execution attempts, please slow down.'
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false }
 });
 
-// Rate limit for write operations (progress saving, etc.)
+// Rate limit for write operations (progress saving, user creation, etc.)
 export const writeRateLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 20, // Limit each IP to 20 write operations per minute
+  max: 30, // Limit each IP to 30 write operations per minute
   message: {
     success: false,
-    error: 'Too many write operations, please slow down'
+    error: 'Too many save operations, please slow down.'
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false }
 });
+
+export default {
+  rateLimiter,
+  queryRateLimiter,
+  writeRateLimiter
+};

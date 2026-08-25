@@ -1,6 +1,7 @@
 /**
  * Query Routes
  * Handles SQL query validation and execution
+ * PROJECT VRITRA — SQL Detective Thriller
  */
 
 import express from 'express';
@@ -45,19 +46,19 @@ router.post('/execute', async (req, res, next) => {
 
     // 1. Validate safety
     const validation = validateSQL(cleanSql);
-    if (!validation.valid) {
-      return res.status(400).json({ success: false, error: validation.error || 'SQL Query failed validation' });
+    if (!validation.isValid) {
+      return res.status(400).json({ success: false, error: validation.error || 'SQL Query failed security validation' });
     }
 
-    // 2. Extract target table name
-    const fromMatch = cleanSql.match(/FROM\s+([a-[#a-zA-Z0-9_]+)/i);
+    // 2. Extract target table name safely
+    const fromMatch = cleanSql.match(/\bFROM\s+([a-zA-Z0-9_]+)/i);
     if (!fromMatch) {
-      return res.status(400).json({ success: false, error: 'Invalid SQL syntax: Missing FROM table clause' });
+      return res.status(400).json({ success: false, error: 'Invalid SQL syntax: Missing target FROM table clause' });
     }
 
     const tableName = fromMatch[1].toLowerCase();
 
-    // 3. Query Supabase table
+    // 3. Query Supabase table if configured
     let supabaseQuery = supabase.from(tableName).select('*');
 
     // Parse case_id filter if provided
@@ -69,23 +70,30 @@ router.post('/execute', async (req, res, next) => {
       supabaseQuery = supabaseQuery.eq('case_id', parsedCaseId);
     }
 
-    const { data, error } = await supabaseQuery;
+    try {
+      const { data, error } = await supabaseQuery;
 
-    if (error) {
-      console.warn(`Supabase table query warn (${tableName}):`, error.message);
-      // Fallback query execution response if table not initialized in cloud
-      return res.json({
-        success: true,
-        results: [],
-        table: tableName,
-        count: 0
-      });
+      if (!error && data) {
+        return res.json({
+          success: true,
+          results: data || [],
+          count: (data || []).length
+        });
+      }
+      
+      if (error) {
+        console.warn(`Supabase table query notice (${tableName}):`, error.message);
+      }
+    } catch (dbErr) {
+      console.warn(`Supabase execution notice (${tableName}):`, dbErr.message);
     }
 
+    // Fallback query execution response if database is empty/unpopulated
     res.json({
       success: true,
-      results: data || [],
-      count: (data || []).length
+      results: [],
+      table: tableName,
+      count: 0
     });
   } catch (error) {
     console.error('Query execution error:', error);
