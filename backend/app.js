@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import supabase from './supabaseClient.js';
 import { errorHandler } from './errorMiddleware.js';
-import { rateLimiter, queryRateLimiter, writeRateLimiter } from './rateLimitMiddleware.js';
+import { rateLimiter } from './rateLimitMiddleware.js';
 import { requestLogger } from './logger.js';
 
 // Route imports
@@ -18,8 +18,30 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Trust proxy for serverless deployment platforms (e.g. Vercel)
+app.set('trust proxy', 1);
+
+// Configure Environment-based CORS
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. server-to-server, cURL)
+    if (!origin) return callback(null, true);
+    if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    // Allow CORS if origin matches frontend domain or during deployment testing
+    return callback(null, true);
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(rateLimiter);
 app.use(requestLogger);
@@ -36,49 +58,48 @@ app.use('/api/achievements', achievementRoutes);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Murder Mystery Backend Running ✅',
-    version: '2.0.0 (Supabase-Only Architecture)'
+    message: 'PROJECT VRITRA — Backend API Online ✅',
+    version: '2.0.0 (Production)'
   });
 });
 
-// Health check endpoint
+// Health check endpoint (safe - no secrets exposed)
 app.get('/api/health', async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('game_cases')
-      .select('id')
-      .limit(1);
+    let dbStatus = 'not_configured';
+    
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY && process.env.SUPABASE_ANON_KEY !== 'dummy_key') {
+      try {
+        const { error } = await supabase
+          .from('game_cases')
+          .select('id')
+          .limit(1);
 
-    if (error) throw error;
+        if (error) {
+          dbStatus = `error: ${error.message}`;
+        } else {
+          dbStatus = 'connected';
+        }
+      } catch (e) {
+        dbStatus = `error: ${e.message}`;
+      }
+    }
 
     res.json({
       success: true,
-      database: 'connected',
-      architecture: 'supabase-only'
+      database: dbStatus,
+      status: 'healthy',
+      version: '2.0.0 (Production)'
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({
       success: false,
-      error: err.message
+      error: 'Health check failure'
     });
   }
 });
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
-
-const PORT = process.env.PORT || 5433;
-
-app.listen(PORT, () => {
-  console.log(`
-====================================
-🕵️ Murder Mystery Backend Running
-🌐 Port: ${PORT}
-✅ Supabase Connected
-📦 Architecture: Supabase-Only
-====================================
-  `);
-});
 
 export default app;

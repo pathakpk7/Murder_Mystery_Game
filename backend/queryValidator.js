@@ -1,18 +1,16 @@
 /**
  * Safe SQL Query Validator
- * 
- * This module validates SQL queries to ensure they are safe for execution.
- * It prevents malicious queries and restricts access to specific tables.
+ * PROJECT VRITRA — SQL Detective Thriller
  * 
  * SECURITY RULES:
  * 1. Only SELECT queries are allowed
- * 2. No INSERT, UPDATE, DELETE, DROP, ALTER, etc.
- * 3. Only specific tables are accessible
- * 4. No SQL injection via comments or semicolons
- * 5. Query complexity limits
+ * 2. No INSERT, UPDATE, DELETE, DROP, ALTER, TRUNCATE, etc.
+ * 3. Only allowlisted game tables are accessible
+ * 4. No SQL injection via comments or multiple statements (semicolons)
+ * 5. Query complexity and subquery limits
  */
 
-// Allowed tables for user queries (updated for new schema)
+// Allowlisted tables for user SQL queries
 const ALLOWED_TABLES = [
   'suspects',
   'witnesses',
@@ -69,36 +67,27 @@ const FORBIDDEN_KEYWORDS = [
   'REFRESH MATERIALIZED VIEW'
 ];
 
-// Dangerous patterns that could indicate SQL injection
+// Dangerous injection patterns
 const DANGEROUS_PATTERNS = [
-  /--/,                    // SQL comments
-  /\/\*/,                  // Multi-line comments start
-  /\*\//,                  // Multi-line comments end
-  /;/,                     // Multiple statements
-  /xp_/i,                  // Extended stored procedures (SQL Server, but block anyway)
+  /--/,                    // SQL line comments
+  /\/\*/,                  // Multi-line comment start
+  /\*\//,                  // Multi-line comment end
+  /xp_/i,                  // Extended stored procedures
   /sp_/i,                  // Stored procedures
-  /0x[0-9a-f]+/i,          // Hex encoding
-  /char\s*\(/i,            // CHAR() function
+  /0x[0-9a-f]+/i,          // Hex literals
   /exec\s*\(/i,            // EXEC() function
   /eval\s*\(/i,            // EVAL() function
-  /script\s*:/i,           // Script tags
-  /javascript:/i,          // JavaScript protocol
-  /onerror\s*=/i,          // Error event handlers
-  /onload\s*=/i            // Load event handlers
-];
-
-// Whitelist of allowed SQL patterns (in addition to blacklist)
-const ALLOWED_PATTERNS = [
-  /^SELECT\s+\*?\s+FROM\s+\w+(\s+WHERE\s+.+)?(\s+ORDER\s+BY\s+.+)?(\s+LIMIT\s+\d+)?$/i,
-  /^SELECT\s+.+\s+FROM\s+\w+(\s+WHERE\s+.+)?(\s+ORDER\s+BY\s+.+)?(\s+LIMIT\s+\d+)?$/i,
-  /^SELECT\s+.+\s+FROM\s+\w+(\s+JOIN\s+\w+\s+ON\s+.+)?(\s+WHERE\s+.+)?$/i
+  /script\s*:/i,           // Script protocols
+  /javascript:/i,          // JS protocol
+  /onerror\s*=/i,          // HTML event handlers
+  /onload\s*=/i
 ];
 
 /**
- * Validate SQL query for safety
+ * Validate SQL query for safety and game compatibility
  * 
  * @param {string} query - SQL query to validate
- * @returns {Object} Validation result with isValid and error message
+ * @returns {Object} Validation result with isValid (boolean) and error message
  */
 export function validateQuery(query) {
   if (!query || typeof query !== 'string') {
@@ -115,88 +104,79 @@ export function validateQuery(query) {
   if (!normalizedQuery.startsWith('SELECT')) {
     return {
       isValid: false,
-      error: 'Only SELECT queries are allowed'
+      error: 'Only SELECT queries are allowed in Project Vritra'
     };
   }
 
-  // Rule 2: Check for forbidden keywords
+  // Rule 2: Check for multiple statements (semicolon) - allow trailing semicolon
+  const queryWithoutTrailingSemicolon = trimmedQuery.replace(/;\s*$/, '');
+  if (queryWithoutTrailingSemicolon.includes(';')) {
+    return {
+      isValid: false,
+      error: 'Multiple SQL statements are not allowed'
+    };
+  }
+
+  // Rule 3: Check for forbidden keywords
   for (const keyword of FORBIDDEN_KEYWORDS) {
     const regex = new RegExp(`\\b${keyword}\\b`, 'i');
-    if (regex.test(trimmedQuery)) {
+    if (regex.test(queryWithoutTrailingSemicolon)) {
       return {
         isValid: false,
-        error: `Forbidden keyword detected: ${keyword}`
+        error: `Forbidden SQL operation detected: ${keyword}`
       };
     }
   }
 
-  // Rule 3: Check for dangerous patterns
+  // Rule 4: Check for dangerous injection patterns
   for (const pattern of DANGEROUS_PATTERNS) {
-    if (pattern.test(trimmedQuery)) {
+    if (pattern.test(queryWithoutTrailingSemicolon)) {
       return {
         isValid: false,
-        error: 'Dangerous pattern detected in query'
+        error: 'Security error: Dangerous pattern detected in query'
       };
     }
   }
 
-  // Rule 4: Check for multiple statements (semicolon)
-  if (trimmedQuery.includes(';')) {
-    return {
-      isValid: false,
-      error: 'Multiple statements are not allowed'
-    };
-  }
-
-  // Rule 5: Extract table names and validate against allowed list
-  const tableNames = extractTableNames(trimmedQuery);
-  for (const tableName of tableNames) {
-    if (!ALLOWED_TABLES.includes(tableName.toLowerCase())) {
-      return {
-        isValid: false,
-        error: `Access to table '${tableName}' is not allowed. Allowed tables: ${ALLOWED_TABLES.join(', ')}`
-      };
-    }
-  }
-
-  // Rule 6: Query complexity limits
-  if (trimmedQuery.length > 1000) {
-    return {
-      isValid: false,
-      error: 'Query is too long (max 1000 characters)'
-    };
-  }
-
-  // Rule 7: Check for subqueries (limit depth)
-  const subqueryDepth = countSubqueries(trimmedQuery);
-  if (subqueryDepth > 2) {
-    return {
-      isValid: false,
-      error: 'Subquery depth too deep (max 2 levels)'
-    };
-  }
-
-  // Rule 8: Check for UNION (could be used for data extraction)
-  if (/\bUNION\b/i.test(trimmedQuery)) {
+  // Rule 5: Check for UNION operations
+  if (/\bUNION\b/i.test(queryWithoutTrailingSemicolon)) {
     return {
       isValid: false,
       error: 'UNION queries are not allowed'
     };
   }
 
-  // Rule 9: Check against whitelist patterns (additional security layer)
-  let patternMatched = false;
-  for (const pattern of ALLOWED_PATTERNS) {
-    if (pattern.test(trimmedQuery)) {
-      patternMatched = true;
-      break;
-    }
-  }
-  
-  if (!patternMatched) {
+  // Rule 6: Extract table names and validate against allowlist
+  const tableNames = extractTableNames(queryWithoutTrailingSemicolon);
+  if (tableNames.length === 0) {
     return {
       isValid: false,
-      error: 'Query does not match allowed patterns. Only simple SELECT queries with WHERE, ORDER BY, and LIMIT are allowed.'
+      error: 'Invalid SQL syntax: Missing target FROM table clause'
+    };
+  }
+
+  for (const tableName of tableNames) {
+    if (!ALLOWED_TABLES.includes(tableName.toLowerCase())) {
+      return {
+        isValid: false,
+        error: `Access to table '${tableName}' is denied. Allowlisted tables: ${ALLOWED_TABLES.join(', ')}`
+      };
+    }
+  }
+
+  // Rule 7: Length and complexity limits
+  if (trimmedQuery.length > 1500) {
+    return {
+      isValid: false,
+      error: 'Query length exceeds maximum limit (1500 characters)'
+    };
+  }
+
+  const subqueryDepth = countSubqueries(queryWithoutTrailingSemicolon);
+  if (subqueryDepth > 2) {
+    return {
+      isValid: false,
+      error: 'Subquery depth exceeds limit (max 2 levels allowed)'
     };
   }
 
@@ -207,17 +187,14 @@ export function validateQuery(query) {
 }
 
 /**
- * Extract table names from SQL query
- * 
- * @param {string} query - SQL query
- * @returns {Array<string>} Array of table names
+ * Extract table names from FROM and JOIN clauses safely
  */
+
 function extractTableNames(query) {
   const tables = [];
   
-  // Match FROM and JOIN clauses
-  const fromRegex = /\bFROM\s+(\w+)/gi;
-  const joinRegex = /\b(?:JOIN|INNER\s+JOIN|LEFT\s+JOIN|RIGHT\s+JOIN|FULL\s+JOIN)\s+(\w+)/gi;
+  const fromRegex = /\bFROM\s+([a-zA-Z0-9_]+)/gi;
+  const joinRegex = /\b(?:JOIN|INNER\s+JOIN|LEFT\s+JOIN|RIGHT\s+JOIN|FULL\s+JOIN)\s+([a-zA-Z0-9_]+)/gi;
   
   let match;
   
@@ -229,15 +206,9 @@ function extractTableNames(query) {
     tables.push(match[1]);
   }
   
-  return [...new Set(tables)]; // Remove duplicates
+  return [...new Set(tables)];
 }
 
-/**
- * Count subquery depth in query
- * 
- * @param {string} query - SQL query
- * @returns {number} Maximum subquery depth
- */
 function countSubqueries(query) {
   let depth = 0;
   let maxDepth = 0;
@@ -258,36 +229,18 @@ function countSubqueries(query) {
   return maxDepth;
 }
 
-/**
- * Sanitize query by removing extra whitespace
- * 
- * @param {string} query - SQL query
- * @returns {string} Sanitized query
- */
 export function sanitizeQuery(query) {
   return query
     .trim()
-    .replace(/\s+/g, ' ')  // Collapse multiple spaces
-    .replace(/\n/g, ' ')    // Remove newlines
-    .replace(/\t/g, ' ')    // Remove tabs
+    .replace(/;\s*$/, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
-/**
- * Get allowed tables list
- * 
- * @returns {Array<string>} Array of allowed table names
- */
 export function getAllowedTables() {
   return [...ALLOWED_TABLES];
 }
 
-/**
- * Check if a table is allowed
- * 
- * @param {string} tableName - Table name to check
- * @returns {boolean} True if table is allowed
- */
 export function isTableAllowed(tableName) {
   return ALLOWED_TABLES.includes(tableName.toLowerCase());
 }

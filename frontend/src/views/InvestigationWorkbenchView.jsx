@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePlayer } from '../context/PlayerContext';
 import canonicalDb from '../data/canonicalData.js';
+import { getApiUrl } from '../api/config.js';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
 import DetectiveBoard from '../components/DetectiveBoard';
@@ -188,7 +189,7 @@ export default function InvestigationWorkbenchView({ selectedCaseId, onSelectCas
 
     const loadBundle = async () => {
       try {
-        const res = await fetch(`/api/cases/${caseId}/full`);
+        const res = await fetch(getApiUrl(`/api/cases/${caseId}/full`));
         if (res.ok) {
           const json = await res.json();
           if (json.success && json.data) {

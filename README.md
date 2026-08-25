@@ -1205,5 +1205,126 @@ From there, every case takes you deeper.
 
 ### Built for investigators who aren't afraid to query the unknown.
 
+---
+
+# 🚀 PRODUCTION DEPLOYMENT & ARCHITECTURE GUIDE
+
+## 🌐 System Architecture
+
+```text
+               PROJECT VRITRA — PRODUCTION ARCHITECTURE
+
+       ┌────────────────────────────────────────────────────────┐
+       │                 Vercel Frontend (SPA)                  │
+       │                   React + Vite                         │
+       └──────────────────────────┬─────────────────────────────┘
+                                  │ HTTPS API Requests
+                                  ▼
+       ┌────────────────────────────────────────────────────────┐
+       │             Vercel Serverless / Express API            │
+       │           SQL Validator + Game Engine + JWT            │
+       └──────────────────────────┬─────────────────────────────┘
+                                  │ PostgreSQL Client
+                                  ▼
+       ┌────────────────────────────────────────────────────────┐
+       │                 Supabase PostgreSQL                    │
+       │                 Relational Database                    │
+       └────────────────────────────────────────────────────────┘
 ```
+
+## 🛠️ Environment Variables
+
+### Frontend Environment (`frontend/.env`)
+| Variable | Description | Example (Local) | Example (Production) |
+|---|---|---|---|
+| `VITE_API_URL` | Target API backend URL | `http://localhost:5433` | `https://your-backend.vercel.app` |
+
+> [!CAUTION]
+> Never place private keys or `SUPABASE_SERVICE_KEY` in `VITE_*` variables. `VITE_*` variables are bundled directly into browser JavaScript.
+
+### Backend Environment (`backend/.env`)
+| Variable | Description | Requirement |
+|---|---|---|
+| `PORT` | Server listening port | Default `5433` |
+| `FRONTEND_URL` | Allowed origin for CORS | `https://your-frontend.vercel.app` |
+| `SUPABASE_URL` | Supabase project URL | Required |
+| `SUPABASE_ANON_KEY` | Public anon key (respects RLS) | Required |
+| `SUPABASE_SERVICE_KEY` | Server-only admin key | Required for admin tasks |
+| `JWT_SECRET` | Secret to verify Supabase auth tokens | Required |
+
+---
+
+## 💻 Local Development Setup
+
+1. **Clone & Install Dependencies**:
+   ```bash
+   cd murder-mystery-game
+   cd frontend && npm install
+   cd ../backend && npm install
+   ```
+
+2. **Configure Local Environment Files**:
+   - Copy `frontend/.env.example` to `frontend/.env`
+   - Copy `backend/.env.example` to `backend/.env`
+
+3. **Start Backend & Frontend**:
+   ```bash
+   # Terminal 1: Backend
+   cd backend
+   npm run dev
+
+   # Terminal 2: Frontend
+   cd frontend
+   npm run dev
+   ```
+
+---
+
+## ☁️ Vercel Deployment
+
+### 1. Backend API Deployment
+1. Connect repository to **Vercel**.
+2. Set **Root Directory** to `backend` (or deploy unified from repo root).
+3. Set **Framework Preset**: `Other` / `Node.js`.
+4. Configure Environment Variables in Vercel Dashboard:
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_KEY`
+   - `JWT_SECRET`
+   - `FRONTEND_URL`
+5. Deploy. Note the production backend URL (e.g. `https://project-vritra-api.vercel.app`).
+
+### 2. Frontend SPA Deployment
+1. Create a second project on **Vercel**.
+2. Set **Root Directory** to `frontend`.
+3. Set **Framework Preset**: `Vite`.
+4. Set Build Settings:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. Configure Environment Variables in Vercel Dashboard:
+   - `VITE_API_URL` = `https://project-vritra-api.vercel.app`
+6. Deploy. Note the production frontend URL (e.g. `https://project-vritra.vercel.app`).
+7. Update `FRONTEND_URL` in the backend project to match the frontend URL.
+
+---
+
+## 🔒 Security Policy
+- **SQL Security**: Only `SELECT` queries targeting allowlisted game tables are permitted. Destructive SQL (`INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `TRUNCATE`, semicolons, subqueries > 2 levels) is strictly rejected by `queryValidator.js`.
+- **Identity Isolation**: User progress and score updates must be authenticated via JWT claims.
+- **Fail Fast**: The server will reject dummy fallbacks (`dummy_key`) and fail fast if critical environment keys are unconfigured.
+
+## 🩺 Health Check Verification
+Verify deployment health:
+```http
+GET https://your-backend-api.vercel.app/api/health
 ```
+Expected Response:
+```json
+{
+  "success": true,
+  "database": "connected",
+  "status": "healthy",
+  "version": "2.0.0 (Production)"
+}
+```
+

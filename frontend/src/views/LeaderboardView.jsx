@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Zap, Star, Shield, RefreshCw } from 'lucide-react';
+import { getApiUrl } from '../api/config.js';
 
 export default function LeaderboardView() {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -10,7 +11,7 @@ export default function LeaderboardView() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/leaderboard');
+      const res = await fetch(getApiUrl('/api/leaderboard'));
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
