@@ -17,17 +17,28 @@ export default function HomeView({ onNavigate, onOpenBriefing, onOpenAuth }) {
   };
 
   const handleJoinTaskForce = () => {
-    if (!player.email) {
-      onOpenAuth();
-    } else {
-      onNavigate('cases');
-    }
+    onNavigate('credentials');
   };
 
   const completedCount = player.completedCases.length;
+  const isGuest = !player.email;
 
   return (
-    <div className="space-y-24 pb-20 pt-6">
+    <div className="space-y-24 pb-20 pt-2">
+      {/* Guest Session Banner */}
+      {isGuest && (
+        <div className="bg-[#141419]/90 border-b border-amber-500/40 text-amber-300 py-2.5 px-4 text-center text-xs font-mono flex flex-wrap items-center justify-center gap-2 shadow-lg">
+          <Shield className="w-4 h-4 shrink-0 text-amber-400" />
+          <span>Currently browsing as <strong className="text-[#d4af37]">Guest Detective</strong>. Enlist in the Task Force to save solved cases & earn XP promotions!</span>
+          <button 
+            onClick={() => onNavigate('credentials')}
+            className="ml-1 bg-[#d4af37] text-black px-3 py-1 rounded font-bold uppercase text-[11px] hover:bg-amber-400 transition-colors shadow"
+          >
+            Enlist / Sign In
+          </button>
+        </div>
+      )}
+
       {/* 1. Cinematic Opening Intro */}
       <section className="text-center max-w-4xl mx-auto px-4 space-y-8 min-h-[70vh] flex flex-col justify-center">
         <motion.div

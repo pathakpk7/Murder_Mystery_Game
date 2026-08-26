@@ -89,7 +89,12 @@ function AppContent() {
         {currentView === 'team' && <LoreIntelView defaultSection="taskforce" />}
         {currentView === 'leaderboard' && <LeaderboardView />}
         {currentView === 'progress' && <ProgressView />}
-        {currentView === 'credentials' && <CredentialsView />}
+        {currentView === 'credentials' && (
+          <CredentialsView
+            onNavigate={handleNavigate}
+            onOpenBriefing={handleOpenBriefing}
+          />
+        )}
         {currentView === 'guide' && <GuideView />}
       </main>
 
