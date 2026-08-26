@@ -7,7 +7,14 @@ export default function UserDropdown({ onNavigate, onOpenAuth }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const isLoggedIn = player && player.email && player.name !== 'Guest Detective' && player.rank !== 'Unassigned';
+  const isLoggedIn = Boolean(
+    player && 
+    player.email && 
+    player.email.trim() !== '' && 
+    player.name !== 'Guest Detective' && 
+    player.name !== 'Prasoon Pathak' &&
+    !player.email.toLowerCase().includes('prasoon')
+  );
 
   // Close dropdown on click outside
   useEffect(() => {
