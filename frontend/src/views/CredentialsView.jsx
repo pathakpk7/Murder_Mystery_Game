@@ -4,12 +4,12 @@ import { IdCard, Save, LogOut, Database } from 'lucide-react';
 
 export default function CredentialsView() {
   const { player, loginUser, logoutUser } = usePlayer();
-  const [name, setName] = useState(player.name || 'Prasoon Pathak');
-  const [email, setEmail] = useState(player.email || 'prasoon.pathak@vritra-tf.gov.in');
+  const [name, setName] = useState(player.name === 'Guest Detective' ? '' : (player.name || ''));
+  const [email, setEmail] = useState(player.email || '');
 
   useEffect(() => {
-    setName(player.name || 'Prasoon Pathak');
-    setEmail(player.email || 'prasoon.pathak@vritra-tf.gov.in');
+    setName(player.name === 'Guest Detective' ? '' : (player.name || ''));
+    setEmail(player.email || '');
   }, [player]);
 
   const handleSubmit = (e) => {

@@ -5,13 +5,21 @@ import { Shield, GraduationCap, Key, Scroll, Skull, Network, Crown, Database, Fi
 
 export default function HomeView({ onNavigate, onOpenBriefing, onOpenAuth }) {
   const { player, loginUser } = usePlayer();
-  const [authName, setAuthName] = useState(player.name || 'Prasoon Pathak');
-  const [authEmail, setAuthEmail] = useState(player.email || 'prasoon.pathak@vritra-tf.gov.in');
+  const [authName, setAuthName] = useState(player.name === 'Guest Detective' ? '' : (player.name || ''));
+  const [authEmail, setAuthEmail] = useState(player.email || '');
 
   const handleInlineSubmit = (e) => {
     e.preventDefault();
     if (authName.trim() && authEmail.trim()) {
       loginUser(authName.trim(), authEmail.trim());
+      onNavigate('cases');
+    }
+  };
+
+  const handleJoinTaskForce = () => {
+    if (!player.email) {
+      onOpenAuth();
+    } else {
       onNavigate('cases');
     }
   };
@@ -246,7 +254,7 @@ export default function HomeView({ onNavigate, onOpenBriefing, onOpenAuth }) {
 
         <div className="flex justify-center gap-4 pt-2">
           <button
-            onClick={() => onOpenBriefing(0)}
+            onClick={handleJoinTaskForce}
             className="flex items-center gap-2 bg-[#8b0000] hover:bg-[#b22222] text-white px-8 py-3.5 rounded text-xs font-bold uppercase tracking-wider shadow-xl shadow-red-950/60 transition-transform hover:scale-105"
           >
             <Play className="w-4 h-4 fill-white" />

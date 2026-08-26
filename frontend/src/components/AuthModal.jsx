@@ -4,12 +4,12 @@ import { X, IdCard, Save, Database } from 'lucide-react';
 
 export default function AuthModal({ isOpen, onClose }) {
   const { player, loginUser } = usePlayer();
-  const [name, setName] = useState(player.name || 'Prasoon Pathak');
-  const [email, setEmail] = useState(player.email || 'prasoon.pathak@vritra-tf.gov.in');
+  const [name, setName] = useState(player.name === 'Guest Detective' ? '' : (player.name || ''));
+  const [email, setEmail] = useState(player.email || '');
 
   useEffect(() => {
-    setName(player.name || 'Prasoon Pathak');
-    setEmail(player.email || 'prasoon.pathak@vritra-tf.gov.in');
+    setName(player.name === 'Guest Detective' ? '' : (player.name || ''));
+    setEmail(player.email || '');
   }, [player]);
 
   if (!isOpen) return null;
@@ -28,7 +28,7 @@ export default function AuthModal({ isOpen, onClose }) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#262633] bg-[#0a0a0c]">
           <h3 className="text-base font-bold text-[#e0e0e0] flex items-center gap-2.5">
             <img src="/logo.jpg" alt="Logo" className="w-6 h-6 rounded-full border border-[#d4af37]/50 object-cover" />
-            Investigator Identity & Login
+            Join Task Force / Sign In
           </h3>
           <button
             onClick={onClose}
@@ -40,7 +40,7 @@ export default function AuthModal({ isOpen, onClose }) {
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <p className="text-xs text-[#8a8a9e] leading-relaxed">
-            Enter your official Task Force Investigator Credentials to track XP, rank promotions, and sync solved case files to Supabase cloud storage.
+            Enter your official Task Force Investigator credentials to sign in or register as an Investigation Intern. Returning investigators automatically resume progress from where they left off.
           </p>
 
           <div className="space-y-1.5">
@@ -50,7 +50,7 @@ export default function AuthModal({ isOpen, onClose }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-[#0a0a0c] border border-[#262633] focus:border-[#d4af37] text-sm text-[#e0e0e0] rounded px-3 py-2 outline-none transition-colors"
-              placeholder="e.g. Prasoon Pathak"
+              placeholder="e.g. Detective Vikram Sharma"
               required
             />
           </div>
@@ -62,7 +62,7 @@ export default function AuthModal({ isOpen, onClose }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#0a0a0c] border border-[#262633] focus:border-[#d4af37] text-sm text-[#e0e0e0] rounded px-3 py-2 outline-none transition-colors"
-              placeholder="e.g. prasoon.pathak@vritra-tf.gov.in"
+              placeholder="e.g. vikram.sharma@vritra-tf.gov.in"
               required
             />
           </div>

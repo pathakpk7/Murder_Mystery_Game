@@ -9,7 +9,7 @@ const DEFAULT_PLAYER = {
   email: '',
   xp: 0,
   totalStars: 0,
-  rank: 'Unassigned',
+  rank: 'Investigation Intern',
   completedCases: [],
   unlockedCases: [0, 1],
   caseProgress: {}
@@ -49,22 +49,19 @@ export const PlayerProvider = ({ children }) => {
         } else {
           const saved = localStorage.getItem('vritra_player_state');
           if (saved) {
-            setPlayer(JSON.parse(saved));
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.email) {
+              setPlayer(parsed);
+            } else {
+              setPlayer(DEFAULT_PLAYER);
+            }
           } else {
-            setPlayer({
-              name: 'Prasoon Pathak',
-              email: 'prasoon.pathak@vritra-tf.gov.in',
-              xp: 0,
-              totalStars: 0,
-              rank: 'Investigation Intern',
-              completedCases: [],
-              unlockedCases: [0, 1],
-              caseProgress: {}
-            });
+            setPlayer(DEFAULT_PLAYER);
           }
         }
       } catch (err) {
         console.error('Failed to load initial state:', err);
+        setPlayer(DEFAULT_PLAYER);
       }
     };
 
@@ -147,7 +144,7 @@ export const PlayerProvider = ({ children }) => {
           unlockedCases: [0, 1],
           caseProgress: {}
         };
-        showToast(`✅ Registered new identity: ${name}`, 'success');
+        showToast(`✅ Welcome to the Task Force, Agent ${name}! Designated as Investigation Intern.`, 'success');
       }
     }
 
