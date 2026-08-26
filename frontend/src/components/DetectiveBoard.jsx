@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Search, Eye, Microscope, ShieldAlert, X, Link, Maximize2, Minimize2, Filter, Info, ChevronRight } from 'lucide-react';
+import { Users, Search, Eye, Microscope, ShieldAlert, X, Link, Maximize2, Minimize2, Filter, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 export default function DetectiveBoard({ caseBundle, activeCaseId }) {
   const [selectedNode, setSelectedNode] = useState(null);
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const safeCaseId = activeCaseId ?? 0;
   const suspects = caseBundle?.suspects || [];
@@ -14,82 +15,145 @@ export default function DetectiveBoard({ caseBundle, activeCaseId }) {
   const witnesses = caseBundle?.witnesses || [];
   const forensics = caseBundle?.forensics || [];
 
-  // Generate safe spatial nodes around central case node
+  const handleZoom = (delta) => {
+    setZoomLevel(prev => Math.min(1.8, Math.max(0.7, +(prev + delta).toFixed(1))));
+  };
+
+  // Generate non-overlapping orbital spatial nodes
   const generateNodes = () => {
     const nodeList = [
-      // Central Case Node (always centered)
+      // Central Case Node (always centered at 50%, 50%)
       {
         id: 'center',
         type: 'case',
         label: `CASE ${safeCaseId.toString().padStart(2, '0')}`,
         sub: caseBundle?.case?.title || 'Active Investigation',
         x: 50,
-        y: 48,
+        y: 50,
         data: caseBundle?.case
       }
     ];
 
-    // 1. Suspect Nodes (Top arc, x: 24% to 76%, y: 18%)
-    const suspectCount = suspects.length;
+    if (activeFilter !== 'all') {
+      // Single category filter: distribute active nodes evenly around a 360-degree circle
+      let targetItems = [];
+      if (activeFilter === 'suspect') targetItems = suspects.map((s, i) => ({ item: s, id: `suspect-${i}`, type: 'suspect', label: s.name, sub: s.occupation || s.role || 'Suspect' }));
+      else if (activeFilter === 'evidence') targetItems = evidence.map((e, i) => ({ item: e, id: `evidence-${i}`, type: 'evidence', label: e.item_name || e.name, sub: e.found_location || 'Crime Scene Evidence' }));
+      else if (activeFilter === 'witness') targetItems = witnesses.map((w, i) => ({ item: w, id: `witness-${i}`, type: 'witness', label: w.name, sub: w.role || 'Witness Statement' }));
+      else if (activeFilter === 'forensic') targetItems = forensics.map((f, i) => ({ item: f, id: `forensic-${i}`, type: 'forensic', label: f.analysis_type || f.title || f.name, sub: f.lab_tech || 'Laboratory Report' }));
+
+      const count = targetItems.length;
+      targetItems.forEach((t, idx) => {
+        const angleDeg = (idx * (360 / Math.max(count, 1))) - 90;
+        const angleRad = (angleDeg * Math.PI) / 180;
+        const radius = idx % 2 === 0 ? 32 : 42;
+        const xPos = 50 + radius * 1.15 * Math.cos(angleRad);
+        const yPos = 50 + radius * 0.85 * Math.sin(angleRad);
+
+        nodeList.push({
+          id: t.id,
+          type: t.type,
+          label: t.label,
+          sub: t.sub,
+          data: t.item,
+          x: Math.round(Math.max(12, Math.min(88, xPos))),
+          y: Math.round(Math.max(12, Math.min(88, yPos)))
+        });
+      });
+
+      return nodeList;
+    }
+
+    // "All" mode: Four distinct quadrant sectors with staggered inner/outer orbits
+    // 1. Suspects (Top Sector: -135deg to -45deg)
+    const sCount = suspects.length;
     suspects.forEach((s, idx) => {
-      const step = suspectCount > 1 ? 52 / (suspectCount - 1) : 0;
-      const xPos = suspectCount === 1 ? 50 : 24 + idx * step;
+      const startAngle = -135;
+      const endAngle = -45;
+      const step = sCount > 1 ? (endAngle - startAngle) / (sCount - 1) : 0;
+      const angleDeg = sCount === 1 ? -90 : startAngle + idx * step;
+      const angleRad = (angleDeg * Math.PI) / 180;
+      const radius = idx % 2 === 0 ? 30 : 42;
+      const xPos = 50 + radius * 1.15 * Math.cos(angleRad);
+      const yPos = 50 + radius * 0.85 * Math.sin(angleRad);
+
       nodeList.push({
         id: `suspect-${idx}`,
         type: 'suspect',
         label: s.name,
         sub: s.occupation || s.role || 'Suspect',
         data: s,
-        x: Math.round(xPos),
-        y: 18
+        x: Math.round(Math.max(10, Math.min(90, xPos))),
+        y: Math.round(Math.max(10, Math.min(88, yPos)))
       });
     });
 
-    // 2. Evidence Nodes (Left column, x: 22%, y: 38% to 78%)
-    const evidenceCount = evidence.length;
-    evidence.forEach((e, idx) => {
-      const step = evidenceCount > 1 ? 38 / (evidenceCount - 1) : 0;
-      const yPos = evidenceCount === 1 ? 56 : 38 + idx * step;
-      nodeList.push({
-        id: `evidence-${idx}`,
-        type: 'evidence',
-        label: e.item_name || e.name,
-        sub: e.found_location || 'Crime Scene Evidence',
-        data: e,
-        x: 22,
-        y: Math.round(yPos)
-      });
-    });
-
-    // 3. Witness Nodes (Right column, x: 78%, y: 38% to 78%)
-    const witnessCount = witnesses.length;
+    // 2. Witnesses (Right Sector: -35deg to 35deg)
+    const wCount = witnesses.length;
     witnesses.forEach((w, idx) => {
-      const step = witnessCount > 1 ? 38 / (witnessCount - 1) : 0;
-      const yPos = witnessCount === 1 ? 56 : 38 + idx * step;
+      const startAngle = -35;
+      const endAngle = 35;
+      const step = wCount > 1 ? (endAngle - startAngle) / (wCount - 1) : 0;
+      const angleDeg = wCount === 1 ? 0 : startAngle + idx * step;
+      const angleRad = (angleDeg * Math.PI) / 180;
+      const radius = idx % 2 === 0 ? 32 : 42;
+      const xPos = 50 + radius * 1.15 * Math.cos(angleRad);
+      const yPos = 50 + radius * 0.85 * Math.sin(angleRad);
+
       nodeList.push({
         id: `witness-${idx}`,
         type: 'witness',
         label: w.name,
         sub: w.role || 'Witness Statement',
         data: w,
-        x: 78,
-        y: Math.round(yPos)
+        x: Math.round(Math.max(10, Math.min(90, xPos))),
+        y: Math.round(Math.max(12, Math.min(88, yPos)))
       });
     });
 
-    // 4. Forensic Nodes (Bottom center, x: 38% to 62%, y: 82%)
-    const forensicCount = forensics.length;
+    // 3. Evidence (Left Sector: 145deg to 215deg)
+    const eCount = evidence.length;
+    evidence.forEach((e, idx) => {
+      const startAngle = 145;
+      const endAngle = 215;
+      const step = eCount > 1 ? (endAngle - startAngle) / (eCount - 1) : 0;
+      const angleDeg = eCount === 1 ? 180 : startAngle + idx * step;
+      const angleRad = (angleDeg * Math.PI) / 180;
+      const radius = idx % 2 === 0 ? 32 : 42;
+      const xPos = 50 + radius * 1.15 * Math.cos(angleRad);
+      const yPos = 50 + radius * 0.85 * Math.sin(angleRad);
+
+      nodeList.push({
+        id: `evidence-${idx}`,
+        type: 'evidence',
+        label: e.item_name || e.name,
+        sub: e.found_location || 'Crime Scene Evidence',
+        data: e,
+        x: Math.round(Math.max(10, Math.min(90, xPos))),
+        y: Math.round(Math.max(12, Math.min(88, yPos)))
+      });
+    });
+
+    // 4. Forensics (Bottom Sector: 55deg to 125deg)
+    const fCount = forensics.length;
     forensics.forEach((f, idx) => {
-      const step = forensicCount > 1 ? 26 / (forensicCount - 1) : 0;
-      const xPos = forensicCount === 1 ? 50 : 37 + idx * step;
+      const startAngle = 55;
+      const endAngle = 125;
+      const step = fCount > 1 ? (endAngle - startAngle) / (fCount - 1) : 0;
+      const angleDeg = fCount === 1 ? 90 : startAngle + idx * step;
+      const angleRad = (angleDeg * Math.PI) / 180;
+      const radius = idx % 2 === 0 ? 30 : 42;
+      const xPos = 50 + radius * 1.15 * Math.cos(angleRad);
+      const yPos = 50 + radius * 0.85 * Math.sin(angleRad);
+
       nodeList.push({
         id: `forensic-${idx}`,
         type: 'forensic',
         label: f.analysis_type || f.title || f.name,
         sub: f.lab_tech || 'Laboratory Report',
         data: f,
-        x: Math.round(xPos),
-        y: 82
+        x: Math.round(Math.max(10, Math.min(90, xPos))),
+        y: Math.round(Math.max(12, Math.min(90, yPos)))
       });
     });
 
@@ -99,11 +163,11 @@ export default function DetectiveBoard({ caseBundle, activeCaseId }) {
   const allNodes = generateNodes();
 
   const getBorderColor = (type, isHovered, isSelected) => {
-    if (isSelected) return 'border-[#d4af37] bg-[#1a180f] text-white shadow-[0_0_15px_rgba(212,175,55,0.4)]';
-    if (isHovered) return 'border-white bg-[#1a1a24] text-white shadow-lg';
+    if (isSelected) return 'border-[#d4af37] bg-[#1a180f] text-white shadow-[0_0_20px_rgba(212,175,55,0.6)] ring-2 ring-[#d4af37]/50';
+    if (isHovered) return 'border-white bg-[#1a1a24] text-white shadow-xl ring-1 ring-white/50';
 
     switch (type) {
-      case 'case': return 'border-red-600 bg-red-950/90 text-white shadow-lg shadow-red-950/40';
+      case 'case': return 'border-red-600 bg-red-950/90 text-white shadow-lg shadow-red-950/50';
       case 'suspect': return 'border-amber-500/80 bg-[#141419] text-[#e0e0e0] hover:border-amber-400';
       case 'evidence': return 'border-emerald-500/80 bg-[#141419] text-[#e0e0e0] hover:border-emerald-400';
       case 'witness': return 'border-cyan-500/80 bg-[#141419] text-[#e0e0e0] hover:border-cyan-400';
@@ -139,14 +203,14 @@ export default function DetectiveBoard({ caseBundle, activeCaseId }) {
     return node.type === activeFilter;
   };
 
-  const content = (
-    <div className={`relative bg-[#070709] border border-[#262633] rounded-lg flex flex-col shadow-2xl overflow-hidden ${isFullscreen ? 'fixed inset-4 z-50 p-6 bg-[#070709]/95 backdrop-blur-xl border-[#d4af37]/50' : 'p-4 min-h-[460px] h-full'}`}>
+  return (
+    <div className={`relative bg-[#070709] border border-[#262633] rounded-lg flex flex-col shadow-2xl overflow-hidden ${isFullscreen ? 'fixed inset-4 z-50 p-6 bg-[#070709]/95 backdrop-blur-xl border-[#d4af37]/50' : 'p-4 min-h-[500px] h-full'}`}>
       {/* Board Header & Controls */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#262633] pb-3 text-xs font-mono shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
           <span className="font-bold text-[#d4af37] tracking-wider uppercase">
-            SPATIAL DETECTIVE BOARD • CASE {safeCaseId.toString().padStart(2, '0')}
+            ORBITAL DETECTIVE BOARD • CASE {safeCaseId.toString().padStart(2, '0')}
           </span>
         </div>
 
@@ -175,12 +239,36 @@ export default function DetectiveBoard({ caseBundle, activeCaseId }) {
           ))}
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-2 text-[#8a8a9e]">
-          <span className="hidden sm:inline text-[10px]">Click node to inspect</span>
+        {/* Zoom & Fullscreen Controls */}
+        <div className="flex items-center gap-1.5 text-[#8a8a9e]">
+          <div className="flex items-center gap-1 bg-[#0a0a0c] border border-[#262633] px-1 py-0.5 rounded">
+            <button
+              onClick={() => handleZoom(-0.1)}
+              className="p-1 hover:text-white transition-colors"
+              title="Zoom Out"
+            >
+              <ZoomOut className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] font-bold text-[#d4af37] px-1">{Math.round(zoomLevel * 100)}%</span>
+            <button
+              onClick={() => handleZoom(0.1)}
+              className="p-1 hover:text-white transition-colors"
+              title="Zoom In"
+            >
+              <ZoomIn className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setZoomLevel(1)}
+              className="p-1 hover:text-white transition-colors border-l border-[#262633] ml-0.5 pl-1.5"
+              title="Reset Zoom"
+            >
+              <RotateCcw className="w-3 h-3 text-[#8a8a9e]" />
+            </button>
+          </div>
+
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1 hover:text-white bg-[#0a0a0c] border border-[#262633] rounded transition-colors"
+            className="p-1 hover:text-white bg-[#0a0a0c] border border-[#262633] rounded transition-colors ml-1"
             title={isFullscreen ? 'Minimize View' : 'Expand Fullscreen'}
           >
             {isFullscreen ? <Minimize2 className="w-3.5 h-3.5 text-[#d4af37]" /> : <Maximize2 className="w-3.5 h-3.5" />}
@@ -188,69 +276,79 @@ export default function DetectiveBoard({ caseBundle, activeCaseId }) {
         </div>
       </div>
 
-      {/* SVG Connecting Lines & Interactive Graph Canvas */}
-      <div className="relative flex-1 w-full min-h-[360px] bg-[radial-gradient(#262633_1px,transparent_1px)] [background-size:16px_16px] overflow-hidden my-2 rounded border border-[#262633]/40">
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          {allNodes.filter(n => n.id !== 'center' && isNodeVisible(n)).map((node) => {
+      {/* SVG Connecting Lines & Interactive Radial Graph Canvas */}
+      <div className="relative flex-1 w-full min-h-[400px] bg-[radial-gradient(#262633_1px,transparent_1px)] [background-size:20px_20px] overflow-auto my-2 rounded border border-[#262633]/40 flex items-center justify-center">
+        <div 
+          className="relative w-full h-full min-h-[400px] transition-transform duration-200"
+          style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'center center' }}
+        >
+          <svg className="absolute inset-0 w-full h-full pointer-events-none">
+            {allNodes.filter(n => n.id !== 'center' && isNodeVisible(n)).map((node) => {
+              const isHovered = hoveredNodeId === node.id;
+              const isSelected = selectedNode?.id === node.id;
+              const strokeColor = getLineColor(node.type);
+              const strokeWidth = isSelected ? 2.5 : isHovered ? 2.2 : 1.2;
+              const opacity = (hoveredNodeId || selectedNode) 
+                ? (isHovered || isSelected ? 1 : 0.15) 
+                : 0.45;
+
+              return (
+                <line
+                  key={node.id}
+                  x1="50%"
+                  y1="50%"
+                  x2={`${node.x}%`}
+                  y2={`${node.y}%`}
+                  stroke={strokeColor}
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={isSelected || isHovered ? 'none' : '4 4'}
+                  opacity={opacity}
+                  className="transition-all duration-300"
+                />
+              );
+            })}
+          </svg>
+
+          {/* Render Interactive Radial Nodes */}
+          {allNodes.filter(isNodeVisible).map((node) => {
             const isHovered = hoveredNodeId === node.id;
             const isSelected = selectedNode?.id === node.id;
-            const strokeColor = getLineColor(node.type);
-            const strokeWidth = isSelected ? 2.5 : isHovered ? 2 : 1.2;
-            const opacity = isSelected ? 1 : isHovered ? 0.9 : 0.45;
+            const isDimmed = (hoveredNodeId || selectedNode) && !isHovered && !isSelected && node.id !== 'center';
 
             return (
-              <line
+              <motion.div
                 key={node.id}
-                x1="50%"
-                y1="48%"
-                x2={`${node.x}%`}
-                y2={`${node.y}%`}
-                stroke={strokeColor}
-                strokeWidth={strokeWidth}
-                strokeDasharray={isSelected || isHovered ? 'none' : '4 4'}
-                opacity={opacity}
-                className="transition-all duration-300"
-              />
+                onClick={() => setSelectedNode(node)}
+                onMouseEnter={() => setHoveredNodeId(node.id)}
+                onMouseLeave={() => setHoveredNodeId(null)}
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ 
+                  scale: isSelected ? 1.1 : isHovered ? 1.08 : 1, 
+                  opacity: isDimmed ? 0.35 : 1 
+                }}
+                style={{
+                  left: `${node.x}%`,
+                  top: `${node.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: isSelected ? 30 : isHovered ? 25 : node.id === 'center' ? 20 : 10,
+                }}
+                className={`absolute cursor-pointer border rounded-lg px-2.5 py-1.5 shadow-xl transition-all select-none max-w-[130px] sm:max-w-[150px] ${getBorderColor(
+                  node.type,
+                  isHovered,
+                  isSelected
+                )}`}
+              >
+                <div className="flex items-center gap-1.5 font-bold text-xs">
+                  {getIcon(node.type)}
+                  <span className="truncate">{node.label}</span>
+                </div>
+                <p className="text-[10px] text-[#8a8a9e] truncate mt-0.5 font-mono">
+                  {node.sub}
+                </p>
+              </motion.div>
             );
           })}
-        </svg>
-
-        {/* Render Interactive Nodes */}
-        {allNodes.filter(isNodeVisible).map((node) => {
-          const isHovered = hoveredNodeId === node.id;
-          const isSelected = selectedNode?.id === node.id;
-          const isCenter = node.id === 'center';
-
-          return (
-            <motion.div
-              key={node.id}
-              onClick={() => setSelectedNode(node)}
-              onMouseEnter={() => setHoveredNodeId(node.id)}
-              onMouseLeave={() => setHoveredNodeId(null)}
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              whileHover={{ scale: 1.05 }}
-              style={{
-                left: `${node.x}%`,
-                top: `${node.y}%`,
-                transform: 'translate(-50%, -50%)',
-              }}
-              className={`absolute cursor-pointer border rounded-lg px-2.5 py-1.5 shadow-xl transition-all select-none max-w-[125px] sm:max-w-[140px] z-10 ${getBorderColor(
-                node.type,
-                isHovered,
-                isSelected
-              )}`}
-            >
-              <div className="flex items-center gap-1.5 font-bold text-xs">
-                {getIcon(node.type)}
-                <span className="truncate">{node.label}</span>
-              </div>
-              <p className="text-[10px] text-[#8a8a9e] truncate mt-0.5 font-mono">
-                {node.sub}
-              </p>
-            </motion.div>
-          );
-        })}
+        </div>
       </div>
 
       {/* Selected Node Inspection Drawer Modal */}
@@ -323,7 +421,4 @@ export default function DetectiveBoard({ caseBundle, activeCaseId }) {
       </AnimatePresence>
     </div>
   );
-
-  return content;
 }
-
