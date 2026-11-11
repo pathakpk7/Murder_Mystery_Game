@@ -1,6 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, Search } from 'lucide-react';
+import { 
+  Volume2, 
+  VolumeX, 
+  Search, 
+  Terminal, 
+  Database, 
+  Shield, 
+  FileText, 
+  Radio, 
+  Key, 
+  Skull,
+  Eye,
+  AlertTriangle
+} from 'lucide-react';
 import {
   playCordPullSound,
   playLightSwitchSound,
@@ -268,123 +281,215 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
           isLightOn ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
-          background: `radial-gradient(circle 680px at 50% 34%, rgba(195, 155, 65, 0.18) 0%, rgba(18, 14, 9, 0.8) 50%, #020203 78%)`,
+          background: `radial-gradient(circle 800px at 50% 32%, rgba(200, 160, 65, 0.16) 0%, rgba(16, 12, 8, 0.85) 55%, #020203 82%)`,
         }}
       >
         {/* Soft, dim vertical light cone */}
         <div 
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[650px] h-full opacity-60"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[750px] h-full opacity-60"
           style={{
-            background: 'conic-gradient(from 180deg at 50% 30%, transparent 75deg, rgba(255, 220, 130, 0.05) 86deg, rgba(255, 210, 110, 0.09) 90deg, rgba(255, 220, 130, 0.05) 94deg, transparent 105deg)',
+            background: 'conic-gradient(from 180deg at 50% 28%, transparent 72deg, rgba(255, 220, 130, 0.05) 85deg, rgba(255, 210, 110, 0.08) 90deg, rgba(255, 220, 130, 0.05) 95deg, transparent 108deg)',
             filter: 'blur(16px)',
           }}
         />
 
-        {/* Faint subtle dust particles */}
-        <div className="absolute inset-0 opacity-25">
-          <div className="absolute w-1.5 h-1.5 rounded-full bg-amber-200/40 blur-[1px] top-[38%] left-[49%] animate-pulse" />
-          <div className="absolute w-1 h-1 rounded-full bg-amber-300/30 blur-[1px] top-[44%] left-[52%] animate-ping" style={{ animationDuration: '5s' }} />
+        {/* Ambient corkboard & dark wood desk texture pattern */}
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `radial-gradient(#d4af37 0.75px, transparent 0.75px)`,
+            backgroundSize: '24px 24px',
+          }}
+        />
+
+        {/* Floating dust specks in the incandescent light */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute w-1.5 h-1.5 rounded-full bg-amber-200/50 blur-[1px] top-[36%] left-[49%] animate-pulse" />
+          <div className="absolute w-1 h-1 rounded-full bg-amber-300/40 blur-[1px] top-[42%] left-[53%] animate-ping" style={{ animationDuration: '6s' }} />
         </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 2. THE MYSTERY SCENE & OBJECTS */}
+      {/* 2. THE DETECTIVE EVIDENCE ROOM & WEBSITE DETAILS */}
       {/* ------------------------------------------------------------- */}
       {isLightOn && (
         <div className="absolute inset-0 z-10 pointer-events-auto">
 
-          {/* Minimalist Audio Toggle in extreme top-left corner */}
-          <button
-            onClick={handleToggleMute}
-            className="absolute top-6 left-6 z-30 p-2 text-neutral-600 hover:text-neutral-300 transition-colors"
-            title="Toggle Sound Effects"
-          >
-            {muted ? <VolumeX className="w-4 h-4 text-neutral-600" /> : <Volume2 className="w-4 h-4 text-[#8c7b58]" />}
-          </button>
+          {/* SVG RED THREADS CONNECTING CLUES ACROSS THE BOARD */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0">
+            {/* Thread from Top Right Suspect Dossier to Center Project Vritara */}
+            <line x1="82%" y1="18%" x2="50%" y2="38%" stroke="#8b0000" strokeWidth="1.5" strokeDasharray="4 2" />
+            {/* Thread from Center to Left Cases Index */}
+            <line x1="50%" y1="38%" x2="22%" y2="58%" stroke="#8b0000" strokeWidth="1.5" strokeDasharray="4 2" />
+            {/* Thread from Left Cases to Bottom Credentials */}
+            <line x1="22%" y1="58%" x2="20%" y2="82%" stroke="#8b0000" strokeWidth="1.5" strokeDasharray="4 2" />
+          </svg>
 
-          {/* TOP RIGHT: Shadowy Confidential Dossier */}
-          <div
-            onMouseEnter={handleTopRightInspect}
-            className="absolute top-8 right-8 sm:top-10 sm:right-12 z-20 cursor-crosshair group"
-          >
-            {/* Dark dossier envelope silhouette pinned to the wall */}
-            <div 
-              className={`p-3.5 sm:p-4 rounded border transition-all duration-700 max-w-[220px] sm:max-w-[260px] ${
-                hasInspectedTopRight
-                  ? 'bg-[#0e0d0c] border-[#8c7b58]/50 shadow-[0_0_20px_rgba(140,123,88,0.2)]'
-                  : 'bg-[#070708]/90 border-neutral-900/80 shadow-md opacity-40 group-hover:opacity-70'
-              }`}
+          {/* TOP LEFT: Minimal Audio Toggle & Police Radio Intercept */}
+          <div className="absolute top-5 left-5 sm:top-8 sm:left-8 z-30 flex items-center gap-3">
+            <button
+              onClick={handleToggleMute}
+              className="p-2 sm:px-3 sm:py-1.5 rounded bg-[#0a0a0d]/80 border border-[#4a3b1d]/40 text-[#8c7b58] hover:text-[#d4af37] hover:border-[#8c7b58] transition-all text-xs font-mono flex items-center gap-2 backdrop-blur-sm"
+              title="Toggle Audio Effects"
             >
-              {/* Pinned thumbtack mark */}
-              <div className="w-2 h-2 rounded-full bg-red-900 mx-auto -mt-2 mb-2 shadow" />
+              {muted ? <VolumeX className="w-4 h-4 text-neutral-600" /> : <Volume2 className="w-4 h-4 text-[#c7a760]" />}
+              <span className="hidden sm:inline font-bold text-[10px] tracking-wider">{muted ? "MUTED" : "POLICE AUDIO ON"}</span>
+            </button>
 
-              <div className="text-[10px] font-mono tracking-widest text-[#7a6a4a] uppercase font-bold border-b border-neutral-800 pb-1 mb-1.5">
-                DOSSIER // 09
-              </div>
-
-              {/* Secret Details only illuminated clearly through magnifier */}
-              <p className="text-[11px] font-mono text-neutral-400 leading-snug">
-                {hasMagnifier || hasInspectedTopRight ? (
-                  <span className="text-[#c7a760] font-bold">
-                    "SUTRADHAR CELL CONFIRMED — CIPHER 884-VX"
-                  </span>
-                ) : (
-                  <span className="blur-[1.5px] text-neutral-600">
-                    [CLASSIFIED INTEL - REQUIRES MAGNIFIER]
-                  </span>
-                )}
-              </p>
+            {/* Wiretap Radio Intercept Badge */}
+            <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded bg-[#0a0a0d]/70 border border-[#262633] text-[10px] font-mono text-neutral-400">
+              <Radio className="w-3 h-3 text-red-500 animate-pulse" />
+              <span>WIRETAP: 02:14 AM // ENCRYPTED SQL INJECTION DETECTED</span>
             </div>
           </div>
 
-          {/* DEAD-CENTER ILLUMINATED EMBLEM: PROJECT VRITARA */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center pt-28 sm:pt-32 pointer-events-none px-4 text-center">
-            {/* Dark Antique Title */}
+          {/* TOP RIGHT: The Classified Mastermind Dossier (The Clue target for the handler hint) */}
+          <div
+            onMouseEnter={handleTopRightInspect}
+            className="absolute top-6 right-5 sm:top-8 sm:right-10 z-20 cursor-crosshair group max-w-[240px] sm:max-w-[290px]"
+          >
+            <div 
+              className={`p-3.5 sm:p-4 rounded border transition-all duration-500 relative ${
+                hasInspectedTopRight
+                  ? 'bg-[#100f0d]/95 border-[#8c7b58] shadow-[0_0_25px_rgba(140,123,88,0.25)]'
+                  : 'bg-[#0a090b]/90 border-[#382f1b]/60 shadow-xl opacity-80 group-hover:opacity-100 group-hover:border-[#6b582b]'
+              }`}
+            >
+              {/* Red thumbtack marker */}
+              <div className="w-2.5 h-2.5 rounded-full bg-red-700 mx-auto -mt-2 mb-2 shadow-[0_0_6px_#ef4444]" />
+
+              <div className="flex items-center justify-between border-b border-[#2b2416] pb-1.5 mb-2">
+                <span className="text-[10px] font-mono tracking-widest text-[#c7a760] font-bold">
+                  DOSSIER // CELL 09
+                </span>
+                <span className="text-[9px] font-mono bg-red-950/80 border border-red-800 text-red-300 px-1 rounded">
+                  TOP SECRET
+                </span>
+              </div>
+
+              <div className="space-y-1 text-[11px] font-mono text-neutral-300 leading-snug">
+                <p>
+                  <strong className="text-neutral-400 font-normal">MASTERMIND:</strong>{" "}
+                  <span className="text-[#e2c174] font-bold">THE SUTRADHAR</span>
+                </p>
+                <p className="text-[10px] text-neutral-400 leading-tight">
+                  Infiltrated 18 state police jurisdictions. Manipulates real-time forensic database tables.
+                </p>
+              </div>
+
+              {/* Secret UV Clue revealed by Magnifier or upon inspection */}
+              <div className="mt-2.5 pt-2 border-t border-[#2b2416] text-[10px] font-mono">
+                {hasMagnifier || hasInspectedTopRight ? (
+                  <span className="text-emerald-400 font-bold block animate-pulse">
+                    🔍 [UV DECRYPTED: ARCHIVE CIPHER 884-VX • BUTTON ENGAGED]
+                  </span>
+                ) : (
+                  <span className="text-neutral-500 italic block">
+                    • [INSPECT WITH MAGNIFIER]
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* MAIN CENTERPIECE: PROJECT VRITARA & GAME MISSION BRIEFING */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pt-24 sm:pt-28 pointer-events-none px-4 text-center">
+            {/* Title: Antique Metallic Gold Header */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.2 }}
+              transition={{ duration: 1, delay: 0.2 }}
               className="space-y-2 pointer-events-auto"
             >
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-serif tracking-[0.16em] text-[#8c7b58] drop-shadow-[0_2px_18px_rgba(0,0,0,0.95)]">
+              <div className="inline-flex items-center gap-2 px-3 py-0.5 mb-1 rounded bg-[#120f09]/80 border border-[#4a3916] text-[10px] sm:text-xs font-mono font-bold tracking-widest text-[#c7a760] uppercase shadow-md">
+                <Shield className="w-3.5 h-3.5 text-red-500" />
+                CBI FORENSIC TASK FORCE SPECIAL UNIT
+              </div>
+
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-serif tracking-[0.16em] text-[#c7a760] drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]">
                 PROJECT VRITARA
               </h1>
 
-              {/* Tagline: Subtle, moody italic serif */}
-              <p className="text-xs sm:text-sm md:text-base font-serif italic text-[#6e6044] tracking-[0.25em] uppercase font-medium">
+              {/* Tagline: Atmospheric Gold Noir Serif */}
+              <p className="text-xs sm:text-base md:text-lg font-serif italic text-[#8c7b58] tracking-[0.25em] uppercase font-semibold">
                 “Things aren’t always what they seem”
+              </p>
+
+              {/* Core Game Features / Website Details Bar */}
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-xs font-mono text-neutral-400">
+                <span className="flex items-center gap-1.5 bg-[#0a0a0c]/80 border border-[#2b2416] px-2.5 py-1 rounded">
+                  <Skull className="w-3.5 h-3.5 text-red-400" />
+                  <strong>18 INTERCONNECTED COLD CASES</strong>
+                </span>
+                <span className="hidden sm:inline text-neutral-600">•</span>
+                <span className="flex items-center gap-1.5 bg-[#0a0a0c]/80 border border-[#2b2416] px-2.5 py-1 rounded">
+                  <Database className="w-3.5 h-3.5 text-[#c7a760]" />
+                  <strong>SQL FORENSIC WEAPON</strong>
+                </span>
+                <span className="hidden sm:inline text-neutral-600">•</span>
+                <span className="flex items-center gap-1.5 bg-[#0a0a0c]/80 border border-[#2b2416] px-2.5 py-1 rounded">
+                  <Key className="w-3.5 h-3.5 text-amber-400" />
+                  <strong>1 NATIONWIDE CONSPIRACY</strong>
+                </span>
+              </div>
+            </motion.div>
+
+            {/* REAL SQL FORENSIC QUERY TERMINAL STRIP ON THE EVIDENCE DESK */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, delay: 0.4 }}
+              className="mt-6 pointer-events-auto max-w-lg w-full bg-[#08080a]/90 border border-[#2b2416] rounded p-2.5 text-left font-mono text-[10px] sm:text-[11px] shadow-2xl backdrop-blur-sm"
+            >
+              <div className="flex items-center justify-between border-b border-[#1c1810] pb-1 mb-1.5 text-neutral-500 text-[9px]">
+                <span className="flex items-center gap-1 text-[#c7a760]">
+                  <Terminal className="w-3 h-3 text-[#c7a760]" />
+                  FORENSIC_DB_QUERY // CASE_00.sql
+                </span>
+                <span className="text-emerald-500 font-bold">SQL ENGINE ACTIVE</span>
+              </div>
+              <p className="text-emerald-400 font-mono leading-tight">
+                <span className="text-[#c7a760] font-bold">SELECT</span> suspect_id, alibi, poison_trace <br />
+                <span className="text-[#c7a760] font-bold">FROM</span> autopsy_and_call_logs <br />
+                <span className="text-[#c7a760] font-bold">WHERE</span> incident_time = <span className="text-amber-300">'02:14:00'</span> <br />
+                <span className="text-[#c7a760] font-bold">ORDER BY</span> alibi_discrepancy <span className="text-red-400 font-bold">DESC</span>;
               </p>
             </motion.div>
           </div>
 
-          {/* SUBTLE MYSTERY OBJECTS ON THE TABLE (Dark shadows, no bright cards) */}
-          
-          {/* Shadow Object: Faint Evidence Marker #18 on the left */}
-          <div className="hidden sm:block absolute bottom-12 left-12 p-3 opacity-30 pointer-events-none">
-            <div className="w-8 h-10 border border-amber-900/40 rounded-t flex items-center justify-center text-[10px] font-mono text-[#7a6a4a]">
-              #18
+          {/* LEFT SIDE: 18 Cases Dossier Index & Evidence Marker */}
+          <div className="hidden lg:block absolute bottom-8 left-8 sm:bottom-12 sm:left-12 z-20 max-w-[260px] p-3.5 rounded bg-[#0c0b0e]/90 border border-[#2b2416] shadow-2xl font-mono text-[11px]">
+            <div className="flex items-center gap-1.5 text-[10px] text-[#c7a760] font-bold border-b border-[#221c11] pb-1 mb-2">
+              <FileText className="w-3.5 h-3.5 text-[#c7a760]" />
+              <span>ACTIVE CASE ARCHIVES</span>
+            </div>
+            <ul className="space-y-1 text-[10px] text-neutral-400">
+              <li className="text-neutral-300 font-semibold">• Case 00: Nagabhavan Poisoning</li>
+              <li>• Case 01: The Hacked Telemetry</li>
+              <li>• Case 07: Red Sandalwood Syndicate</li>
+              <li>• Case 18: The Sutradhar Convergence</li>
+            </ul>
+            <div className="mt-2 pt-1.5 border-t border-[#221c11] flex items-center justify-between text-[9px] text-[#8c7b58]">
+              <span>STATUS: 18 OPEN</span>
+              <span className="text-red-400 font-bold">UNSOLVED</span>
             </div>
           </div>
 
-          {/* Shadow Object: Vintage Cassette Reel Silhouette */}
-          <div className="hidden md:block absolute top-[52%] left-[14%] w-16 h-10 rounded border border-neutral-900 bg-neutral-950/60 opacity-30 pointer-events-none flex items-center justify-around px-2">
-            <div className="w-4 h-4 rounded-full border border-neutral-800" />
-            <div className="w-4 h-4 rounded-full border border-neutral-800" />
-          </div>
-
-          {/* THE MAGNIFYING GLASS (Resting naturally in the shadows on the desk) */}
+          {/* THE MAGNIFYING GLASS (Resting on the desk with an eerie brass glint) */}
           {!hasMagnifier && (
             <div
               onClick={handlePickupMagnifier}
-              className="absolute top-[62%] right-[22%] sm:right-[26%] z-20 cursor-pointer group flex flex-col items-center"
-              title="Pick up Magnifying Glass"
+              className="absolute top-[62%] right-[18%] sm:right-[22%] z-20 cursor-pointer group flex flex-col items-center"
+              title="Pick up Magnifying Glass to search details"
             >
-              {/* Subtle ambient glint */}
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#8c7b58]/80 bg-[#0d0c0a]/90 flex items-center justify-center shadow-[0_0_15px_rgba(140,123,88,0.25)] group-hover:scale-105 group-hover:border-[#c7a760] transition-transform duration-300">
+              {/* Subtle pulsating glint */}
+              <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#8c7b58] bg-[#0d0c0a]/90 flex items-center justify-center shadow-[0_0_20px_rgba(140,123,88,0.3)] group-hover:scale-110 group-hover:border-[#c7a760] transition-all duration-300">
                 <Search className="w-7 h-7 sm:w-8 sm:h-8 text-[#8c7b58] group-hover:text-[#c7a760] transition-colors" />
-                {/* Gentle glint dot */}
-                <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-amber-400/60 animate-ping" />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-400 animate-ping" />
               </div>
+              <span className="mt-1.5 px-2 py-0.5 rounded bg-[#0a0a0d]/90 border border-[#4a3b1d] text-[9px] font-mono font-bold text-[#c7a760] uppercase tracking-wider shadow">
+                EQUIP MAGNIFIER
+              </span>
             </div>
           )}
 
@@ -395,8 +500,8 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
               <button
                 onClick={handleRedButtonClick}
                 disabled={stage === 'EXITING'}
-                className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-b from-red-600 via-red-700 to-red-950 border-2 border-red-950 shadow-[0_4px_0_#380808,0_6px_16px_rgba(180,20,20,0.4)] active:translate-y-1 active:shadow-[0_1px_0_#380808] hover:brightness-110 transition-all flex items-center justify-center group"
-                title="Enter Room"
+                className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-b from-red-600 via-red-700 to-red-950 border-2 border-red-950 shadow-[0_4px_0_#380808,0_6px_16px_rgba(180,20,20,0.5)] active:translate-y-1 active:shadow-[0_1px_0_#380808] hover:brightness-110 transition-all flex items-center justify-center group"
+                title="Press to Enter Room"
               >
                 {/* Subtle specular glint */}
                 <div className="absolute top-1 left-2 right-2 h-3 rounded-full bg-white/20 blur-[0.5px]" />
@@ -404,6 +509,10 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
                 {/* Central glowing indicator core */}
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400 group-hover:bg-red-300 shadow-[0_0_8px_#ef4444] animate-pulse" />
               </button>
+
+              <span className="mt-1.5 text-[9px] font-mono tracking-widest text-[#8c7b58] uppercase font-bold text-center">
+                ENTER
+              </span>
             </div>
           </div>
         </div>
@@ -509,12 +618,15 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
           }}
         >
           {/* Forensic Optic Lens */}
-          <div className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full border-2 border-[#8c7b58] bg-amber-400/5 backdrop-brightness-125 shadow-[0_0_25px_rgba(140,123,88,0.3),inset_0_0_15px_rgba(255,255,255,0.15)] flex items-center justify-center">
+          <div className="relative w-36 h-36 sm:w-42 sm:h-42 rounded-full border-2 border-[#c7a760] bg-amber-400/5 backdrop-brightness-125 shadow-[0_0_25px_rgba(199,167,96,0.35),inset_0_0_15px_rgba(255,255,255,0.15)] flex items-center justify-center">
             {/* Fine crosshairs */}
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
-              <div className="w-full h-[1px] bg-[#8c7b58]" />
-              <div className="h-full w-[1px] bg-[#8c7b58]" />
+              <div className="w-full h-[1px] bg-[#c7a760]" />
+              <div className="h-full w-[1px] bg-[#c7a760]" />
             </div>
+            <span className="absolute bottom-2 text-[8px] font-mono tracking-widest text-[#c7a760] bg-black/60 px-1 rounded">
+              UV OPTIC ZOOM
+            </span>
           </div>
 
           {/* Wooden / Brass Handle */}
@@ -538,7 +650,7 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
             className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-6 text-center"
           >
             {/* Soft dark vignette behind the floating text */}
-            <div className="max-w-4xl px-8 py-6 rounded-2xl bg-black/60 backdrop-blur-[2px]">
+            <div className="max-w-4xl px-8 py-6 rounded-2xl bg-black/70 backdrop-blur-[2px]">
               <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-mono uppercase font-black tracking-widest text-red-600/90 drop-shadow-[0_0_25px_rgba(220,38,38,0.8)] leading-relaxed">
                 {currentHintText}
               </h2>
