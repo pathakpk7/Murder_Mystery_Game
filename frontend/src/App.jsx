@@ -13,9 +13,11 @@ import LeaderboardView from './views/LeaderboardView';
 import ProgressView from './views/ProgressView';
 import CredentialsView from './views/CredentialsView';
 import GuideView from './views/GuideView';
+import InteractiveStoryLanding from './views/InteractiveStoryLanding';
 
 function AppContent() {
   const { db, toast } = usePlayer();
+  const [hasEnteredRoom, setHasEnteredRoom] = useState(false);
   const [currentView, setCurrentView] = useState('home');
   const [activeCaseId, setActiveCaseId] = useState(0);
 
@@ -25,6 +27,10 @@ function AppContent() {
   const [solvedData, setSolvedData] = useState(null);
 
   const handleNavigate = (viewId) => {
+    if (viewId === 'prologue') {
+      setHasEnteredRoom(false);
+      return;
+    }
     setCurrentView(viewId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -43,6 +49,18 @@ function AppContent() {
   };
 
   const briefingCaseData = db?.game_cases?.find((c) => c.id === briefingCaseId);
+
+  // Story Landing Page (Black screen, hanging light pull cord, magnifying glass, red button)
+  if (!hasEnteredRoom) {
+    return (
+      <InteractiveStoryLanding
+        onEnterRoom={() => {
+          setHasEnteredRoom(true);
+          setCurrentView('home');
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#070709] text-[#e0e0e0] font-sans antialiased flex flex-col selection:bg-[#d4af37]/30 selection:text-[#d4af37]">

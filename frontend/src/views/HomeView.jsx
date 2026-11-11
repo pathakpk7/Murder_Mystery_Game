@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePlayer } from '../context/PlayerContext';
-import { Shield, GraduationCap, Key, Scroll, Skull, Network, Crown, Database, Filter, Link, History, UserCheck, Play, ArrowRight, CheckCircle2, Terminal, Award, Users, Eye, Search, Microscope, Trophy } from 'lucide-react';
+import { Shield, GraduationCap, Key, Scroll, Skull, Network, Crown, Database, Filter, Link, History, UserCheck, Play, ArrowRight, CheckCircle2, Terminal, Award, Users, Eye, Search, Microscope, Trophy, Radio } from 'lucide-react';
 
 export default function HomeView({ onNavigate, onOpenBriefing, onOpenAuth }) {
   const { player, loginUser } = usePlayer();
@@ -136,6 +136,14 @@ export default function HomeView({ onNavigate, onOpenBriefing, onOpenAuth }) {
           >
             <Scroll className="w-4 h-4 text-[#d4af37]" />
             ENTER CASE DOSSIER
+          </button>
+          <button
+            onClick={() => onNavigate('prologue')}
+            className="flex items-center gap-2 bg-[#141419] hover:bg-[#262633] text-[#d4af37] border border-[#d4af37]/40 hover:border-[#d4af37] px-6 py-3.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all"
+            title="Replay Interactive Noir Story Landing"
+          >
+            <Radio className="w-4 h-4 text-red-500 animate-pulse" />
+            REPLAY PROLOGUE ROOM
           </button>
         </motion.div>
       </section>

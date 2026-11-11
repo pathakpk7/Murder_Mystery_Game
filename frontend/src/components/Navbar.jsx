@@ -17,6 +17,7 @@ export default function Navbar({ currentView, onNavigate, onOpenAuth }) {
   }, []);
 
   const navItems = [
+    { id: 'prologue', label: 'PROLOGUE' },
     { id: 'home', label: 'HOME' },
     { id: 'cases', label: 'CASES DOSSIER' },
     { id: 'investigation', label: 'INVESTIGATION' },
