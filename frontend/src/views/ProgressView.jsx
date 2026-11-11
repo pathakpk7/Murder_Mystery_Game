@@ -23,7 +23,7 @@ export default function ProgressView() {
       <div className="bg-[#141419] border border-[#d4af37]/40 rounded-lg p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
         <div className="space-y-1">
           <h2 className="text-xl font-bold text-[#d4af37]">{player.name}</h2>
-          <p className="text-xs text-[#8a8a9e] font-mono">{player.email || 'prasoon.pathak@vritra-tf.gov.in'}</p>
+          <p className="text-xs text-[#8a8a9e] font-mono">{player.email || 'Unregistered Guest Session'}</p>
         </div>
 
         <div className="flex items-center gap-4">

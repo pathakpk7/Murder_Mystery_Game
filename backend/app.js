@@ -36,7 +36,6 @@ app.use(cors({
     if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    // Allow CORS if origin matches frontend domain or during deployment testing
     return callback(null, true);
   },
   credentials: true,
@@ -46,12 +45,25 @@ app.use(express.json());
 app.use(rateLimiter);
 app.use(requestLogger);
 
-// Routes
+// Case routes (supports both /api/cases and /api/game/cases)
 app.use('/api/cases', caseRoutes);
-app.use('/api/progress', progressRoutes);
+app.use('/api/game/cases', caseRoutes);
+
+// Query routes (supports /api/query and /api/game for execute-query)
 app.use('/api/query', queryRoutes);
+app.use('/api/game', queryRoutes);
+
+// Leaderboard routes
 app.use('/api/leaderboard', leaderboardRoutes);
+
+// Profile, User, and Player routes
 app.use('/api/profile', profileRoutes);
+app.use('/api/user', profileRoutes);
+app.use('/api/player', profileRoutes);
+
+// Progress routes & direct accusation route
+app.use('/api/progress', progressRoutes);
+app.use('/api/accuse', progressRoutes);
 app.use('/api/achievements', achievementRoutes);
 
 // Root endpoint
@@ -63,10 +75,11 @@ app.get('/', (req, res) => {
   });
 });
 
-// Health check endpoint (safe - no secrets exposed)
+// Health check endpoint (safe - no secrets exposed, returns HTTP 503 on database unavailability without crashing)
 app.get('/api/health', async (req, res) => {
   try {
     let dbStatus = 'not_configured';
+    let isHealthy = true;
     
     if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY && process.env.SUPABASE_ANON_KEY !== 'dummy_key') {
       try {
@@ -77,24 +90,32 @@ app.get('/api/health', async (req, res) => {
 
         if (error) {
           dbStatus = `error: ${error.message}`;
+          isHealthy = false;
         } else {
           dbStatus = 'connected';
         }
       } catch (e) {
         dbStatus = `error: ${e.message}`;
+        isHealthy = false;
       }
+    } else {
+      dbStatus = 'unconfigured_env';
     }
 
-    res.json({
-      success: true,
+    const statusCode = isHealthy ? 200 : 503;
+
+    res.status(statusCode).json({
+      success: isHealthy,
       database: dbStatus,
-      status: 'healthy',
+      status: isHealthy ? 'healthy' : 'degraded',
       version: '2.0.0 (Production)'
     });
   } catch (err) {
-    res.status(500).json({
+    res.status(503).json({
       success: false,
-      error: 'Health check failure'
+      status: 'unhealthy',
+      database: 'unavailable',
+      error: 'Health check probe failed'
     });
   }
 });

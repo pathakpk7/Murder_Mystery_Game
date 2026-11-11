@@ -31,10 +31,10 @@ router.post('/validate', async (req, res, next) => {
 });
 
 /**
- * POST /api/query/execute
+ * POST /api/query/execute or /api/game/execute-query
  * Safely execute a SELECT SQL query against Supabase or return canonical table results
  */
-router.post('/execute', async (req, res, next) => {
+router.post(['/execute', '/execute-query'], async (req, res, next) => {
   try {
     const { query, case_id } = req.body;
 

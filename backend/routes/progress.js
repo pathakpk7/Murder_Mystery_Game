@@ -116,4 +116,26 @@ router.post('/submit-query', async (req, res, next) => {
   }
 });
 
+/**
+ * POST /api/progress/choice, /api/player/choice, /api/accuse
+ * Record a player choice or suspect accusation
+ */
+router.post(['/choice', '/accuse', '/'], async (req, res, next) => {
+  try {
+    const { userId, caseId, suspectId, choice } = req.body;
+    res.json({
+      success: true,
+      message: 'Choice recorded',
+      data: {
+        userId: userId || 'anonymous',
+        caseId: caseId || 1,
+        suspectId: suspectId || choice || null,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

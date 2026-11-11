@@ -9,7 +9,7 @@ const DEFAULT_PLAYER = {
   email: '',
   xp: 0,
   totalStars: 0,
-  rank: 'Unassigned',
+  rank: 'Investigation Intern',
   completedCases: [],
   unlockedCases: [0, 1],
   caseProgress: {}
@@ -44,27 +44,35 @@ export const PlayerProvider = ({ children }) => {
         const sessionEmail = localStorage.getItem('vritra_current_session_email');
         const accounts = getUserAccounts();
 
-        if (sessionEmail && accounts[sessionEmail.toLowerCase()]) {
-          setPlayer(accounts[sessionEmail.toLowerCase()]);
-        } else {
-          const saved = localStorage.getItem('vritra_player_state');
-          if (saved) {
-            setPlayer(JSON.parse(saved));
-          } else {
-            setPlayer({
-              name: 'Prasoon Pathak',
-              email: 'prasoon.pathak@vritra-tf.gov.in',
-              xp: 0,
-              totalStars: 0,
-              rank: 'Investigation Intern',
-              completedCases: [],
-              unlockedCases: [0, 1],
-              caseProgress: {}
-            });
+        // Purge legacy Prasoon default session from browser storage if present
+        if (sessionEmail && sessionEmail.toLowerCase().includes('prasoon')) {
+          localStorage.removeItem('vritra_current_session_email');
+        }
+
+        const saved = localStorage.getItem('vritra_player_state');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && (parsed.name === 'Prasoon Pathak' || parsed.email?.toLowerCase().includes('prasoon'))) {
+            localStorage.removeItem('vritra_player_state');
+            localStorage.removeItem('vritra_current_session_email');
+            setPlayer(DEFAULT_PLAYER);
+            return;
+          }
+          if (parsed && parsed.email && parsed.name && parsed.name !== 'Guest Detective') {
+            setPlayer(parsed);
+            return;
           }
         }
+
+        if (sessionEmail && accounts[sessionEmail.toLowerCase()] && !sessionEmail.toLowerCase().includes('prasoon')) {
+          setPlayer(accounts[sessionEmail.toLowerCase()]);
+          return;
+        }
+
+        setPlayer(DEFAULT_PLAYER);
       } catch (err) {
         console.error('Failed to load initial state:', err);
+        setPlayer(DEFAULT_PLAYER);
       }
     };
 
@@ -147,7 +155,7 @@ export const PlayerProvider = ({ children }) => {
           unlockedCases: [0, 1],
           caseProgress: {}
         };
-        showToast(`✅ Registered new identity: ${name}`, 'success');
+        showToast(`✅ Welcome to the Task Force, Agent ${name}! Designated as Investigation Intern.`, 'success');
       }
     }
 
@@ -156,10 +164,10 @@ export const PlayerProvider = ({ children }) => {
 
   // Logout User
   const logoutUser = () => {
-    savePlayerState();
     localStorage.removeItem('vritra_current_session_email');
+    localStorage.removeItem('vritra_player_state');
     setPlayer(DEFAULT_PLAYER);
-    showToast('🚪 Logged out successfully. Enter credentials to restore progress.', 'info');
+    showToast('🚪 Logged out successfully. Reverted session to Guest Detective.', 'info');
   };
 
   // Complete a case

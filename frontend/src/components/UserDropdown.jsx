@@ -7,7 +7,14 @@ export default function UserDropdown({ onNavigate, onOpenAuth }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const isLoggedIn = player && player.email && player.name !== 'Guest Detective' && player.rank !== 'Unassigned';
+  const isLoggedIn = Boolean(
+    player && 
+    player.email && 
+    player.email.trim() !== '' && 
+    player.name !== 'Guest Detective' && 
+    player.name !== 'Prasoon Pathak' &&
+    !player.email.toLowerCase().includes('prasoon')
+  );
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -24,12 +31,12 @@ export default function UserDropdown({ onNavigate, onOpenAuth }) {
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-[#141419] border border-[#262633] hover:border-[#d4af37] px-3 py-1.5 rounded-md text-xs font-semibold text-[#d4af37] transition-all"
+        className="flex items-center gap-1.5 sm:gap-2 bg-[#141419] border border-[#262633] hover:border-[#d4af37] px-2 sm:px-3 py-1.5 rounded-md text-xs font-semibold text-[#d4af37] transition-all shrink-0"
         title="Investigator Identity & Menu"
       >
-        <Shield className="w-3.5 h-3.5 text-[#d4af37]" />
-        <span>{isLoggedIn ? player.name : 'Guest Detective'}</span>
-        <ChevronDown className="w-3 h-3 text-[#d4af37]" />
+        <Shield className="w-3.5 h-3.5 text-[#d4af37] shrink-0" />
+        <span className="max-w-[85px] sm:max-w-none truncate">{isLoggedIn ? player.name : 'Guest Detective'}</span>
+        <ChevronDown className="w-3 h-3 text-[#d4af37] shrink-0" />
       </button>
 
       {isOpen && (

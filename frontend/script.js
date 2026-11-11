@@ -1769,10 +1769,14 @@ const VritraApp = {
 
         // Draw Nodes
         nodes.forEach(node => {
+            // Clamp node positions to keep labels inside canvas
+            const clampedX = Math.max(50, Math.min(width - 50, node.x));
+            const clampedY = Math.max(30, Math.min(height - 45, node.y));
+
             // Pin circle
             ctx.fillStyle = node.color;
             ctx.beginPath();
-            ctx.arc(node.x, node.y, 14, 0, Math.PI * 2);
+            ctx.arc(clampedX, clampedY, 14, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = '#fff';
             ctx.lineWidth = 1.5;
@@ -1783,13 +1787,13 @@ const VritraApp = {
             ctx.strokeStyle = '#3d3d4d';
             ctx.lineWidth = 1;
             const textWidth = ctx.measureText(node.name).width;
-            ctx.fillRect(node.x - textWidth / 2 - 6, node.y + 18, textWidth + 12, 18);
-            ctx.strokeRect(node.x - textWidth / 2 - 6, node.y + 18, textWidth + 12, 18);
+            ctx.fillRect(clampedX - textWidth / 2 - 6, clampedY + 18, textWidth + 12, 18);
+            ctx.strokeRect(clampedX - textWidth / 2 - 6, clampedY + 18, textWidth + 12, 18);
 
             ctx.fillStyle = '#e0e0e0';
             ctx.font = '10px Inter, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(node.name, node.x, node.y + 31);
+            ctx.fillText(node.name, clampedX, clampedY + 31);
         });
     },
 
