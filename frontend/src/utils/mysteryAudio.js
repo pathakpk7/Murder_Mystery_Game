@@ -207,3 +207,37 @@ export function playRoomEnterBreachSound() {
   metalOsc.start(now + 0.2);
   metalOsc.stop(now + 1.4);
 }
+
+
+// Spooky whisper / radio frequency static burst for cryptic hints
+export function playSpookyWhisperSound() {
+  if (isMuted) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+  const bufferSize = Math.floor(ctx.sampleRate * 0.35);
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.12));
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(520, now);
+  filter.Q.setValueAtTime(4.5, now);
+
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.04, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+
+  noise.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+
+  noise.start(now);
+  noise.stop(now + 0.35);
+}

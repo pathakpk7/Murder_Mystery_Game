@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Cinzel+Decorative:wght@700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,6 +16,37 @@
 
 .glow-border {
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+/* Spooky cryptic horror text styling */
+@keyframes spookyFlicker {
+  0%, 100% {
+    opacity: 0.95;
+    text-shadow: 2px 0 10px rgba(255, 26, 60, 0.9), -2px 0 6px rgba(0, 255, 230, 0.35), 0 0 30px rgba(180, 0, 0, 0.85);
+  }
+  15% {
+    opacity: 0.72;
+    text-shadow: -2px 0 6px rgba(255, 26, 60, 0.8), 2px 0 10px rgba(255, 0, 100, 0.5);
+  }
+  30% {
+    opacity: 0.92;
+    text-shadow: 3px 0 14px rgba(255, 26, 60, 0.95), -1px 0 4px rgba(0, 255, 200, 0.4);
+  }
+  50% {
+    opacity: 0.6;
+    text-shadow: 1px 0 3px rgba(255, 26, 60, 0.6);
+  }
+  75% {
+    opacity: 0.98;
+    text-shadow: -3px 0 12px rgba(255, 26, 60, 0.9), 1px 0 6px rgba(0, 255, 255, 0.45), 0 0 25px rgba(220, 20, 60, 0.9);
+  }
+}
+
+.spooky-cryptic-text {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  animation: spookyFlicker 3.2s infinite ease-in-out;
+  letter-spacing: 0.35em;
+  color: #ff1f43;
 }
 
 /* Custom Scrollbars */

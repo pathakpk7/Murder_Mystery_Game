@@ -19,6 +19,7 @@ import {
   playClueFoundSound,
   playRedButtonPressSound,
   playRoomEnterBreachSound,
+  playSpookyWhisperSound,
   toggleMute,
   getIsMuted
 } from '../utils/mysteryAudio';
@@ -82,9 +83,10 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
     }
   };
 
-  // Helper to show hint text with slow fade-in and fade-out
+  // Helper to show hint text with slow fade-in and fade-out and spooky whisper
   const triggerHint = (text, durationMs = 3800) => {
     if (stage === 'EXITING') return;
+    playSpookyWhisperSound();
     setCurrentHintText(text);
     if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
     hintTimeoutRef.current = setTimeout(() => {
@@ -267,76 +269,54 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
   };
 
   // -----------------------------------------------------------------
-  // 5. REUSABLE CRIME ROOM EVIDENCE SCENE
-  // Rendered in two modes:
-  // - Dark Murky Shadow Mode (background, low opacity)
-  // - Illuminated Lens Mode (inside the magnifying glass circle with warm yellow glow)
+  // 5. CRIME ROOM EVIDENCE SCENE
+  // ONLY illuminated inside the magnifying glass circular lens!
   // -----------------------------------------------------------------
-  const renderCrimeSceneContent = (isIlluminated) => {
+  const renderCrimeSceneContent = () => {
     return (
       <div className="absolute inset-0 w-full h-full select-none">
         {/* Crime Board Red String */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
-          <line x1="82%" y1="18%" x2="50%" y2="38%" stroke="#8b0000" strokeWidth="1.5" strokeDasharray="4 2" />
-          <line x1="50%" y1="38%" x2="22%" y2="58%" stroke="#8b0000" strokeWidth="1.5" strokeDasharray="4 2" />
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-60">
+          <line x1="82%" y1="18%" x2="50%" y2="38%" stroke="#b21818" strokeWidth="1.8" strokeDasharray="5 3" />
+          <line x1="50%" y1="38%" x2="22%" y2="58%" stroke="#b21818" strokeWidth="1.8" strokeDasharray="5 3" />
         </svg>
 
         {/* TOP LEFT: Wiretap Dispatch Snippet */}
         <div className="absolute top-6 left-6 sm:top-8 sm:left-8 flex items-center gap-2">
-          <div className={`px-2.5 py-1 rounded text-[10px] font-mono border transition-colors ${
-            isIlluminated 
-              ? 'bg-[#15120c] border-[#8c7b58] text-[#e0cf9b]' 
-              : 'bg-[#060608] border-[#1a191f] text-[#3d3a42]'
-          }`}>
-            <span className="flex items-center gap-1.5 font-bold">
-              <Radio className={`w-3 h-3 ${isIlluminated ? 'text-red-500 animate-pulse' : 'text-[#3d3a42]'}`} />
+          <div className="px-3 py-1.5 rounded text-[10px] font-mono border bg-[#14110b] border-[#8c7b58] text-[#f0e2b6] shadow-lg">
+            <span className="flex items-center gap-2 font-bold tracking-wider">
+              <Radio className="w-3.5 h-3.5 text-red-500 animate-pulse" />
               <span>WIRETAP: 02:14 AM // ENCRYPTED SQL INJECTION DETECTED</span>
             </span>
           </div>
         </div>
 
         {/* TOP RIGHT: The Classified Mastermind Dossier Hotspot */}
-        <div className="absolute top-6 right-5 sm:top-8 sm:right-10 max-w-[250px] sm:max-w-[290px]">
-          <div className={`p-3.5 sm:p-4 rounded border transition-all ${
-            isIlluminated
-              ? 'bg-[#14120e] border-[#c7a760] shadow-[0_0_25px_rgba(212,175,55,0.3)]'
-              : 'bg-[#08080a] border-[#1c1a16] text-[#2d2a23]'
-          }`}>
-            <div className={`w-2.5 h-2.5 rounded-full mx-auto -mt-2 mb-2 ${
-              isIlluminated ? 'bg-red-700 shadow-[0_0_6px_#ef4444]' : 'bg-[#3b1212]'
-            }`} />
+        <div className="absolute top-6 right-5 sm:top-8 sm:right-10 max-w-[260px] sm:max-w-[300px]">
+          <div className="p-4 rounded border bg-[#16130e] border-[#c7a760] shadow-[0_0_35px_rgba(212,175,55,0.4)]">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-600 shadow-[0_0_8px_#ef4444] mx-auto -mt-2 mb-2" />
 
-            <div className={`flex items-center justify-between border-b pb-1 mb-2 ${
-              isIlluminated ? 'border-[#3d3420] text-[#f0d48f]' : 'border-[#171511] text-[#332c1c]'
-            }`}>
+            <div className="flex items-center justify-between border-b border-[#3d3420] pb-1.5 mb-2 text-[#f0d48f]">
               <span className="text-[10px] font-mono tracking-widest font-bold">
                 DOSSIER // CELL 09
               </span>
-              <span className={`text-[9px] font-mono px-1 rounded ${
-                isIlluminated ? 'bg-red-950 text-red-300 border border-red-800' : 'bg-[#1a0e0e] text-[#4d2525]'
-              }`}>
+              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-red-950 text-red-300 border border-red-800">
                 TOP SECRET
               </span>
             </div>
 
             <div className="space-y-1 text-[11px] font-mono leading-snug">
-              <p className={isIlluminated ? 'text-[#f5f0dc]' : 'text-[#36342e]'}>
-                <span className="font-normal opacity-70">MASTERMIND:</span>{" "}
-                <strong className={isIlluminated ? 'text-[#e2c174]' : 'text-[#473d25]'}>THE SUTRADHAR</strong>
+              <p className="text-[#f5f0dc]">
+                <span className="font-normal opacity-80">MASTERMIND:</span>{" "}
+                <strong className="text-[#f0d48f]">THE SUTRADHAR</strong>
               </p>
-              <p className={`text-[10px] leading-tight ${isIlluminated ? 'text-[#d6c79a]' : 'text-[#2a2924]'}`}>
+              <p className="text-[10px] text-[#d6c79a] leading-tight">
                 Infiltrated 18 state police jurisdictions. Manipulates real-time forensic database tables.
               </p>
             </div>
 
-            <div className={`mt-2.5 pt-2 border-t text-[10px] font-mono ${
-              isIlluminated ? 'border-[#3d3420] text-emerald-400 font-bold' : 'border-[#171511] text-[#22211d]'
-            }`}>
-              {isIlluminated ? (
-                <span>🔍 [UV DECRYPTED: ARCHIVE CIPHER 884-VX • BREACH READY]</span>
-              ) : (
-                <span>• [INSPECT WITH MAGNIFIER]</span>
-              )}
+            <div className="mt-2.5 pt-2 border-t border-[#3d3420] text-[10px] font-mono text-emerald-400 font-bold">
+              <span>🔍 [UV DECRYPTED: ARCHIVE CIPHER 884-VX • BREACH READY]</span>
             </div>
           </div>
         </div>
@@ -344,87 +324,63 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
         {/* CENTERPIECE: PROJECT VRITARA & GAME DETAILS */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-24 sm:pt-28 pointer-events-none px-4 text-center">
           <div className="space-y-2">
-            <div className={`inline-flex items-center gap-1.5 px-3 py-0.5 mb-1 rounded text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase border ${
-              isIlluminated 
-                ? 'bg-[#181308] border-[#8c7b58] text-[#f2d894]' 
-                : 'bg-[#060608] border-[#171512] text-[#332f26]'
-            }`}>
-              <Shield className={`w-3.5 h-3.5 ${isIlluminated ? 'text-red-500' : 'text-[#401c1c]'}`} />
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-1 rounded text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase border bg-[#1c160a] border-[#8c7b58] text-[#f2d894] shadow-md">
+              <Shield className="w-3.5 h-3.5 text-red-500" />
               CBI FORENSIC TASK FORCE SPECIAL UNIT
             </div>
 
-            <h1 className={`text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-serif tracking-[0.16em] transition-colors ${
-              isIlluminated 
-                ? 'text-[#f3d98b] drop-shadow-[0_4px_25px_rgba(212,175,55,0.4)]' 
-                : 'text-[#2e291f]'
-            }`}>
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-serif tracking-[0.16em] text-[#f3d98b] drop-shadow-[0_4px_30px_rgba(212,175,55,0.5)]">
               PROJECT VRITARA
             </h1>
 
-            <p className={`text-xs sm:text-base md:text-lg font-serif italic tracking-[0.25em] uppercase font-semibold ${
-              isIlluminated ? 'text-[#c7a760]' : 'text-[#24211a]'
-            }`}>
+            <p className="text-xs sm:text-base md:text-lg font-serif italic tracking-[0.25em] uppercase font-semibold text-[#c7a760]">
               “Things aren’t always what they seem”
             </p>
 
             {/* Core Game Pillars */}
             <div className="pt-2 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[10px] sm:text-xs font-mono">
-              <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded border ${
-                isIlluminated ? 'bg-[#15120c] border-[#5e4f2b] text-[#ebd8a7]' : 'bg-[#060608] border-[#141310] text-[#292620]'
-              }`}>
-                <Skull className={`w-3.5 h-3.5 ${isIlluminated ? 'text-red-400' : 'text-[#421d1d]'}`} />
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[#18140c] border-[#5e4f2b] text-[#ebd8a7]">
+                <Skull className="w-3.5 h-3.5 text-red-400" />
                 <strong>18 INTERCONNECTED COLD CASES</strong>
               </span>
-              <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded border ${
-                isIlluminated ? 'bg-[#15120c] border-[#5e4f2b] text-[#ebd8a7]' : 'bg-[#060608] border-[#141310] text-[#292620]'
-              }`}>
-                <Database className={`w-3.5 h-3.5 ${isIlluminated ? 'text-[#e5c777]' : 'text-[#38311f]'}`} />
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[#18140c] border-[#5e4f2b] text-[#ebd8a7]">
+                <Database className="w-3.5 h-3.5 text-[#e5c777]" />
                 <strong>SQL FORENSIC WEAPON</strong>
               </span>
-              <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded border ${
-                isIlluminated ? 'bg-[#15120c] border-[#5e4f2b] text-[#ebd8a7]' : 'bg-[#060608] border-[#141310] text-[#292620]'
-              }`}>
-                <Key className={`w-3.5 h-3.5 ${isIlluminated ? 'text-amber-400' : 'text-[#3d3119]'}`} />
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded border bg-[#18140c] border-[#5e4f2b] text-[#ebd8a7]">
+                <Key className="w-3.5 h-3.5 text-amber-400" />
                 <strong>1 NATIONWIDE CONSPIRACY</strong>
               </span>
             </div>
           </div>
 
           {/* REAL SQL FORENSIC QUERY TERMINAL STRIP ON THE DESK */}
-          <div className={`mt-6 max-w-lg w-full rounded p-3 text-left font-mono text-[10px] sm:text-[11px] border shadow-2xl ${
-            isIlluminated 
-              ? 'bg-[#0c0d10] border-[#8c7b58] text-neutral-200' 
-              : 'bg-[#050507] border-[#171614] text-[#262522]'
-          }`}>
-            <div className={`flex items-center justify-between border-b pb-1 mb-1.5 text-[9px] ${
-              isIlluminated ? 'border-[#26241d] text-[#c7a760]' : 'border-[#121110] text-[#2d291e]'
-            }`}>
-              <span className="flex items-center gap-1">
+          <div className="mt-6 max-w-lg w-full rounded p-3 text-left font-mono text-[10px] sm:text-[11px] border shadow-2xl bg-[#0e1014] border-[#8c7b58] text-neutral-200">
+            <div className="flex items-center justify-between border-b border-[#26241d] pb-1 mb-1.5 text-[9px] text-[#c7a760]">
+              <span className="flex items-center gap-1 font-bold">
                 <Terminal className="w-3 h-3" />
                 FORENSIC_DB_QUERY // CASE_00.sql
               </span>
-              <span className={isIlluminated ? 'text-emerald-400 font-bold' : 'text-[#1d3d29]'}>
+              <span className="text-emerald-400 font-bold">
                 SQL ENGINE ACTIVE
               </span>
             </div>
-            <p className={isIlluminated ? 'text-emerald-300 font-mono leading-tight' : 'text-[#1c3827] font-mono leading-tight'}>
-              <span className={isIlluminated ? 'text-[#f0d48f] font-bold' : 'text-[#3d3420]'}>SELECT</span> suspect_id, alibi, poison_trace <br />
-              <span className={isIlluminated ? 'text-[#f0d48f] font-bold' : 'text-[#3d3420]'}>FROM</span> autopsy_and_call_logs <br />
-              <span className={isIlluminated ? 'text-[#f0d48f] font-bold' : 'text-[#3d3420]'}>WHERE</span> incident_time = <span className={isIlluminated ? 'text-amber-300' : 'text-[#3b321a]'}>'02:14:00'</span> <br />
-              <span className={isIlluminated ? 'text-[#f0d48f] font-bold' : 'text-[#3d3420]'}>ORDER BY</span> alibi_discrepancy <span className={isIlluminated ? 'text-red-400 font-bold' : 'text-[#421d1d]'}>DESC</span>;
+            <p className="text-emerald-300 font-mono leading-tight">
+              <span className="text-[#f0d48f] font-bold">SELECT</span> suspect_id, alibi, poison_trace <br />
+              <span className="text-[#f0d48f] font-bold">FROM</span> autopsy_and_call_logs <br />
+              <span className="text-[#f0d48f] font-bold">WHERE</span> incident_time = <span className="text-amber-300">'02:14:00'</span> <br />
+              <span className="text-[#f0d48f] font-bold">ORDER BY</span> alibi_discrepancy <span className="text-red-400 font-bold">DESC</span>;
             </p>
           </div>
         </div>
 
         {/* LEFT SIDE: Active Case Archives */}
-        <div className="hidden lg:block absolute bottom-8 left-8 sm:bottom-12 sm:left-12 max-w-[260px] p-3.5 rounded font-mono text-[11px] border">
-          <div className={`flex items-center gap-1.5 text-[10px] font-bold border-b pb-1 mb-2 ${
-            isIlluminated ? 'border-[#332a18] text-[#e2c174]' : 'border-[#14120e] text-[#332b1a]'
-          }`}>
+        <div className="hidden lg:block absolute bottom-8 left-8 sm:bottom-12 sm:left-12 max-w-[260px] p-4 rounded font-mono text-[11px] border bg-[#14120e] border-[#5e4f2b] shadow-2xl">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold border-b border-[#332a18] text-[#e2c174] pb-1 mb-2">
             <FileText className="w-3.5 h-3.5" />
             <span>ACTIVE CASE ARCHIVES</span>
           </div>
-          <ul className={`space-y-1 text-[10px] ${isIlluminated ? 'text-[#d6c9a3]' : 'text-[#292620]'}`}>
+          <ul className="space-y-1.5 text-[10px] text-[#d6c9a3]">
             <li>• Case 00: Nagabhavan Poisoning</li>
             <li>• Case 01: The Hacked Telemetry</li>
             <li>• Case 07: Red Sandalwood Syndicate</li>
@@ -444,39 +400,21 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
       style={{ cursor: hasMagnifier ? 'none' : 'default' }}
     >
       {/* ------------------------------------------------------------- */}
-      {/* 1. ROOM BACKGROUND: SUBTLE AMBIENT TUNGSTEN BULB HALO */}
+      {/* 1. ROOM BACKGROUND: PURE NOIR DARKNESS (No ambient leak) */}
       {/* ------------------------------------------------------------- */}
       <div 
         className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${
           isLightOn ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
-          // Tightly focused dim light near the bulb only, keeping the rest of room in shadows
-          background: `radial-gradient(circle 260px at 50% 32%, rgba(200, 160, 65, 0.12) 0%, rgba(12, 10, 7, 0.85) 65%, #020203 95%)`,
+          // Only a tiny, faint incandescent filament halo around the hanging bulb
+          background: `radial-gradient(circle 180px at 50% 32%, rgba(200, 160, 65, 0.08) 0%, rgba(5, 5, 5, 0.95) 75%, #020203 100%)`,
         }}
-      >
-        {/* Ambient corkboard texture pattern */}
-        <div 
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: `radial-gradient(#d4af37 0.75px, transparent 0.75px)`,
-            backgroundSize: '24px 24px',
-          }}
-        />
-      </div>
+      />
 
       {/* ------------------------------------------------------------- */}
-      {/* 2. BASE SCENE: DARK SHADOW LAYER (Murky silhouettes in the dark) */}
-      {/* ------------------------------------------------------------- */}
-      {isLightOn && (
-        <div className="absolute inset-0 pointer-events-none opacity-40">
-          {renderCrimeSceneContent(false)}
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------- */}
-      {/* 3. ILLUMINATED MAGNIFYING SPOTLIGHT LAYER (CLIPPED TO LENS CIRCLE) */}
-      {/* ONLY illuminated under the magnifying glass with light yellow ambiance */}
+      {/* 2. ILLUMINATED SPOTLIGHT LAYER (STRICTLY CLIPPED TO LENS) */}
+      {/* Content is completely invisible until searched with magnifier! */}
       {/* ------------------------------------------------------------- */}
       {isLightOn && hasMagnifier && (
         <div 
@@ -490,19 +428,19 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
           <div 
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: `radial-gradient(circle 120px at ${mousePos.x}px ${mousePos.y}px, rgba(250, 220, 110, 0.32) 0%, rgba(212, 175, 55, 0.20) 60%, rgba(20, 16, 8, 0.75) 100%)`,
+              background: `radial-gradient(circle 125px at ${mousePos.x}px ${mousePos.y}px, rgba(250, 220, 110, 0.35) 0%, rgba(212, 175, 55, 0.22) 60%, rgba(20, 16, 8, 0.85) 100%)`,
             }}
           />
 
           {/* Fully visible, crisp, illuminated crime scene content */}
           <div className="absolute inset-0 filter brightness-125 contrast-125">
-            {renderCrimeSceneContent(true)}
+            {renderCrimeSceneContent()}
           </div>
         </div>
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* 4. INTERACTIVE CONTROLS (MAGNIFIER RESTING, RED BUTTON, AUDIO) */}
+      {/* 3. INTERACTIVE CONTROLS (MAGNIFIER RESTING, RED BUTTON, AUDIO) */}
       {/* ------------------------------------------------------------- */}
       {isLightOn && (
         <div className="absolute inset-0 z-30 pointer-events-none">
@@ -519,7 +457,7 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
           {!hasMagnifier && (
             <div
               onClick={handlePickupMagnifier}
-              className="pointer-events-auto absolute top-[62%] right-[18%] sm:right-[22%] cursor-pointer group flex flex-col items-center"
+              className="pointer-events-auto absolute top-[60%] right-[18%] sm:right-[22%] cursor-pointer group flex flex-col items-center"
               title="Pick up Magnifying Glass to search details"
             >
               <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#8c7b58] bg-[#0d0c0a]/90 flex items-center justify-center shadow-[0_0_20px_rgba(140,123,88,0.3)] group-hover:scale-110 group-hover:border-[#c7a760] transition-all duration-300">
@@ -554,7 +492,7 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* 5. THE CENTER HANGING LIGHT BULB & PULL CORD */}
+      {/* 4. THE CENTER HANGING LIGHT BULB & PULL CORD */}
       {/* ------------------------------------------------------------- */}
       <div 
         className="absolute top-0 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none"
@@ -571,15 +509,15 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
 
         {/* Bulb Glass */}
         <div className="relative flex flex-col items-center -mt-0.5">
-          {/* Subtle localized filament glow when ON */}
+          {/* Faint filament glow when ON */}
           {isLightOn && (
-            <div className="absolute -inset-6 rounded-full bg-amber-400/25 blur-lg animate-pulse pointer-events-none" />
+            <div className="absolute -inset-5 rounded-full bg-amber-400/20 blur-md animate-pulse pointer-events-none" />
           )}
 
           <div 
             className={`relative w-11 h-13 rounded-b-full rounded-t-md border transition-all duration-300 flex items-center justify-center ${
               isLightOn 
-                ? 'bg-amber-100/90 border-amber-300 shadow-[0_0_20px_rgba(255,210,90,0.6)]' 
+                ? 'bg-amber-100/90 border-amber-300 shadow-[0_0_15px_rgba(255,210,90,0.5)]' 
                 : 'bg-black/80 border-[#2b2b32] shadow-inner'
             }`}
           >
@@ -587,7 +525,7 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
             <div 
               className={`w-3.5 h-5 border transition-all duration-200 rounded-sm ${
                 isLightOn 
-                  ? 'border-yellow-200 bg-yellow-300 shadow-[0_0_6px_#fff,0_0_12px_#f59e0b]' 
+                  ? 'border-yellow-200 bg-yellow-300 shadow-[0_0_5px_#fff,0_0_10px_#f59e0b]' 
                   : 'border-[#1f1b14] opacity-30'
               }`}
             />
@@ -642,7 +580,7 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* 6. ACTIVE MAGNIFYING GLASS CURSOR FRAME (Moves with cursor) */}
+      {/* 5. ACTIVE MAGNIFYING GLASS CURSOR FRAME (Moves with cursor) */}
       {/* ------------------------------------------------------------- */}
       {hasMagnifier && (
         <div
@@ -674,20 +612,22 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* 7. SUSPENSEFUL DEAD-CENTER INSTRUCTIONS (Slow fade-in/out) */}
+      {/* 6. CRYPTIC & SPOOKY DEAD-CENTER INSTRUCTIONS */}
       {/* ------------------------------------------------------------- */}
       <AnimatePresence mode="wait">
         {currentHintText && (
           <motion.div
             key={currentHintText}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.03 }}
+            initial={{ opacity: 0, scale: 0.92, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 1.05, filter: 'blur(6px)' }}
             transition={{ duration: 1.2, ease: "easeInOut" }}
             className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center p-6 text-center"
           >
-            <div className="max-w-4xl px-8 py-6 rounded-2xl bg-black/75 backdrop-blur-[2px]">
-              <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-mono uppercase font-black tracking-widest text-red-600/90 drop-shadow-[0_0_25px_rgba(220,38,38,0.8)] leading-relaxed">
+            {/* Dark eerie vignette with subtle blood-red shadow */}
+            <div className="max-w-4xl px-8 py-6 rounded-2xl bg-black/85 border border-red-950/40 shadow-[0_0_80px_rgba(139,0,0,0.6)] backdrop-blur-md relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-950/10 to-transparent pointer-events-none" />
+              <h2 className="spooky-cryptic-text text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-[0.35em] sm:tracking-[0.45em] leading-relaxed drop-shadow-[0_0_25px_rgba(255,26,60,0.95)]">
                 {currentHintText}
               </h2>
             </div>
@@ -696,7 +636,7 @@ export default function InteractiveStoryLanding({ onEnterRoom }) {
       </AnimatePresence>
 
       {/* ------------------------------------------------------------- */}
-      {/* 8. CINEMATIC BLACKOUT ON FINAL EXIT */}
+      {/* 7. CINEMATIC BLACKOUT ON FINAL EXIT */}
       {/* ------------------------------------------------------------- */}
       {stage === 'EXITING' && (
         <motion.div
